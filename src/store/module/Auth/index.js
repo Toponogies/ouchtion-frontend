@@ -2,9 +2,7 @@ import actions from "./actions";
 import mutations from "./mutations";
 
 export const AuthModule = {
-    state: {
-        
-    },
+    state: {},
     actions: actions,
     mutations: mutations,
-}
+};

@@ -5,4 +5,4 @@ export const UserModule = {
     state: {},
     actions: actions,
     mutations: mutations,
-}
+};
