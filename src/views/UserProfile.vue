@@ -59,12 +59,17 @@ export default {
     name: "Profile",
     data() {
         return {
+            // user data
             user_id:1,
             full_name:"abc",
             address:"abc",
             dob:"2000/02/20",
             email:"abc@gmail.com",
+            
+            // default avatar user
             image: "https://www.dovercourt.org/wp-content/uploads/2019/11/610-6104451_image-placeholder-png-user-profile-placeholder-image-png.jpg",
+            
+            // check edit input
             addressInputDisable: true,
             nameInputDisable: true,
             emailInputDisable: true,
