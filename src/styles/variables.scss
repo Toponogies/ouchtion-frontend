@@ -1,0 +1,9 @@
+$body-font-family: "Inter", sans-serif;
+$btn-font-weight: 700;
+
+$expansion-panel-header-min-height: 56px;
+$expansion-panel-active-header-min-height: 56px;
+
+* {
+    font-feature-settings: "calt" 1, "tnum" 1, "case" 1, "ccmp" 1, "salt" 1, "zero" 1 !important;
+}
