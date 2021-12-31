@@ -2,22 +2,11 @@
     <v-app>
         <v-container>
             <v-row justify="center">
-                <!-- Actual view starts here -->
-                <v-col xl="6" lg="8" md="10">
-                    <v-row id="title-bar" class="pt-8 pb-4">
-                        <app-title></app-title>
-                        <v-spacer></v-spacer>
-                        <user-account-actions></user-account-actions>
-                    </v-row>
-                    <v-row id="search-combo" class="pt-4 pb-8">
-                        <v-card width="100%">
-                            <search-box></search-box>
-                            <v-divider></v-divider>
-                            <category-list></category-list>
-                        </v-card>
-                    </v-row>
+                <v-col class="ma-8" lg="10" xl="8">
+                    <!-- Actual view starts here -->
+                    <top-bar></top-bar>
                     <v-row id="content">
-                        <router-view />
+                        <router-view :key="$router.path" />
                     </v-row>
                 </v-col>
             </v-row>
@@ -26,13 +15,12 @@
 </template>
 
 <script>
-import AppTitle from "@/components/AppTitle";
-import UserAccountActions from "@/components/UserAccountActions";
-import SearchBox from "@/components/SearchBox";
-import CategoryList from "@/components/CategoryList";
+import "@fontsource/inter/variable.css";
+
+import TopBar from "./components/topbar/TopBar.vue";
 
 export default {
     name: "App",
-    components: { AppTitle, UserAccountActions, SearchBox, CategoryList },
+    components: { TopBar },
 };
 </script>
