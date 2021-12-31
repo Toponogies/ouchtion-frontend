@@ -23,7 +23,6 @@ const routes = [
         component: User,
     },
 ];
-];
 
 const router = new VueRouter({
     mode: "history",
