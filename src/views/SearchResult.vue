@@ -1,7 +1,14 @@
 <template>
     <v-container class="ma-0 pa-0">
         <v-card class="pa-4">
-            <div class="text-h5 font-weight-bold pa-2" id="search-result-header">Search result for "{{ query }}"</div>
+            <div id="search-result-header">
+                <span class="text-h5 font-weight-bold pa-2" v-if="queryKeyword">
+                    {{ totalResultCount }} results for "{{ queryKeyword }}"
+                </span>
+                <span class="text-h5 font-weight-bold pa-2" v-else>
+                    Products in category "{{ queryCategoryName }}"
+                </span>
+            </div>
             <v-row no-gutters class="pa-2" v-for="product in products" :key="product.id">
                 <product-card-large
                     :id="product.id"
@@ -21,7 +28,7 @@
                 class="pt-4"
                 :length="resultPageCount"
                 v-model="currentPage"
-                :total-visible="7"
+                :total-visible="SEARCH_PAGINATION_VISIBLE_PAGES"
             ></v-pagination>
         </v-card>
     </v-container>
@@ -29,38 +36,20 @@
 
 <script>
 import ProductCardLarge from "@/components/productListings/ProductCardLarge";
-
-const r = (min, max) => {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1) + min);
-};
-
-const ITEM_LIMIT = 10;
-let MOCK_PRODUCT_LIST = [];
-const MOCK_PRODUCT_GENERATE = () => {
-    MOCK_PRODUCT_LIST = [...Array(124)].map((_, index) => ({
-        id: `product-id-${index}`,
-        title: `Product number ${index}`,
-        image: `https://picsum.photos/200?random=${r(0, 1024)}`,
-        bidderCount: r(0, 100),
-        bidHighestPrice: 100000 * r(1, 999),
-        bidHighestUser: `username${r(1, 100)}`,
-        buyNowPrice: r(0, 1) ? 1000000 * r(1, 999) : null,
-        startTime: "2021-12-31 00:00:00",
-        endTime: `2022-01-${r(1, 14)} 0${r(0, 9)}:${r(10, 59)}:${r(10, 59)}`,
-        isOnWatchlist: r(0, 1) ? true : false,
-    }));
-};
-MOCK_PRODUCT_GENERATE();
+import { SEARCH_RESULTS_PER_PAGE, SEARCH_PAGINATION_VISIBLE_PAGES } from "@/utils/constants";
+import { generateMockProductTotalCount, generateMockProduct, generateCategories } from "@/utils/mockUtils";
+import { find } from "lodash-es";
 
 export default {
     name: "Home",
     components: { ProductCardLarge },
     data() {
         return {
-            query: this.$route.query.q,
-            totalResultCount: 128,
+            SEARCH_PAGINATION_VISIBLE_PAGES,
+            queryKeyword: null,
+            queryCategoryId: null,
+            queryCategoryName: null,
+            totalResultCount: 0,
             currentPage: 1,
             products: [],
         };
@@ -75,15 +64,29 @@ export default {
     },
     computed: {
         resultPageCount() {
-            return Math.ceil(this.totalResultCount / ITEM_LIMIT);
+            return Math.ceil(this.totalResultCount / SEARCH_RESULTS_PER_PAGE);
         },
     },
     methods: {
+        setQuery() {
+            this.queryKeyword = null;
+            this.queryCategoryId = null;
+            if (this.$route.query.q) {
+                this.queryKeyword = this.$route.query.q;
+            } else if (this.$route.query.cat) {
+                this.queryCategoryId = this.$route.query.cat;
+                this.queryCategoryName = this.getCategoryName(this.queryCategoryId);
+            }
+        },
         fetchResultCount() {
-            this.totalResultCount = MOCK_PRODUCT_LIST.length;
+            this.totalResultCount = generateMockProductTotalCount();
         },
         fetchProducts() {
-            this.products = MOCK_PRODUCT_LIST.slice((this.currentPage - 1) * 10, this.currentPage * 10);
+            this.products = generateMockProduct(
+                this.currentPage * SEARCH_RESULTS_PER_PAGE > this.totalResultCount
+                    ? this.totalResultCount - (this.currentPage - 1) * 10
+                    : SEARCH_RESULTS_PER_PAGE
+            );
         },
         scrollToTop() {
             this.$vuetify.goTo("#search-result-header", {
@@ -94,17 +97,29 @@ export default {
         resetSearch() {
             this.products = [];
             this.currentPage = 1;
-            MOCK_PRODUCT_GENERATE();
             this.fetchResultCount();
             this.fetchProducts();
         },
+        // eslint-disable-next-line no-unused-vars
+        getCategoryName(id) {
+            const categories = generateCategories();
+            return find(categories, { category_id: parseInt(id) }).name;
+        },
     },
     mounted() {
-        this.fetchResultCount();
-        this.fetchProducts();
+        this.setQuery();
+        this.resetSearch();
     },
     beforeRouteUpdate(to, _, next) {
-        this.query = to.query.q;
+        // We have to manually set query on route update -- Vue Router is not "reactive" enough in this case (prolly)
+        this.queryKeyword = null;
+        this.queryCategoryId = null;
+        if (to.query.q) {
+            this.queryKeyword = to.query.q;
+        } else if (to.query.cat) {
+            this.queryCategoryId = to.query.cat;
+            this.queryCategoryName = this.getCategoryName(this.queryCategoryId);
+        }
         this.resetSearch();
         next();
     },
