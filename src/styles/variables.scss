@@ -5,5 +5,16 @@ $expansion-panel-header-min-height: 56px;
 $expansion-panel-active-header-min-height: 56px;
 
 * {
-    font-feature-settings: "calt" 1, "tnum" 1, "case" 1, "ccmp" 1, "salt" 1, "zero" 1 !important;
+    font-feature-settings:        
+        /* Letters */
+        "ss04" 1, /* Disambiguation without slashed 0 */
+        "cv10" 1, /* Capital G with spur */
+        "case" 1, /* Case alternates */
+        "cpsp" 1, /* Capital spacing */
+
+        /* Numbers */
+        "ss01" 1, /* Open digits */
+        "zero" 1, /* Slashed 0 */
+        "tnum" 1  /* Tabular number (monospace) */
+        !important;
 }
