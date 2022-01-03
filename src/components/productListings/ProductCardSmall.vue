@@ -1,5 +1,5 @@
 <template>
-    <v-card tile elevation="4" @click="1 === 1">
+    <v-card tile elevation="4" @click="handleProductClick">
         <v-img :src="image" height="200">
             <template v-slot:placeholder>
                 <v-row class="fill-height ma=0" align="center" justify="center">
@@ -66,6 +66,12 @@ export default {
         _refreshEndTime() {
             this.formattedEndTime = toRelativeTimestamp(this.endTime);
             setTimeout(this._refreshEndTime, 1000);
+        },
+        handleProductClick() {
+            const nextPath = `/p/${this.id}`;
+            if (this.$router.currentRoute.fullPath !== nextPath) {
+                this.$router.push(nextPath);
+            }
         },
     },
     mounted() {

@@ -10,7 +10,7 @@
                     :bidderCount="product.bidderCount"
                     :bidHighestPrice="product.bidHighestPrice"
                     :endTime="product.endTime"
-                    highlightEndTime
+                    :highlightEndTime="highlightEndTime"
                 ></product-card-small>
             </v-col>
         </v-row>
@@ -25,6 +25,7 @@ export default {
     props: {
         title: String,
         products: Array,
+        highlightEndTime: Boolean,
     },
     components: { ProductCardSmall },
 };

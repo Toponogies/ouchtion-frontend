@@ -1,5 +1,5 @@
 <template>
-    <v-card class="flex-grow-1" tile elevation="4" @click="1 === 1">
+    <v-card class="flex-grow-1" tile elevation="4" @click="handleProductClick">
         <div class="d-flex">
             <div class="ma-0">
                 <v-img :src="image" width="200" min-height="200" class="fill-height">
@@ -105,6 +105,12 @@ export default {
     methods: {
         toggleWatchState() {
             this.local_isOnWatchlist = !this.local_isOnWatchlist;
+        },
+        handleProductClick() {
+            const nextPath = `/p/${this.id}`;
+            if (this.$router.currentRoute.fullPath !== nextPath) {
+                this.$router.push(nextPath);
+            }
         },
     },
 };
