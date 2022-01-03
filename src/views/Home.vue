@@ -1,42 +1,50 @@
 <template>
     <v-container class="ma-0 pa-0">
-        <featured-product-group :title="'Featured'" :products="products"></featured-product-group>
+        <featured-product-group
+            class="mb-6"
+            :title="'Ending soon'"
+            :products="productsEndingSoon"
+            highlightEndTime
+        ></featured-product-group>
+        <featured-product-group
+            class="mb-6"
+            :title="'Most bidders'"
+            :products="productsMostBidders"
+        ></featured-product-group>
+        <featured-product-group :title="'Highest price'" :products="productsHighestPrice"></featured-product-group>
     </v-container>
 </template>
 
 <script>
 import FeaturedProductGroup from "@/components/productListings/FeaturedProductGroup";
+import { HOME_FEATURED_PRODUCTS_LIMIT } from "@/utils/constants";
+import { generateMockProduct } from "@/utils/mockUtils";
 
 export default {
     name: "Home",
     components: { FeaturedProductGroup },
     data() {
         return {
-            singleProduct: {
-                id: "product-id-0",
-                title: "product-title-really-long",
-                image: "https://picsum.photos/200",
-                bidderCount: 68,
-                bidHighestPrice: 1499000,
-                bidHighestUser: "username69",
-                buyNowPrice: 1699000,
-                startTime: "2021-12-01 19:30:50",
-                endTime: "2022-01-01 06:00:00",
-                isOnWatchlist: false,
-            },
-            products: Array(8).fill({
-                id: "product-id-0",
-                title: "product-title-really-long",
-                image: "https://picsum.photos/200",
-                bidderCount: 68,
-                bidHighestPrice: 1499000,
-                bidHighestUser: "username69",
-                buyNowPrice: 1699000,
-                startTime: "2021-12-01 19:30:50",
-                endTime: "2022-01-01 06:00:00",
-                isOnWatchlist: false,
-            }),
+            productsEndingSoon: [],
+            productsMostBidders: [],
+            productsHighestPrice: [],
         };
+    },
+    methods: {
+        fetchFeaturedEndingSoon() {
+            this.productsEndingSoon = generateMockProduct(HOME_FEATURED_PRODUCTS_LIMIT);
+        },
+        fetchFeaturedMostBidders() {
+            this.productsMostBidders = generateMockProduct(HOME_FEATURED_PRODUCTS_LIMIT);
+        },
+        fetchFeaturedHighestPrice() {
+            this.productsHighestPrice = generateMockProduct(HOME_FEATURED_PRODUCTS_LIMIT);
+        },
+    },
+    mounted() {
+        this.fetchFeaturedEndingSoon();
+        this.fetchFeaturedMostBidders();
+        this.fetchFeaturedHighestPrice();
     },
 };
 </script>
