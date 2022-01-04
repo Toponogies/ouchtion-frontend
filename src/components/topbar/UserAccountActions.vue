@@ -52,12 +52,12 @@
 
                         <v-tab-item>
                             <v-container class="pa-4">
-                                <div>Sign in form</div>
+                                <sign-in-form></sign-in-form>
                             </v-container>
                         </v-tab-item>
                         <v-tab-item>
                             <v-container class="pa-4">
-                                <div>Sign up form</div>
+                                <sign-up-form></sign-up-form>
                             </v-container>
                         </v-tab-item>
                     </v-tabs>
@@ -69,9 +69,12 @@
 
 <script>
 import constants from "@/utils/constants";
+import SignInForm from "@/components/topbar/SignInForm";
+import SignUpForm from "@/components/topbar/SignUpForm";
 
 export default {
     name: "UserAccountActions",
+    components: { SignInForm, SignUpForm },
     data() {
         return {
             dialogOpened: false,
