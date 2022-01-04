@@ -5,6 +5,7 @@ import { BiddingModule } from "./module/Bidding/index.js";
 import { CategoryModule } from "./module/Category/index.js";
 import { ProductModule } from "./module/Product/index.js";
 import { UserModule } from "./module/User/index.js";
+import snackbar from "@/store/module/snackbar";
 
 Vue.use(Vuex);
 
@@ -16,5 +17,6 @@ export default new Vuex.Store({
         BiddingModule,
         UserModule,
         AuthModule,
+        snackbar,
     },
 });
