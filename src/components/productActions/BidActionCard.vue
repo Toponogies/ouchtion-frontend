@@ -41,6 +41,7 @@
         <!-- Bid confirmation modal -->
         <v-dialog max-width="640" v-model="confirmDialogOpened" persistent>
             <v-card>
+                <!-- Header (Manual) -->
                 <v-row no-gutters class="px-4 py-4">
                     <div class="text-h6 font-weight-bold">Place Your Bid&hellip;</div>
                     <v-spacer></v-spacer>
@@ -48,6 +49,8 @@
                         <v-icon>mdi-close</v-icon>
                     </v-btn>
                 </v-row>
+
+                <!-- Current price -->
                 <v-row no-gutters cols="12" class="px-4 pb-4">
                     <v-col cols="6">
                         <username-card
@@ -70,6 +73,8 @@
                         </v-text-field>
                     </v-col>
                 </v-row>
+
+                <!-- New price -->
                 <v-row no-gutters cols="12" class="px-4 pb-4" v-if="!autoBidEnabled">
                     <v-col cols="6">
                         <username-card :username="myUsername" :rating="myRating"></username-card>
@@ -93,6 +98,8 @@
                         </v-form>
                     </v-col>
                 </v-row>
+
+                <!-- Confirm button (Manual) -->
                 <v-row no-gutters class="px-4" v-if="!autoBidEnabled">
                     <v-spacer></v-spacer>
                     <v-btn
@@ -105,7 +112,10 @@
                     </v-btn>
                     <v-spacer></v-spacer>
                 </v-row>
+
                 <v-divider class="my-6"></v-divider>
+
+                <!-- Header (Auto-bidding) -->
                 <v-row no-gutters class="px-4 pb-4 d-flex flex-column">
                     <div class="text-h6 font-weight-bold pb-2">&hellip;or Turn On Auto-bidding</div>
                     <div class="text-body-1">
@@ -113,6 +123,8 @@
                         price, until you've hit maximum price you've set below.
                     </div>
                 </v-row>
+
+                <!-- Max auto-bidding price -->
                 <v-row no-gutters class="px-4 pb-4">
                     <v-spacer></v-spacer>
                     <v-col cols="6">
@@ -136,6 +148,8 @@
                     </v-col>
                     <v-spacer></v-spacer>
                 </v-row>
+
+                <!-- Confirm button (Auto-bidding) -->
                 <v-row no-gutters class="px-4 pb-4">
                     <v-spacer></v-spacer>
                     <v-btn

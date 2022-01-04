@@ -7,4 +7,4 @@ export const BiddingModule = {
     },
     actions: actions,
     mutations: mutations,
-}
+};
