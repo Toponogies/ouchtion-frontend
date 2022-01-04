@@ -8,8 +8,8 @@ import {
 
 DayJS.extend(RelativeTime);
 const _FORMAT_DATE = "YYYY-MM-DD";
-const _FORMAT_TIME = "HH:mm:ss";
-const _FORMAT_DELIMITER = " ";
+const _FORMAT_TIME = "HH:mm:ss.SSSZ";
+const _FORMAT_DELIMITER = "T";
 const _FORMAT = `${_FORMAT_DATE}${_FORMAT_DELIMITER}${_FORMAT_TIME}`;
 
 const _FORMAT_LONG = "DD/MM/YYYY hh:mm:ss a";
