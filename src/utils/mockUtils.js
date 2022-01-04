@@ -20,8 +20,8 @@ export const generateMockProduct = (count = 1) => {
         bidHighestPrice: 100000 * r(1, 999),
         bidHighestUser: `username${r(1, 100)}`,
         buyNowPrice: r(0, 1) ? 1000000 * r(1, 999) : null,
-        startTime: "2021-12-31 00:00:00",
-        endTime: `2022-01-${r(1, 14)} 0${r(0, 9)}:${r(10, 59)}:${r(10, 59)}`,
+        startTime: `2022-01-04 ${r(10, 15)}:00:00`,
+        endTime: `2022-01-0${r(5, 9)} 0${r(0, 9)}:${r(10, 59)}:${r(10, 59)}`,
         isOnWatchlist: r(0, 1) ? true : false,
     }));
 };

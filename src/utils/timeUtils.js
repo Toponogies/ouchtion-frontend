@@ -1,5 +1,10 @@
 import DayJS from "dayjs";
 import RelativeTime from "dayjs/plugin/relativeTime";
+import {
+    DELTA_THRESHOLD_START_SHOW_BADGE,
+    DELTA_THRESHOLD_END_SHOW_DAYS,
+    DELTA_THRESHOLD_END_SHOW_TIME,
+} from "@/utils/constants";
 
 DayJS.extend(RelativeTime);
 const _FORMAT_DATE = "YYYY-MM-DD";
@@ -31,24 +36,26 @@ export const today = () => {
 export const deltaFromToday = (timestamp) => {
     // const today = DayJS(DayJS().format(_FORMAT_DATE), _FORMAT_DATE);
     const today = DayJS();
-    const targetDay = DayJS(fromTimestamp(timestamp).date, _FORMAT_DATE);
+    const targetDay = DayJS(timestamp, _FORMAT);
     return targetDay.diff(today, "second");
 };
 
-const DELTA_THRESHOLD_SHOW_DAYS = 259200; // 3 days
-const DELTA_THRESHOLD_SHOW_TIME = 86400; // 1 day
-
-export const isInCountdownThreshold = (timestamp) => {
-    const delta = deltaFromToday(timestamp);
-    return delta < DELTA_THRESHOLD_SHOW_TIME;
+export const isNewProduct = (startTime) => {
+    const delta = -1 * deltaFromToday(startTime);
+    return delta < DELTA_THRESHOLD_START_SHOW_BADGE;
 };
 
-export const toRelativeTimestamp = (timestamp) => {
-    const delta = deltaFromToday(timestamp);
+export const isInCountdownThreshold = (endTime) => {
+    const delta = deltaFromToday(endTime);
+    return delta < DELTA_THRESHOLD_END_SHOW_TIME;
+};
 
-    if (delta > DELTA_THRESHOLD_SHOW_DAYS) {
-        return DayJS(timestamp, _FORMAT).format(_FORMAT_SHORT);
-    } else if (delta >= DELTA_THRESHOLD_SHOW_TIME && delta <= DELTA_THRESHOLD_SHOW_DAYS) {
+export const toRelativeTimestamp = (endTime) => {
+    const delta = deltaFromToday(endTime);
+
+    if (delta > DELTA_THRESHOLD_END_SHOW_DAYS) {
+        return DayJS(endTime, _FORMAT).format(_FORMAT_SHORT);
+    } else if (delta >= DELTA_THRESHOLD_END_SHOW_TIME && delta <= DELTA_THRESHOLD_END_SHOW_DAYS) {
         return `${Math.floor(delta / 86400) + 1} days`;
     } else if (delta > 0) {
         // https://stackoverflow.com/a/25279340
