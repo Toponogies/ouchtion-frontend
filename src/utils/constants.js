@@ -1,4 +1,4 @@
-const roles = {
+export const ROLES = {
     BIDDER: "bidder",
     SELLER: "seller",
     ADMIN: "admin",
@@ -14,7 +14,3 @@ export const DELTA_THRESHOLD_START_SHOW_BADGE = 21600; // 6 hours
 
 export const DELTA_THRESHOLD_END_SHOW_DAYS = 259200; // 3 days
 export const DELTA_THRESHOLD_END_SHOW_TIME = 86400; // 1 day
-
-export default {
-    ROLES: roles,
-};

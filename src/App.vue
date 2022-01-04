@@ -1,5 +1,6 @@
 <template>
     <v-app>
+        <div id="top"></div>
         <nprogress-container></nprogress-container>
         <v-container>
             <v-row justify="center">
