@@ -9,7 +9,10 @@
 
         <!-- Price -->
         <v-row no-gutters class="px-4 pt-2 pb-1">
-            <div class="text-h5 font-weight-bold">&#x20AB; {{ utils.formatPrice(currentHighestBidPrice) }}</div>
+            <div class="text-h5 font-weight-bold">
+                <span>&#x20AB; </span>
+                <span>{{ utils.formatPrice(currentHighestBidPrice) }}</span>
+            </div>
         </v-row>
 
         <!-- Username card -->

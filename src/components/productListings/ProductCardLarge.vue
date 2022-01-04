@@ -15,7 +15,7 @@
                     <span>{{ title }}</span>
                     <v-spacer></v-spacer>
                     <v-chip color="red white--text" small class="mr-2" v-if="isNewProduct">NEW</v-chip>
-                    <v-btn icon @click="toggleWatchState">
+                    <v-btn icon @click.stop="toggleWatchState">
                         <v-icon v-if="local_isOnWatchlist === false">mdi-bookmark-outline</v-icon>
                         <v-icon v-else>mdi-bookmark</v-icon>
                     </v-btn>
