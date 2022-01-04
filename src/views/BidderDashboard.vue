@@ -4,6 +4,10 @@
             <v-tabs fixed-tabs>
                 <!-- Tabs -->
                 <v-tab>
+                    <v-icon left>mdi-bookmark-multiple</v-icon>
+                    <span>Watchlist</span>
+                </v-tab>
+                <v-tab>
                     <v-icon left>mdi-timer-sand-empty</v-icon>
                     <span>Ongoing Bids</span>
                 </v-tab>
@@ -13,6 +17,11 @@
                 </v-tab>
 
                 <!-- Sub-views -->
+                <v-tab-item>
+                    <v-container class="pa-4">
+                        <watchlist></watchlist>
+                    </v-container>
+                </v-tab-item>
                 <v-tab-item>
                     <v-container class="pa-4">
                         <ongoing-bids></ongoing-bids>
@@ -29,11 +38,12 @@
 </template>
 
 <script>
+import Watchlist from "@/views/bidder/Watchlist";
 import OngoingBids from "@/views/bidder/OngoingBids";
 import CompletedBids from "@/views/bidder/CompletedBids";
 
 export default {
     name: "BidderDashboard",
-    components: { OngoingBids, CompletedBids },
+    components: { Watchlist, OngoingBids, CompletedBids },
 };
 </script>
