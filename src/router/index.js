@@ -52,6 +52,10 @@ const routes = [
         name: "UserProfile",
         component: UserProfile,
     },
+    {
+        path: "*",
+        redirect: "/",
+    },
 ];
 
 const router = new VueRouter({
