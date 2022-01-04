@@ -14,6 +14,7 @@
                 <v-card-title>
                     <span>{{ title }}</span>
                     <v-spacer></v-spacer>
+                    <v-chip color="red white--text" small class="mr-2" v-if="isNewProduct">NEW</v-chip>
                     <v-btn icon @click="toggleWatchState">
                         <v-icon v-if="local_isOnWatchlist === false">mdi-bookmark-outline</v-icon>
                         <v-icon v-else>mdi-bookmark</v-icon>
@@ -67,7 +68,7 @@
 
 <script>
 import { formatPrice } from "@/utils/priceUtils";
-import { toLongTimestamp } from "@/utils/timeUtils";
+import { isNewProduct, toLongTimestamp } from "@/utils/timeUtils";
 
 export default {
     name: "ProductCardLarge",
@@ -89,6 +90,9 @@ export default {
         };
     },
     computed: {
+        isNewProduct: function () {
+            return isNewProduct(this.startTime);
+        },
         formattedBidHighestPrice: function () {
             return formatPrice(this.bidHighestPrice);
         },
