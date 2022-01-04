@@ -1,13 +1,9 @@
 <template>
     <v-container class="ma-0 pa-0">
         <v-card class="pa-4">
-            <div id="search-result-header">
-                <span class="text-h5 font-weight-bold pa-2" v-if="queryKeyword">
-                    {{ totalResultCount }} results for "{{ queryKeyword }}"
-                </span>
-                <span class="text-h5 font-weight-bold pa-2" v-else>
-                    Products in category "{{ queryCategoryName }}"
-                </span>
+            <div id="search-result-header" class="text-h5 font-weight-bold pa-2">
+                <span v-if="queryKeyword"> {{ totalResultCount }} results for "{{ queryKeyword }}" </span>
+                <span v-else> Products in category "{{ queryCategoryName }}" </span>
             </div>
             <v-row no-gutters class="pa-2" v-for="product in products" :key="product.id">
                 <product-card-large
@@ -39,6 +35,7 @@ import ProductCardLarge from "@/components/productListings/ProductCardLarge";
 import { SEARCH_RESULTS_PER_PAGE, SEARCH_PAGINATION_VISIBLE_PAGES } from "@/utils/constants";
 import { generateMockProductTotalCount, generateMockProduct, generateCategories } from "@/utils/mockUtils";
 import { find } from "lodash-es";
+import { scrollToTop } from "@/utils/scrollToTop";
 
 export default {
     name: "Home",
@@ -59,7 +56,7 @@ export default {
             // "Fetch" new products in list
             this.fetchProducts();
             // Smoothly scroll back to top of result
-            this.scrollToTop();
+            scrollToTop(this);
         },
     },
     computed: {
@@ -88,12 +85,6 @@ export default {
                     : SEARCH_RESULTS_PER_PAGE
             );
         },
-        scrollToTop() {
-            this.$vuetify.goTo("#search-result-header", {
-                duration: 500,
-                easing: "easeOutQuint",
-            });
-        },
         resetSearch() {
             this.products = [];
             this.currentPage = 1;
@@ -106,9 +97,12 @@ export default {
             return find(categories, { category_id: parseInt(id) }).name;
         },
     },
-    mounted() {
+    beforeMount() {
         this.setQuery();
         this.resetSearch();
+    },
+    mounted() {
+        scrollToTop(this);
     },
     beforeRouteUpdate(to, _, next) {
         // We have to manually set query on route update -- Vue Router is not "reactive" enough in this case (prolly)
