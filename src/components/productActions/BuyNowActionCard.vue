@@ -1,21 +1,41 @@
 <template>
-    <v-card @click="handleConfirmDialogOpen" color="red darken-3 white--text" elevation="4">
+    <v-card @click="handleConfirmDialogOpen" :color="cardColor" elevation="4" :disabled="!isBuyNowOptionAvailable">
+        <!-- Header + Decor -->
         <v-row no-gutters class="px-4 pt-4 pb-2">
             <div>BUY NOW</div>
             <v-spacer></v-spacer>
-            <v-icon dark>mdi-arrow-right</v-icon>
+            <v-icon dark v-if="isBuyNowOptionAvailable">mdi-arrow-right</v-icon>
         </v-row>
+
+        <!-- Price -->
         <v-row no-gutters class="px-4 pt-2 pb-1">
-            <div class="text-h5 font-weight-bold">&#x20AB; 16999999</div>
+            <div class="text-h5 font-weight-bold">
+                <span v-if="isBuyNowOptionAvailable">&#x20AB;</span>
+                <span>{{ formattedPrice }}</span>
+            </div>
         </v-row>
+
+        <!-- Dummy username card (to make sure this card has even height to BidActionCard) -->
         <v-row no-gutters class="px-4 pt-1 pb-2" style="visibility: collapse">
             <username-card></username-card>
         </v-row>
+
+        <!-- Divider -->
         <v-divider class="my-2"></v-divider>
-        <v-row no-gutters class="px-4 pt-2 pb-4">
+
+        <!-- Status line (normal) -->
+        <v-row no-gutters class="px-4 pt-2 pb-4" v-if="isBuyNowOptionAvailable">
             <v-icon dark left>mdi-clock-fast</v-icon>
             <div>Skip bidding and pay now</div>
         </v-row>
+
+        <!-- Status line (disabled) -->
+        <v-row no-gutters class="px-4 pt-2 pb-4" v-else>
+            <v-icon dark left small>mdi-close-circle</v-icon>
+            <div>The seller does not allow buying this product immediately.</div>
+        </v-row>
+
+        <!-- Buy now confirmation modal -->
         <v-dialog max-width="640" v-model="confirmDialogOpened" persistent>
             <v-card>
                 <v-row no-gutters class="px-4 py-4">
@@ -28,16 +48,16 @@
                 <v-row no-gutters class="px-4 pb-4 d-flex flex-column">
                     <div class="text-body-1">You will skip all the biddings and immediately buy this product.</div>
                 </v-row>
-                <v-row no-gutters cols="12" align="top" class="px-4 pb-4">
+                <v-row no-gutters cols="12" class="px-4 pb-4">
                     <v-col cols="6">
-                        <username-card :username="'username'" :rating="4.6"></username-card>
+                        <username-card :username="myUsername" :rating="myRating"></username-card>
                     </v-col>
                     <v-col cols="6">
                         <v-text-field
                             class="dialog-price-field"
                             outlined
                             disabled
-                            :value="utils.formatPrice(price)"
+                            :value="formattedPrice"
                             :hint="'Buy-Now price'"
                             persistent-hint
                         >
@@ -66,12 +86,27 @@ import { formatPrice } from "@/utils/priceUtils";
 export default {
     name: "BuyNowActionCard",
     components: { UsernameCard },
-    props: ["price"],
+    props: {
+        price: Number,
+        myUsername: String,
+        myRating: Number,
+    },
     data() {
         return {
             utils: { formatPrice },
             confirmDialogOpened: false,
         };
+    },
+    computed: {
+        isBuyNowOptionAvailable: function () {
+            return this.price !== null;
+        },
+        cardColor: function () {
+            return this.isBuyNowOptionAvailable ? "red darken-3 white--text" : "grey darken-3 white--text";
+        },
+        formattedPrice: function () {
+            return this.isBuyNowOptionAvailable ? this.utils.formatPrice(this.price) : "Not applicable";
+        },
     },
     methods: {
         handleConfirmDialogOpen() {

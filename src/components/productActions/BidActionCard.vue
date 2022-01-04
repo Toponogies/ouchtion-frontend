@@ -1,21 +1,41 @@
 <template>
-    <v-card @click.stop="handleConfirmDialogOpen" color="orange darken-3 white--text" elevation="4">
+    <v-card @click.stop="handleConfirmDialogOpen" :color="cardColor" elevation="4" :disabled="isBlockedFromBidding">
+        <!-- Header + decor -->
         <v-row no-gutters class="px-4 pt-4 pb-2">
             <div>BID</div>
             <v-spacer></v-spacer>
-            <v-icon dark>mdi-arrow-right</v-icon>
+            <v-icon dark v-if="!isBlockedFromBidding">mdi-arrow-right</v-icon>
         </v-row>
+
+        <!-- Price -->
         <v-row no-gutters class="px-4 pt-2 pb-1">
-            <div class="text-h5 font-weight-bold">&#x20AB; 1499999</div>
+            <div class="text-h5 font-weight-bold">&#x20AB; {{ utils.formatPrice(currentHighestBidPrice) }}</div>
         </v-row>
+
+        <!-- Username card -->
         <v-row no-gutters class="px-4 pt-1 pb-2">
-            <username-card :username="'username'" :rating="4.6"></username-card>
+            <username-card
+                :username="currentHighestBidUsername"
+                :rating="currentHighestBidUsernameRating"
+            ></username-card>
         </v-row>
+
+        <!-- Divider -->
         <v-divider class="my-2"></v-divider>
-        <v-row no-gutters class="px-4 pt-2 pb-4">
+
+        <!-- Status line (normal) -->
+        <v-row no-gutters class="px-4 pt-2 pb-4" v-if="!isBlockedFromBidding">
             <v-icon dark small left>mdi-timer-sand-empty</v-icon>
-            <div>Ends in 00:00:00</div>
+            <div>Ends in {{ formattedEndTime }}</div>
         </v-row>
+
+        <!-- Status line (blocked from bidding) -->
+        <v-row no-gutters class="px-4 pt-2 pb-4" v-else>
+            <v-icon dark small left>mdi-close-circle</v-icon>
+            <div>You are not allowed to bid on this product.</div>
+        </v-row>
+
+        <!-- Bid confirmation modal -->
         <v-dialog max-width="640" v-model="confirmDialogOpened" persistent>
             <v-card>
                 <v-row no-gutters class="px-4 py-4">
@@ -27,7 +47,10 @@
                 </v-row>
                 <v-row no-gutters cols="12" class="px-4 pb-4">
                     <v-col cols="6">
-                        <username-card :username="'username'" :rating="4.6"></username-card>
+                        <username-card
+                            :username="currentHighestBidUsername"
+                            :rating="currentHighestBidUsernameRating"
+                        ></username-card>
                     </v-col>
                     <v-col cols="6">
                         <v-text-field
@@ -46,7 +69,7 @@
                 </v-row>
                 <v-row no-gutters cols="12" class="px-4 pb-4" v-if="!autoBidEnabled">
                     <v-col cols="6">
-                        <username-card :username="'You'" :rating="4.6"></username-card>
+                        <username-card :username="myUsername" :rating="myRating"></username-card>
                     </v-col>
                     <v-col cols="6">
                         <v-form v-model="newPriceValid">
@@ -140,18 +163,31 @@
 <script>
 import UsernameCard from "@/components/productDetails/UsernameCard";
 import { formatPrice } from "@/utils/priceUtils";
+import { toRelativeTimestamp, isInCountdownThreshold } from "@/utils/timeUtils";
 
 export default {
     name: "BidActionCard",
+    props: {
+        currentHighestBidPrice: Number,
+        currentHighestBidUsername: String,
+        currentHighestBidUsernameRating: Number,
+        myUsername: String,
+        myRating: String,
+        priceIncrement: Number,
+        endTime: String,
+        isBlockedFromBidding: {
+            type: Boolean,
+            default: false,
+        },
+    },
     components: { UsernameCard },
     data() {
         return {
             utils: { formatPrice },
             confirmDialogOpened: false,
-            currentHighestBidPrice: 1499000,
+            formattedEndTime: toRelativeTimestamp(this.endTime),
             autoBidMaximumPrice: null,
             autoBidEnabled: false,
-            priceIncrement: 100000,
             newPrice: null,
             newPriceValid: null,
             newAutoBidPriceValid: null,
@@ -163,8 +199,11 @@ export default {
         };
     },
     computed: {
-        suggestedBidPrice() {
+        suggestedBidPrice: function () {
             return this.currentHighestBidPrice + this.priceIncrement;
+        },
+        cardColor: function () {
+            return this.isBlockedFromBidding ? "grey darken-3 white--text" : "orange darken-3 white--text";
         },
     },
     methods: {
@@ -186,6 +225,16 @@ export default {
         handleConfirmDialogCancel() {
             this.confirmDialogOpened = false;
         },
+        _refreshEndTime() {
+            this.formattedEndTime = toRelativeTimestamp(this.endTime);
+            setTimeout(this._refreshEndTime, 1000);
+        },
+    },
+    mounted() {
+        console.log(this.endTime);
+        if (isInCountdownThreshold(this.endTime)) {
+            this._refreshEndTime();
+        }
     },
 };
 </script>
