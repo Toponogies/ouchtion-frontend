@@ -15,19 +15,19 @@
             </template>
             <v-list>
                 <v-list-item-group>
-                    <v-list-item v-if="currentUserRole === constants.ROLES.SELLER" to="/dashboard/s">
+                    <v-list-item v-if="currentUserRole === consts.ROLES.SELLER" to="/dashboard/s">
                         <v-list-item-icon><v-icon>mdi-store</v-icon></v-list-item-icon>
                         <v-list-item-title>My Products</v-list-item-title>
                     </v-list-item>
-                    <v-list-item v-if="currentUserRole === constants.ROLES.BIDDER" to="/dashboard/b">
+                    <v-list-item v-if="currentUserRole === consts.ROLES.BIDDER" to="/dashboard/b">
                         <v-list-item-icon><v-icon>mdi-currency-usd</v-icon></v-list-item-icon>
                         <v-list-item-title>My Bids</v-list-item-title>
                     </v-list-item>
-                    <v-list-item v-if="currentUserRole === constants.ROLES.ADMIN" to="/dashboard/a">
+                    <v-list-item v-if="currentUserRole === consts.ROLES.ADMIN" to="/dashboard/a">
                         <v-list-item-icon><v-icon>mdi-view-dashboard</v-icon></v-list-item-icon>
                         <v-list-item-title>Admin Dashboard</v-list-item-title>
                     </v-list-item>
-                    <v-list-item v-if="currentUserRole !== constants.ROLES.ADMIN" to="/profile">
+                    <v-list-item v-if="currentUserRole !== consts.ROLES.ADMIN" to="/profile">
                         <v-list-item-icon><v-icon>mdi-account-circle</v-icon></v-list-item-icon>
                         <v-list-item-title>My Profile</v-list-item-title>
                     </v-list-item>
@@ -46,7 +46,7 @@
                     <v-tabs fixed-tabs>
                         <v-tab>Sign in</v-tab>
                         <v-tab>Sign up</v-tab>
-                        <v-btn icon large @click="handleDialogClose">
+                        <v-btn icon large tile @click="handleDialogClose" height="100%" class="px-6">
                             <v-icon>mdi-close</v-icon>
                         </v-btn>
 
@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import constants from "@/utils/constants";
+import { ROLES } from "@/utils/constants";
 import SignInForm from "@/components/topbar/SignInForm";
 import SignUpForm from "@/components/topbar/SignUpForm";
 
@@ -77,15 +77,12 @@ export default {
     components: { SignInForm, SignUpForm },
     data() {
         return {
+            consts: { ROLES },
             dialogOpened: false,
             currentUserName: null,
             currentUserAvatar: null,
             currentUserRole: null,
         };
-    },
-    created() {
-        // https://stackoverflow.com/a/58900694
-        this.constants = constants;
     },
     methods: {
         handleDialogOpen() {
