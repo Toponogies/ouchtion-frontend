@@ -19,6 +19,10 @@
                         <v-list-item-icon><v-icon>mdi-store</v-icon></v-list-item-icon>
                         <v-list-item-title>My Products</v-list-item-title>
                     </v-list-item>
+                    <v-list-item v-if="currentUserRole === consts.ROLES.SELLER" to="/dashboard/s/new">
+                        <v-list-item-icon><v-icon>mdi-plus-box</v-icon></v-list-item-icon>
+                        <v-list-item-title>Add new product</v-list-item-title>
+                    </v-list-item>
                     <v-list-item v-if="currentUserRole === consts.ROLES.BIDDER" to="/dashboard/b">
                         <v-list-item-icon><v-icon>mdi-currency-usd</v-icon></v-list-item-icon>
                         <v-list-item-title>My Bids</v-list-item-title>

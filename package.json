@@ -10,11 +10,13 @@
     "dependencies": {
         "@fontsource/inter": "^4.5.1",
         "@hcaptcha/vue-hcaptcha": "^0.3.2",
+        "@mdi/font": "^6.5.95",
         "axios": "^0.24.0",
         "core-js": "^3.6.5",
         "dayjs": "^1.10.7",
         "lodash-es": "^4.17.21",
         "source-map": "^0.7.3",
+        "tiptap-vuetify": "^2.24.0",
         "vue": "^2.6.11",
         "vue-nprogress": "^0.2.0",
         "vue-router": "^3.2.0",

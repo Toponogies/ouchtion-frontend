@@ -7,6 +7,7 @@ import AdminDashboard from "@/views/AdminDashboard";
 import BidderDashboard from "@/views/BidderDashboard";
 import SellerDashboard from "@/views/SellerDashboard";
 import UserProfile from "@/views/UserProfile";
+import ProductCreator from "@/views/ProductCreator";
 
 Vue.use(VueRouter);
 
@@ -40,6 +41,11 @@ const routes = [
         path: "/dashboard/s",
         name: "SellerDashboard",
         component: SellerDashboard,
+    },
+    {
+        path: "/dashboard/s/new",
+        name: "ProductCreator",
+        component: ProductCreator,
     },
     {
         path: "/profile",
