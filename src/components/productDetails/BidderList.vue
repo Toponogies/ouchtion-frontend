@@ -20,6 +20,9 @@
 
 <script>
 import { ROLES } from "@/utils/constants";
+import { getProductBidding } from "@/api/product";
+import { toLongTimestamp } from "@/utils/timeUtils";
+import { hiddenName } from "@/utils/hiddenName";
 
 export default {
     name: "BidderList",
@@ -28,12 +31,13 @@ export default {
     },
     data() {
         return {
+            utils: { toLongTimestamp, hiddenName },
             consts: { ROLES },
             expandedPanels: [0],
             local_tableHeaders: [
                 { text: "Time", value: "time" },
-                { text: "Bidder", value: "bidder", sortable: false },
-                { text: "Price", value: "price" },
+                { text: "Bidder", value: "full_name", sortable: false },
+                { text: "Price", value: "bid_price" },
             ],
             local_tableHeadersAction: [{ text: "Actions", value: "actions", sortable: false, align: "right" }],
             bidderList: [],
@@ -53,21 +57,17 @@ export default {
         },
     },
     methods: {
-        getBidderList() {
-            this.bidderList = [
-                { id: 1, time: "timestamp", bidder: "username1", price: 100000 },
-                { id: 2, time: "timestamp", bidder: "username2", price: 200000 },
-                { id: 3, time: "timestamp", bidder: "username3", price: 300000 },
-                { id: 4, time: "timestamp", bidder: "username4", price: 400000 },
-                { id: 5, time: "timestamp", bidder: "username5", price: 500000 },
-                { id: 6, time: "timestamp", bidder: "username6", price: 600000 },
-                { id: 7, time: "timestamp", bidder: "username7", price: 700000 },
-                { id: 8, time: "timestamp", bidder: "username8", price: 800000 },
-                { id: 9, time: "timestamp", bidder: "username9", price: 900000 },
-                { id: 10, time: "timestamp", bidder: "username10", price: 1000000 },
-                { id: 11, time: "timestamp", bidder: "username11", price: 1100000 },
-                { id: 12, time: "timestamp", bidder: "username11", price: 1200000 },
-            ];
+        async getBidderList() {
+            try{
+                this.bidderList = await getProductBidding(this.productId);
+                this.bidderList.forEach(bidder => {
+                    bidder.time = this.utils.toLongTimestamp(bidder.time);
+                    bidder.full_name = this.utils.hiddenName(bidder.full_name);
+                });
+            }
+            catch(error){
+                console.log(error);
+            }
         },
         acceptBid(item) {
             console.log(`Accept bid id = ${item.id}`);

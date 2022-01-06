@@ -1,8 +1,8 @@
 <template>
     <v-slide-group show-arrows>
-        <v-slide-item v-for="image in images" :key="image">
+        <v-slide-item v-for="image in images" :key="image.product_image_id">
             <v-card class="mx-2">
-                <v-img :src="image" width="200" @click="openLargeImageDialog(image)">
+                <v-img :src="image.path" width="200" @click="openLargeImageDialog(image.path)">
                     <template v-slot:placeholder>
                         <v-row class="fill-height ma=0" align="center" justify="center">
                             <v-progress-circular indeterminate></v-progress-circular>
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { generateMockProductImages } from "@/utils/mockUtils";
+import { getProductImage } from "@/api/product";
 
 export default {
     name: "ProductImageGallery",
@@ -43,10 +43,21 @@ export default {
         return {
             largeImageDialogOpened: false,
             largeImageDialogSelectedUrl: null,
-            images: generateMockProductImages(),
+            images: [],
         };
     },
     methods: {
+        async getProductImages() {
+            try{
+                this.images = await getProductImage(this.productId)
+                this.images.forEach(image => {
+                    image.path = "http://localhost:3000/" + image.path;
+                });
+            }
+            catch(error){
+                console.log(error);
+            }
+        },
         openLargeImageDialog(url) {
             this.largeImageDialogOpened = true;
             this.largeImageDialogSelectedUrl = url;
@@ -55,6 +66,9 @@ export default {
             this.largeImageDialogOpened = false;
             this.largeImageDialogSelectedUrl = null;
         },
+    },
+    mounted() {
+        this.getProductImages();
     },
 };
 </script>
