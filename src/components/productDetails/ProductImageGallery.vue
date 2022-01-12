@@ -15,7 +15,7 @@
             <v-card>
                 <v-row no-gutters>
                     <v-spacer></v-spacer>
-                    <v-btn icon @click="closeLargeImageDialog()">
+                    <v-btn icon tile @click="closeLargeImageDialog()" class="px-6">
                         <v-icon>mdi-close</v-icon>
                     </v-btn>
                 </v-row>

@@ -7,4 +7,4 @@ export const CategoryModule = {
     },
     actions: actions,
     mutations: mutations,
-}
+};

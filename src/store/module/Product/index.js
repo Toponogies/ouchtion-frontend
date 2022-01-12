@@ -5,4 +5,4 @@ export const ProductModule = {
     state: {},
     actions: actions,
     mutations: mutations,
-}
+};
