@@ -5,6 +5,7 @@ export const CategoryModule = {
     state: {
         allCategorys: [],
     },
-    actions: actions,
-    mutations: mutations,
+
+    actions,
+    mutations,
 };

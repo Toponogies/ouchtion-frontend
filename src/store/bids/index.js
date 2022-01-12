@@ -5,6 +5,7 @@ export const BiddingModule = {
     state: {
         allBiddings: [],
     },
-    actions: actions,
-    mutations: mutations,
+
+    actions,
+    mutations,
 };

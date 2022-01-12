@@ -12,6 +12,7 @@ export const AuthModule = {
         logoutError: null,
         resetError: null,
     },
-    actions: actions,
-    mutations: mutations,
+
+    actions,
+    mutations,
 };
