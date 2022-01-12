@@ -1,14 +1,15 @@
 import { generateMockProduct } from "@/utils/mockUtils";
+import { HOME_FEATURED_PRODUCTS_LIMIT } from "@/utils/constants";
 
 export default {
     fetchAll({ commit }) {
-        let productsEndingSoon = generateMockProduct(8);
+        let productsEndingSoon = generateMockProduct(HOME_FEATURED_PRODUCTS_LIMIT);
         commit("updateProductsEndingSoon", productsEndingSoon);
 
-        let productsMostBidders = generateMockProduct(8);
+        let productsMostBidders = generateMockProduct(HOME_FEATURED_PRODUCTS_LIMIT);
         commit("updateProductsMostBidders", productsMostBidders);
 
-        let productsHighestPrice = generateMockProduct(8);
+        let productsHighestPrice = generateMockProduct(HOME_FEATURED_PRODUCTS_LIMIT);
         commit("updateProductsHighestPrice", productsHighestPrice);
     },
 };
