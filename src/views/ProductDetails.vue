@@ -109,6 +109,9 @@ import { generateMockProduct, generateCategories } from "@/utils/mockUtils";
 import { toLongTimestamp } from "@/utils/timeUtils";
 import { scrollToTop } from "@/utils/scrollToTop";
 
+import { getProduct } from "@/api/product"
+import { getUserWithPoint } from "@/api/user"
+
 export default {
     name: "ProductDetails",
     components: {
@@ -145,25 +148,36 @@ export default {
         };
     },
     methods: {
-        fetchProductInfo() {
-            const newProduct = generateMockProduct()[0];
-            this.primaryImage = newProduct.image;
-            this.title = newProduct.title;
-            this.startTime = newProduct.startTime;
-            this.endTime = newProduct.endTime;
-            this.sellerUsername = "seller0101";
-            this.sellerRating = 4.5;
-            this.myUsername = "userme42";
-            this.myRating = "4.8";
-            this.bidPriceIncrement = 100000;
-            this.isBlockedFromBidding = false;
-            this.bidHighestPrice = newProduct.bidHighestPrice;
-            this.bidHighestUser = newProduct.bidHighestUser;
-            this.bidHighestUserRating = 4.7;
-            this.buyNowPrice = newProduct.buyNowPrice;
-            this.isOnWatchlist = newProduct.isOnWatchlist;
-            this.categories = generateCategories();
-            this.relatedProducts = generateMockProduct(8);
+        async fetchProductInfo() {
+            try{
+                const newProduct = await getProduct(this.id);
+                this.primaryImage = newProduct.avatar;
+                this.title = newProduct.name;
+                this.startTime = newProduct.start_at;
+                this.endTime = newProduct.end_at;
+                this.bidPriceIncrement = newProduct.step_price;
+                this.isBlockedFromBidding = newProduct.is_sold == false ? false : true;
+                this.bidHighestPrice = newProduct.current_price;
+                this.buyNowPrice = newProduct.buy_price;
+                
+                const seller = await getUserWithPoint(newProduct.seller_id)
+                this.sellerUsername = seller.full_name;
+                this.sellerRating = seller.point;
+
+                const buyer = await getUserWithPoint(newProduct.buyer_id)
+                this.bidHighestUser = buyer.full_name;
+                this.bidHighestUserRating = buyer.point;
+
+                // chưa xử lý
+                this.myUsername = "userme42";
+                this.myRating = "4.8";
+                this.isOnWatchlist = newProduct.isOnWatchlist;
+                this.categories = generateCategories();
+                this.relatedProducts = generateMockProduct(8);
+            }
+            catch(error){
+                console.log(error.response.data);
+            }
         },
         handleCategoryClick(id) {
             this.expandedPanels = []; // Close the category list if expanded
