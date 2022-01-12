@@ -1,11 +1,11 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { AuthModule } from "./module/Auth/index.js";
-import { BiddingModule } from "./module/Bidding/index.js";
-import { CategoryModule } from "./module/Category/index.js";
-import { ProductModule } from "./module/Product/index.js";
-import { UserModule } from "./module/User/index.js";
-import snackbar from "@/store/module/snackbar";
+import { AuthModule } from "./auth";
+import { BiddingModule } from "./bids";
+import { CategoryModule } from "./categories";
+import { ProductModule } from "./products";
+import { UserModule } from "./users";
+import { SnackbarModule } from "./ui/snackbar";
 
 Vue.use(Vuex);
 
@@ -17,6 +17,6 @@ export default new Vuex.Store({
         BiddingModule,
         UserModule,
         AuthModule,
-        snackbar,
+        SnackbarModule,
     },
 });
