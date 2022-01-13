@@ -95,6 +95,8 @@
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
+
 import ProductImageGallery from "@/components/productDetails/ProductImageGallery";
 import UsernameCard from "@/components/productDetails/UsernameCard";
 import BidderList from "@/components/productDetails/BidderList";
@@ -109,8 +111,8 @@ import { generateMockProduct, generateCategories } from "@/utils/mockUtils";
 import { toLongTimestamp } from "@/utils/timeUtils";
 import { scrollToTop } from "@/utils/scrollToTop";
 
-import { getProduct } from "@/api/product"
-import { getUserWithPoint } from "@/api/user"
+import { getProduct } from "@/api/product";
+import { getUserWithPoint } from "@/api/user";
 
 export default {
     name: "ProductDetails",
@@ -147,38 +149,57 @@ export default {
             relatedProducts: [],
         };
     },
+    computed: {
+        ...mapState("CurrentProductModule", [
+            "title",
+            "seller",
+            "startTime",
+            "endTime",
+            "categories",
+            "bid",
+            "buyNow",
+            "isOnWatchlist",
+            "relatedProducts",
+        ]),
+        ...mapState("CurrentUserModule", {
+            currentUsername: "username",
+            currentUserRating: "rating",
+        }),
+    },
     methods: {
-        async fetchProductInfo() {
-            try{
-                const newProduct = await getProduct(this.id);
-                this.primaryImage = newProduct.avatar;
-                this.title = newProduct.name;
-                this.startTime = newProduct.start_at;
-                this.endTime = newProduct.end_at;
-                this.bidPriceIncrement = newProduct.step_price;
-                this.isBlockedFromBidding = newProduct.is_sold == false ? false : true;
-                this.bidHighestPrice = newProduct.current_price;
-                this.buyNowPrice = newProduct.buy_price;
-                
-                const seller = await getUserWithPoint(newProduct.seller_id)
-                this.sellerUsername = seller.full_name;
-                this.sellerRating = seller.point;
+        ...mapActions("CurrentProductModule", ["setProductId", "fetchAllDetails"]),
 
-                const buyer = await getUserWithPoint(newProduct.buyer_id)
-                this.bidHighestUser = buyer.full_name;
-                this.bidHighestUserRating = buyer.point;
+        async fetchProductInfo() {
+            try {
+                const newProduct = await getProduct(this.id);
+                // this.primaryImage = newProduct.avatar;
+                // this.title = newProduct.name;
+                // this.startTime = newProduct.start_at;
+                // this.endTime = newProduct.end_at;
+                // this.bidPriceIncrement = newProduct.step_price;
+                // this.isBlockedFromBidding = newProduct.is_sold == false ? false : true;
+                // this.bidHighestPrice = newProduct.current_price;
+                // this.buyNowPrice = newProduct.buy_price;
+
+                // const seller = await getUserWithPoint(newProduct.seller_id)
+                // this.sellerUsername = seller.full_name;
+                // this.sellerRating = seller.point;
+
+                // const buyer = await getUserWithPoint(newProduct.buyer_id)
+                // this.bidHighestUser = buyer.full_name;
+                // this.bidHighestUserRating = buyer.point;
 
                 // chưa xử lý
                 this.myUsername = "userme42";
                 this.myRating = "4.8";
-                this.isOnWatchlist = newProduct.isOnWatchlist;
-                this.categories = generateCategories();
-                this.relatedProducts = generateMockProduct(8);
-            }
-            catch(error){
+                // this.isOnWatchlist = newProduct.isOnWatchlist;
+                // this.categories = generateCategories();
+                // this.relatedProducts = generateMockProduct(8);
+            } catch (error) {
                 console.log(error.response.data);
             }
         },
+
         handleCategoryClick(id) {
             this.expandedPanels = []; // Close the category list if expanded
             const nextPath = `/search?cat=${id}`;
