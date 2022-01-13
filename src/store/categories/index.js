@@ -5,7 +5,7 @@ export const CategoryModule = {
     namespaced: true,
 
     state: {
-        allCategorys: [],
+        categories: [],
     },
 
     actions,
