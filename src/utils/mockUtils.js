@@ -7,7 +7,8 @@ const r = (min, max) => {
 };
 
 export const generateMockProductTotalCount = () => {
-    return r(3, 100);
+    // return r(3, 100);
+    return 101;
 };
 
 // Return one (or more -- pass the first param) mock products
