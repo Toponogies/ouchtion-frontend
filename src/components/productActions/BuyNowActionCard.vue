@@ -36,56 +36,18 @@
         </v-row>
 
         <!-- Buy now confirmation modal -->
-        <v-dialog max-width="640" v-model="confirmDialogOpened" persistent>
-            <v-card>
-                <v-row no-gutters class="px-4 py-4">
-                    <div class="text-h6 font-weight-bold">Confirm Your Purchase</div>
-                    <v-spacer></v-spacer>
-                    <v-btn icon @click="handleConfirmDialogCancel">
-                        <v-icon>mdi-close</v-icon>
-                    </v-btn>
-                </v-row>
-                <v-row no-gutters class="px-4 pb-4 d-flex flex-column">
-                    <div class="text-body-1">You will skip all the biddings and immediately buy this product.</div>
-                </v-row>
-                <v-row no-gutters cols="12" class="px-4 pb-4">
-                    <v-col cols="6">
-                        <username-card :username="myUsername" :rating="myRating"></username-card>
-                    </v-col>
-                    <v-col cols="6">
-                        <v-text-field
-                            class="dialog-price-field"
-                            outlined
-                            disabled
-                            :value="formattedPrice"
-                            :hint="'Buy-Now price'"
-                            persistent-hint
-                        >
-                            <template v-slot:prepend>
-                                <div>&#x20AB;</div>
-                            </template>
-                        </v-text-field>
-                    </v-col>
-                </v-row>
-                <v-row no-gutters class="px-4 pb-4">
-                    <v-spacer></v-spacer>
-                    <v-btn color="red darken-3 white--text" @click="handleConfirmDialogOK" large>
-                        Confirm Purchase
-                    </v-btn>
-                    <v-spacer></v-spacer>
-                </v-row>
-            </v-card>
-        </v-dialog>
+        <buy-now-action-modal></buy-now-action-modal>
     </v-card>
 </template>
 
 <script>
 import UsernameCard from "@/components/productDetails/UsernameCard";
+import BuyNowActionModal from "@/components/productActions/BuyNowActionModal";
 import { formatPrice } from "@/utils/priceUtils";
 
 export default {
     name: "BuyNowActionCard",
-    components: { UsernameCard },
+    components: { UsernameCard, BuyNowActionModal },
     props: {
         price: Number,
         myUsername: String,
@@ -111,12 +73,6 @@ export default {
     methods: {
         handleConfirmDialogOpen() {
             this.confirmDialogOpened = true;
-        },
-        handleConfirmDialogOK() {
-            this.confirmDialogOpened = false;
-        },
-        handleConfirmDialogCancel() {
-            this.confirmDialogOpened = false;
         },
     },
 };

@@ -19,7 +19,8 @@ export const CurrentProductModule = {
         categories: [],
 
         // product description
-        descriptions: [],
+        primaryDescription: null,
+        secondaryDescriptions: [],
 
         // product images
         primaryImage: null,
@@ -33,7 +34,9 @@ export const CurrentProductModule = {
                 rating: 0.0,
             },
             priceIncrement: null,
+            biddings: [],
             isModalOpen: false,
+            isAutoBidEnabled: false,
         },
         buyNow: {
             price: null,

@@ -1,4 +1,4 @@
-import { find } from "core-js/core/array";
+import { find } from "lodash-es";
 
 export default {
     primaryDescription(state) {

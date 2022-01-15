@@ -1,8 +1,8 @@
 <template>
     <v-container class="ma-0 pa-0">
-        <div class="text-h6 font-weight-bold">{{ bidderListCount }} also bidding</div>
+        <div class="text-h6 font-weight-bold">{{ bidderListCount }} biddings</div>
         <v-card class="mt-3" flat outlined>
-            <v-data-table :headers="tableHeaders" :items="bidderList" :items-per-page="5">
+            <v-data-table :headers="tableHeaders" :items="bid.biddings" :items-per-page="5">
                 <template v-slot:[`item.actions`]="{ item }" v-if="userCurrentRole === consts.ROLES.SELLER">
                     <v-btn text small @click="acceptBid(item)" color="success">
                         <v-icon left>mdi-check</v-icon>
@@ -19,19 +19,13 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import { ROLES } from "@/utils/constants";
-import { getProductBidding } from "@/api/product";
-import { toLongTimestamp } from "@/utils/timeUtils";
-import { hiddenName } from "@/utils/hiddenName";
 
 export default {
     name: "BidderList",
-    props: {
-        productId: String,
-    },
     data() {
         return {
-            utils: { toLongTimestamp, hiddenName },
             consts: { ROLES },
             expandedPanels: [0],
             local_tableHeaders: [
@@ -45,8 +39,9 @@ export default {
         };
     },
     computed: {
+        ...mapState("CurrentProductModule", ["bid"]),
         bidderListCount: function () {
-            return this.bidderList.length;
+            return this.bid.biddings.length;
         },
         tableHeaders: function () {
             if (this.userCurrentRole === ROLES.SELLER) {
@@ -55,31 +50,6 @@ export default {
                 return [...this.local_tableHeaders];
             }
         },
-    },
-    methods: {
-        async getBidderList() {
-            try{
-                this.bidderList = await getProductBidding(this.productId);
-                this.bidderList.forEach(bidder => {
-                    bidder.time = this.utils.toLongTimestamp(bidder.time);
-                    bidder.full_name = this.utils.hiddenName(bidder.full_name);
-                });
-            }
-            catch(error){
-                console.log(error);
-            }
-        },
-        acceptBid(item) {
-            console.log(`Accept bid id = ${item.id}`);
-            this.getBidderList();
-        },
-        rejectBid(item) {
-            console.log(`Reject bid id = ${item.id}`);
-            this.getBidderList();
-        },
-    },
-    mounted() {
-        this.getBidderList();
     },
 };
 </script>

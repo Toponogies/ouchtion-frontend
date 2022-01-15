@@ -29,17 +29,29 @@ export default {
         state.bid.highestUser.rating = payload.point;
     },
 
-    setProductDescriptions(state, descriptions) {
-        state.descriptions = descriptions;
+    setProductDescriptions(state, payload) {
+        state.primaryDescription = payload.primaryDescription;
+        state.secondaryDescriptions = payload.secondaryDescriptions;
     },
 
     setProductImages(state, payload) {
-        state.primaryImage = payload.avatar;
+        state.primaryImage = payload.primaryImage;
+        state.secondaryImages = payload.secondaryImages;
     },
 
-    setProductBiddings(state, payload) {},
+    setProductBiddings(state, biddings) {
+        state.bid.biddings = biddings;
+    },
 
     setRelatedProducts(state, products) {
         state.relatedProducts = products;
+    },
+
+    // modal states
+    setBidModalState(state, open) {
+        state.bid.isModalOpen = open;
+    },
+    setBuyNowModalState(state, open) {
+        state.buyNow.isModalOpen = open;
     },
 };

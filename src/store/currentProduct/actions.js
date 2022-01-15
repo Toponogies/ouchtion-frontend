@@ -1,5 +1,7 @@
 import { getUserWithPoint } from "@/api/user";
 import { getProduct, getProductDescription, getProductImage, getProductBidding } from "@/api/product";
+
+import { find } from "lodash-es";
 import { generateCategories, generateMockProduct } from "@/utils/mockUtils";
 import { toLongTimestamp } from "@/utils/timeUtils";
 import { hiddenName } from "@/utils/hiddenName";
@@ -9,7 +11,7 @@ export default {
         commit("setProductId", { id });
     },
 
-    fetchAllDetails({ commit, state }) {
+    async fetchAllDetails({ commit, state }) {
         try {
             const productInfo = await getProduct(state.id);
             commit("setProductInfo", productInfo);
@@ -42,7 +44,10 @@ export default {
             let productDescriptions = await getProductDescription(state.id);
             // Mark the first description as primary
             productDescriptions = productDescriptions.map((each, index) => ({ ...each, isInit: index === 0 }));
-            commit("setProductDescriptions", productDescriptions);
+            // Split into primary and secondary
+            let primaryDescription = find(productDescriptions, { isInit: true });
+            let secondaryDescriptions = productDescriptions.filter((each) => each.isInit === false);
+            commit("setProductDescriptions", { primaryDescription, secondaryDescriptions });
         } catch (error) {
             console.log(`Fetching product descriptions failed: ${error}`);
         }
@@ -54,7 +59,10 @@ export default {
                 ...each,
                 path: `http://localhost:3000/${each.path}`,
             }));
-            commit("setProductImages", productImages);
+            // Split into primary and secondary group
+            let primaryImage = find(productImages, { is_primary: 1 }).path;
+            let secondaryImages = productImages.filter((each) => each.is_primary !== 1);
+            commit("setProductImages", { primaryImage, secondaryImages });
         } catch (error) {
             console.log(`Fetching product images failed: ${error}`);
         }
