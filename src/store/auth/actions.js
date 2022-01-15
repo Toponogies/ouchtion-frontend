@@ -1,7 +1,8 @@
 import axios from "axios";
+import { jwtDecrypt } from "jose";
 
 export default {
-    doLogin({ commit }, loginData) {
+    async doLogin({ commit }, loginData) {
         commit("loginStart");
 
         axios
@@ -11,9 +12,11 @@ export default {
             .then((response) => {
                 localStorage.setItem("accessToken_ouchtion", response.data.accessToken);
                 localStorage.setItem("refreshToken_ouchtion", response.data.refreshToken);
+
                 commit("loginStop", null);
                 commit("updateAccessToken", response.data.accessToken);
                 commit("updateRefreshToken", response.data.refreshToken);
+                commit("setModalState", false);
             })
             .catch((error) => {
                 commit("loginStop", error.response.data);

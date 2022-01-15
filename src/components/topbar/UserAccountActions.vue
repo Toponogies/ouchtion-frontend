@@ -44,41 +44,18 @@
                 </v-list-item-group>
             </v-list>
         </v-menu>
-        <v-dialog v-model="dialogOpened" max-width="640" persistent>
-            <v-card>
-                <v-row no-gutters>
-                    <v-tabs fixed-tabs>
-                        <v-tab>Sign in</v-tab>
-                        <v-tab>Sign up</v-tab>
-                        <v-btn icon large tile @click="handleDialogClose" height="100%" class="px-6">
-                            <v-icon>mdi-close</v-icon>
-                        </v-btn>
-
-                        <v-tab-item>
-                            <v-container class="pa-4">
-                                <sign-in-form></sign-in-form>
-                            </v-container>
-                        </v-tab-item>
-                        <v-tab-item>
-                            <v-container class="pa-4">
-                                <sign-up-form></sign-up-form>
-                            </v-container>
-                        </v-tab-item>
-                    </v-tabs>
-                </v-row>
-            </v-card>
-        </v-dialog>
+        <sign-in-up-modal></sign-in-up-modal>
     </div>
 </template>
 
 <script>
+import { mapState, mapActions, mapMutations } from "vuex";
 import { ROLES } from "@/utils/constants";
-import SignInForm from "@/components/topbar/SignInForm";
-import SignUpForm from "@/components/topbar/SignUpForm";
+import SignInUpModal from "@/components/topbar/SignInUpModal";
 
 export default {
     name: "UserAccountActions",
-    components: { SignInForm, SignUpForm },
+    components: { SignInUpModal },
     data() {
         return {
             consts: { ROLES },
@@ -89,19 +66,9 @@ export default {
         };
     },
     methods: {
+        ...mapMutations("AuthModule", ["setModalState"]),
         handleDialogOpen() {
-            this.dialogOpened = true;
-        },
-        handleDialogClose() {
-            this.dialogOpened = false;
-        },
-        handleLogin() {
-            // Handle sign in
-            this.dialogOpened = false;
-        },
-        handleSignup() {
-            // Send & handle sign up request
-            this.dialogOpened = false;
+            this.setModalState(true);
         },
         logOut() {
             this.currentUserName = null;

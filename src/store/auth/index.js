@@ -2,6 +2,8 @@ import actions from "./actions";
 import mutations from "./mutations";
 
 export const AuthModule = {
+    namespaced: true,
+
     state: {
         accessToken: null,
         refreshToken: null,
@@ -11,6 +13,9 @@ export const AuthModule = {
         registerError: null,
         logoutError: null,
         resetError: null,
+
+        // modal
+        isModalOpened: false,
     },
 
     actions,

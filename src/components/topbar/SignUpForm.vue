@@ -17,16 +17,17 @@
 
             <vue-hcaptcha sitekey="ae0869bd-27d8-4b1f-a965-d8e6d9f9e11f" @verify="captchaOk"></vue-hcaptcha>
             <button :disabled="isValid" @click="register">Sign up</button>
-            <div>{{ $store.state.AuthModule.registerError }}</div>
+            <div>{{ registerError }}</div>
         </div>
     </div>
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapState, mapActions, mapMutations } from "vuex";
 import VueHcaptcha from "@hcaptcha/vue-hcaptcha";
+
 export default {
-    name: "SignInForm",
+    name: "SignUpForm",
     components: { VueHcaptcha },
     data() {
         return {
@@ -38,6 +39,7 @@ export default {
         };
     },
     computed: {
+        ...mapState("AuthModule", ["registerError"]),
         isValid() {
             const regexPatternEmail = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
             const regexPatternFullName = /[a-zA-Z] [a-zA-Z]/;
@@ -61,7 +63,8 @@ export default {
         },
     },
     methods: {
-        ...mapActions(["doRegister"]),
+        ...mapActions("AuthModule", ["doRegister"]),
+        ...mapMutations("AuthModule", ["setModalState"]),
         captchaOk() {
             this.checkCaptcha = true;
         },

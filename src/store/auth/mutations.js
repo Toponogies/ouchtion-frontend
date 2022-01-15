@@ -23,4 +23,9 @@ export default {
     resetStop: (state, errorMessage) => {
         state.resetError = errorMessage;
     },
+
+    // modal
+    setModalState(state, isOpen) {
+        state.isModalOpened = isOpen;
+    },
 };
