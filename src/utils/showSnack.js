@@ -2,7 +2,7 @@
 import store from "@/store";
 
 export const showSnack = (message) => {
-    store.dispatch("showSnackbar", {
+    store.dispatch("SnackbarModule/showSnackbar", {
         text: message,
     });
 };
