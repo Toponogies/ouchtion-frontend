@@ -183,8 +183,8 @@ export default {
                 comment: "",
             },
             ratingOptions: [
-                { value: +1, label: "Great (+1)", icon: "mdi-thumb-up" },
-                { value: -1, label: "Not Great (-1)", icon: "mdi-thumb-down" },
+                { value: +1, label: "Good (+1)", icon: "mdi-thumb-up" },
+                { value: -1, label: "Bad (-1)", icon: "mdi-thumb-down" },
             ],
         };
     },
