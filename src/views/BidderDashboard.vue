@@ -1,7 +1,7 @@
 <template>
     <v-container class="ma-0 pa-0">
         <v-card>
-            <v-tabs fixed-tabs>
+            <v-tabs grow>
                 <!-- Tabs -->
                 <v-tab>
                     <v-icon left>mdi-bookmark-multiple</v-icon>
@@ -18,17 +18,17 @@
 
                 <!-- Sub-views -->
                 <v-tab-item>
-                    <v-container class="pa-4">
+                    <v-container class="pa-0">
                         <watchlist></watchlist>
                     </v-container>
                 </v-tab-item>
                 <v-tab-item>
-                    <v-container class="pa-4">
+                    <v-container class="pa-0">
                         <ongoing-bids></ongoing-bids>
                     </v-container>
                 </v-tab-item>
                 <v-tab-item>
-                    <v-container class="pa-4">
+                    <v-container class="pa-0">
                         <completed-bids></completed-bids>
                     </v-container>
                 </v-tab-item>

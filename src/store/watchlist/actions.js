@@ -18,6 +18,7 @@ export default {
             commit("setLoadingState", false);
         }, 500);
     },
+
     removeItem({ commit }, id) {
         commit("setLoadingState", true);
 

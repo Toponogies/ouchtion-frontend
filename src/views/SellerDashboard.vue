@@ -1,7 +1,7 @@
 <template>
     <v-container class="ma-0 pa-0">
         <v-card>
-            <v-tabs fixed-tabs>
+            <v-tabs grow>
                 <!-- Tabs -->
                 <v-tab>
                     <v-icon left>mdi-timer-sand-empty</v-icon>
