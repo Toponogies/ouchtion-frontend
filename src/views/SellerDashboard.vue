@@ -14,12 +14,12 @@
 
                 <!-- Sub-views -->
                 <v-tab-item>
-                    <v-container class="pa-4">
+                    <v-container class="pa-0">
                         <ongoing-products></ongoing-products>
                     </v-container>
                 </v-tab-item>
                 <v-tab-item>
-                    <v-container class="pa-4">
+                    <v-container class="pa-0">
                         <sold-products></sold-products>
                     </v-container>
                 </v-tab-item>
