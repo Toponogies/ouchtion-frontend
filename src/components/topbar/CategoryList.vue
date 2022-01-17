@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import { generateCategories } from "@/utils/mockUtils";
+import { mapState, mapActions } from "vuex";
 import { SEARCH_BOX_FEATURED_CATEGORIES_LIMIT } from "@/utils/constants";
 
 export default {
@@ -63,10 +63,10 @@ export default {
     data() {
         return {
             expandedPanels: [],
-            categories: [],
         };
     },
     computed: {
+        ...mapState("CategoryModule", ["categories"]),
         featuredCategories() {
             // Select 5 random child categories to be featured
             // https://stackoverflow.com/a/38571132
@@ -78,9 +78,7 @@ export default {
         },
     },
     methods: {
-        getCategories() {
-            this.categories = generateCategories();
-        },
+        ...mapActions("CategoryModule", ["fetchAll"]),
         getParentCategories() {
             return this.categories
                 .filter((each) => each.parent_category_id === null)
@@ -100,7 +98,7 @@ export default {
         },
     },
     mounted() {
-        this.getCategories();
+        this.fetchAll();
     },
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
     <v-container class="ma-0 pa-0">
         <v-card>
-            <v-tabs fixed-tabs>
+            <v-tabs grow>
                 <!-- Tabs -->
                 <v-tab>
                     <v-icon left>mdi-timer-sand-empty</v-icon>
@@ -14,12 +14,12 @@
 
                 <!-- Sub-views -->
                 <v-tab-item>
-                    <v-container class="pa-4">
+                    <v-container class="pa-0">
                         <ongoing-products></ongoing-products>
                     </v-container>
                 </v-tab-item>
                 <v-tab-item>
-                    <v-container class="pa-4">
+                    <v-container class="pa-0">
                         <sold-products></sold-products>
                     </v-container>
                 </v-tab-item>

@@ -1,4 +1,5 @@
-export default {
+export const SnackbarModule = {
+    namespaced: true,
     state: {
         text: "",
     },

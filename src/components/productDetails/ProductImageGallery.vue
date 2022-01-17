@@ -1,6 +1,6 @@
 <template>
     <v-slide-group show-arrows>
-        <v-slide-item v-for="image in images" :key="image.product_image_id">
+        <v-slide-item v-for="image in allImages" :key="image.product_image_id">
             <v-card class="mx-2">
                 <v-img :src="image.path" width="200" @click="openLargeImageDialog(image.path)">
                     <template v-slot:placeholder>
@@ -32,32 +32,23 @@
 </template>
 
 <script>
-import { getProductImage } from "@/api/product";
+import { mapState } from "vuex";
 
 export default {
     name: "ProductImageGallery",
-    props: {
-        productId: String,
-    },
     data() {
         return {
             largeImageDialogOpened: false,
             largeImageDialogSelectedUrl: null,
-            images: [],
         };
     },
-    methods: {
-        async getProductImages() {
-            try{
-                this.images = await getProductImage(this.productId)
-                this.images.forEach(image => {
-                    image.path = "http://localhost:3000/" + image.path;
-                });
-            }
-            catch(error){
-                console.log(error);
-            }
+    computed: {
+        ...mapState("CurrentProductModule", ["primaryImage", "secondaryImages"]),
+        allImages() {
+            return [this.primaryImage].concat(this.secondaryImages);
         },
+    },
+    methods: {
         openLargeImageDialog(url) {
             this.largeImageDialogOpened = true;
             this.largeImageDialogSelectedUrl = url;
@@ -66,9 +57,6 @@ export default {
             this.largeImageDialogOpened = false;
             this.largeImageDialogSelectedUrl = null;
         },
-    },
-    mounted() {
-        this.getProductImages();
     },
 };
 </script>

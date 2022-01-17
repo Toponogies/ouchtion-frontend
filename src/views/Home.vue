@@ -17,34 +17,19 @@
 
 <script>
 import FeaturedProductGroup from "@/components/productListings/FeaturedProductGroup";
-import { HOME_FEATURED_PRODUCTS_LIMIT } from "@/utils/constants";
-import { generateMockProduct } from "@/utils/mockUtils";
+import { mapState, mapActions } from "vuex";
 
 export default {
     name: "Home",
     components: { FeaturedProductGroup },
-    data() {
-        return {
-            productsEndingSoon: [],
-            productsMostBidders: [],
-            productsHighestPrice: [],
-        };
+    computed: {
+        ...mapState("HomeModule", ["productsEndingSoon", "productsMostBidders", "productsHighestPrice"]),
     },
     methods: {
-        fetchFeaturedEndingSoon() {
-            this.productsEndingSoon = generateMockProduct(HOME_FEATURED_PRODUCTS_LIMIT);
-        },
-        fetchFeaturedMostBidders() {
-            this.productsMostBidders = generateMockProduct(HOME_FEATURED_PRODUCTS_LIMIT);
-        },
-        fetchFeaturedHighestPrice() {
-            this.productsHighestPrice = generateMockProduct(HOME_FEATURED_PRODUCTS_LIMIT);
-        },
+        ...mapActions("HomeModule", ["fetchAll"]),
     },
     mounted() {
-        this.fetchFeaturedEndingSoon();
-        this.fetchFeaturedMostBidders();
-        this.fetchFeaturedHighestPrice();
+        this.fetchAll();
     },
 };
 </script>

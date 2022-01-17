@@ -1,22 +1,37 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { AuthModule } from "./module/Auth/index.js";
-import { BiddingModule } from "./module/Bidding/index.js";
-import { CategoryModule } from "./module/Category/index.js";
-import { ProductModule } from "./module/Product/index.js";
-import { UserModule } from "./module/User/index.js";
-import snackbar from "@/store/module/snackbar";
+
+import { HomeModule } from "./home";
+import { SearchModule } from "./search";
+import { CategoryModule } from "./categories";
+import { SnackbarModule } from "./ui/snackbar";
+
+import { AuthModule } from "./auth";
+import { CurrentUserModule } from "./currentUser";
+import { CurrentProductModule } from "./currentProduct";
+
+import { BiddingModule } from "./bids";
+import { ProductModule } from "./products";
+import { WatchlistModule } from "./watchlist";
+import { UsersModule } from "./users";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
     strict: true,
     modules: {
-        ProductModule,
+        HomeModule,
+        SearchModule,
         CategoryModule,
-        BiddingModule,
-        UserModule,
+        SnackbarModule,
+
         AuthModule,
-        snackbar,
+        CurrentUserModule,
+        CurrentProductModule,
+
+        BiddingModule,
+        ProductModule,
+        WatchlistModule,
+        UsersModule,
     },
 });

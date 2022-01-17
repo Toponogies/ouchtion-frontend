@@ -3,6 +3,10 @@ export const ROLES = {
     SELLER: "seller",
     ADMIN: "admin",
 };
+export const SEARCH_TYPES = {
+    KEYWORD: "keyword",
+    CATEGORY: "category",
+};
 
 export const HOME_FEATURED_PRODUCTS_LIMIT = 8;
 

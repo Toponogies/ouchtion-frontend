@@ -1,8 +1,11 @@
 import actions from "./actions";
 import mutations from "./mutations";
 
-export const UserModule = {
+export const UsersModule = {
+    namespaced: true,
+
     state: {},
-    actions: actions,
-    mutations: mutations,
+
+    actions,
+    mutations,
 };

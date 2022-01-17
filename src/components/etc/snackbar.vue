@@ -27,8 +27,8 @@ export default {
     },
     created() {
         this.$store.subscribe((mutation, state) => {
-            if (mutation.type === "showSnackbar") {
-                this.text = state.snackbar.text;
+            if (mutation.type === "SnackbarModule/showSnackbar") {
+                this.text = state.SnackbarModule.text;
                 this.show = true;
             }
         });
