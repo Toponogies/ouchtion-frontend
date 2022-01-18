@@ -2,7 +2,7 @@ import { showSnack } from "@/utils/showSnack";
 import axios from "axios";
 
 export default {
-    async fetchOngoing({ commit,rootState }) {
+    async fetchOngoing({ commit,rootState,dispatch }) {
         commit("setOngoingBidsLoadingState", true);
         const data = [];
 
@@ -10,7 +10,22 @@ export default {
                 'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
             }}).then((response) => {
                     return response.data;
-            })
+            }).catch( async (error) => {
+                console.log(error.response.data);
+                if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN")
+                {
+                    await dispatch('AuthModule/doRefresh', null, { root: true });
+                }
+                return await axios.get("http://localhost:3000/api/products/bidding",{headers: {
+                    'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
+                }}).then((response) => {
+                    return response.data;
+                })
+                .catch((error) => {
+                   console.log(error.response.data)
+                   return [];
+                });
+            });
         products.forEach(product => {
             data.push({
                 primaryImage: "http://localhost:3000/"+ product.avatar,
@@ -26,7 +41,7 @@ export default {
         }, 500);
     },
 
-    async fetchCompleted({ commit,rootState }) {
+    async fetchCompleted({ commit,rootState,dispatch }) {
         commit("setCompletedBidsLoadingState", true);
         const data = [];
 
@@ -34,7 +49,22 @@ export default {
                 'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
             }}).then((response) => {
                     return response.data;
-            })
+            }).catch( async (error) => {
+                console.log(error.response.data);
+                if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN")
+                {
+                    await dispatch('AuthModule/doRefresh', null, { root: true });
+                }
+                return await axios.get("http://localhost:3000/api/products/won",{headers: {
+                    'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
+                }}).then((response) => {
+                    return response.data;
+                })
+                .catch((error) => {
+                   console.log(error.response.data)
+                   return [];
+                });
+            });
 
         let rates = await axios.get(`http://localhost:3000/api/users/rate`, {headers: {
                 'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
