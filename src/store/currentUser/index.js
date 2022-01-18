@@ -7,6 +7,7 @@ export const CurrentUserModule = {
     state: {
         username: null,
         rating: 0.0,
+        role: null,
     },
 
     actions,

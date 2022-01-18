@@ -23,28 +23,18 @@ export default {
                 commit("updateRefreshToken", null);
             });
     },
-    doLogout({ commit, state }) {
-        axios
-            .delete("http://localhost:3000/api/auth/logout", {
-                data: {
-                    accessToken: state.accessToken,
-                    refreshToken: state.refreshToken,
-                },
-            })
-            .then(() => {
-                localStorage.removeItem("accessToken_ouchtion");
-                localStorage.removeItem("refreshToken_ouchtion");
-                commit("updateAccessToken", null);
-                commit("updateRefreshToken", null);
-                commit("logoutStop", null);
-            })
-            .catch((error) => {
-                commit("logoutStop", error.response.data);
-            });
+    doLogout({ commit }) {
+        localStorage.setItem("accessToken_ouchtion", null);
+        localStorage.setItem("refreshToken_ouchtion", null);
+        commit("updateAccessToken", null);
+        commit("updateRefreshToken", null);
     },
-    fetchAccessToken({ commit }) {
-        commit("updateAccessToken", localStorage.getItem("accessToken_ouchtion"));
-        commit("updateRefreshToken", localStorage.getItem("refreshToken_ouchtion"));
+    fetchAccessToken({ commit, state }) {
+        if (state.accessToken === null)
+        {
+            commit("updateAccessToken", localStorage.getItem("accessToken_ouchtion"));
+            commit("updateRefreshToken", localStorage.getItem("refreshToken_ouchtion"));
+        }
     },
     doRefresh({ commit, state }) {
         axios
