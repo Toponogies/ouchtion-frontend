@@ -2,7 +2,7 @@ import { showSnack } from "@/utils/showSnack";
 import axios from "axios";
 
 export default {
-    async fetchAll({ commit,rootState }) {
+    async fetchAll({ commit,rootState,dispatch }) {
         commit("setLoadingState", true);
 
         const data = [];
