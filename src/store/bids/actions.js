@@ -114,8 +114,7 @@ export default {
         });
 
         console.log(data);
-
-        
+      
         setTimeout(() => {
             commit("setCompletedBidsItems", data);
             commit("setCompletedBidsLoadingState", false);

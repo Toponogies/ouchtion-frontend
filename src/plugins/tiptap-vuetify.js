@@ -5,5 +5,5 @@ import "tiptap-vuetify/dist/main.css";
 
 Vue.use(TiptapVuetifyPlugin, {
     vuetify,
-    iconGroups: "mdi",
+    iconsGroup: "mdi",
 });

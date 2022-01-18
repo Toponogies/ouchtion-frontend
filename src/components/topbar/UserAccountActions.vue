@@ -49,8 +49,7 @@
 </template>
 
 <script>
-
-import { mapMutations,mapActions,mapState } from "vuex";
+import { mapState, mapActions, mapMutations } from "vuex";
 import { ROLES } from "@/utils/constants";
 import SignInUpModal from "@/components/topbar/SignInUpModal";
 
