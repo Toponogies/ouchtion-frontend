@@ -12,8 +12,9 @@ export default {
     },
 
     async fetchAllDetails({ commit, state }) {
+        let productInfo = {}
         try {
-            const productInfo = await getProduct(state.id);
+            productInfo = await getProduct(state.id);
             commit("setProductInfo", productInfo);
         } catch (error) {
             console.log(`Fetching product info failed: ${error}`);
