@@ -256,18 +256,33 @@
             <!-- Description editor -->
             <v-row no-gutters class="px-6 pb-6">
                 <v-col cols="12">
+                    <!-- Header -->
                     <v-row no-gutters class="pb-4">
                         <div class="text-h6 font-weight-bold">Description</div>
                     </v-row>
+
+                    <!-- Hints -->
                     <v-row no-gutters class="pb-4">
                         <p>
                             The description must not be empty. <br />
                             You can only append to the description, not edit the whole thing, after this product has
-                            been created.
+                            been created. <br />
+                            <br />
+                            This editor supports Markdown-ish syntax (e.g. # for Level-1 Header) and standard shortcuts
+                            (e.g. Ctrl-Z for undo, Ctrl-B for bold text, etc.) <br />
+                            To apply inline formatting (e.g. bold, italic, underline, etc.), highlight some text to
+                            reveal a floating toolbar.
                         </p>
                     </v-row>
+
+                    <!-- The editor itself -->
                     <v-row no-gutters>
-                        <tiptap-vuetify v-model="description" :extensions="tiptapExtensions"></tiptap-vuetify>
+                        <tiptap-vuetify
+                            v-model="description"
+                            :extensions="tiptapExtensions"
+                            style="flex-grow: 1"
+                            placeholder="Describe what you're selling. Be particular, and don't mislead. Thank you."
+                        ></tiptap-vuetify>
                     </v-row>
                 </v-col>
             </v-row>
@@ -287,21 +302,21 @@
 import { generateCategories } from "@/utils/mockUtils";
 import {
     TiptapVuetify,
+    HardBreak,
+    ListItem,
+    History,
     Heading,
+    Paragraph,
+    Blockquote,
+    HorizontalRule,
     Bold,
     Italic,
     Strike,
     Underline,
+    Link,
     Code,
-    Paragraph,
     BulletList,
     OrderedList,
-    ListItem,
-    Link,
-    Blockquote,
-    HardBreak,
-    HorizontalRule,
-    History,
 } from "tiptap-vuetify";
 
 export default {
@@ -322,23 +337,32 @@ export default {
             availableCategories: [],
             selectedCategories: [],
             categorySearchString: "",
-            description: "",
+            description: "<p></p>",
             tiptapExtensions: [
-                History,
-                Blockquote,
-                Link,
-                Underline,
-                Strike,
-                Italic,
+                // Base extensions (these do not have buttons on toolbar)
+                HardBreak,
                 ListItem,
+
+                // Undo/Redo
+                History,
+
+                // Block formatting
+                [Heading, { options: { levels: [1, 2, 3] } }],
+                Paragraph,
+                Blockquote,
+                HorizontalRule,
+
+                // Inline formatting
+                [Bold, { renderIn: "bubbleMenu" }],
+                [Italic, { renderIn: "bubbleMenu" }],
+                [Underline, { renderIn: "bubbleMenu" }],
+                [Strike, { renderIn: "bubbleMenu" }],
+                [Link, { renderIn: "bubbleMenu" }],
+                [Code, { renderIn: "bubbleMenu" }],
+
+                // Lists
                 BulletList,
                 OrderedList,
-                [Heading, { options: { levels: [1, 2, 3] } }],
-                Bold,
-                Code,
-                HorizontalRule,
-                Paragraph,
-                HardBreak,
             ],
             images: [],
             imageChooserRules: {
@@ -347,6 +371,11 @@ export default {
         };
     },
     computed: {
+        isDescriptionEmpty: function () {
+            const htmlElement = document.createElement("div");
+            htmlElement.innerHTML = this.description;
+            return htmlElement.textContent.trim().length === 0;
+        },
         elligibleForCreation: function () {
             const conditions = [
                 this.name && this.name.trim().length > 0,
@@ -368,7 +397,7 @@ export default {
                 this.endDate !== null,
                 this.endTime !== null,
                 this.selectedCategories.length > 0,
-                this.description && this.description.trim().length > 0,
+                this.isDescriptionEmpty === false,
                 this.images.length >= 3,
             ];
             return conditions.every((each) => each === true);

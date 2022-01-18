@@ -45,3 +45,13 @@ export default {
     },
 };
 </script>
+
+<style scoped>
+/* Blockquote for description */
+blockquote {
+    border-left: 0.25em solid #dfe2e5;
+    color: #6a737d;
+    padding-left: 1em;
+    margin: 20px 0 !important;
+}
+</style>
