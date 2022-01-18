@@ -98,6 +98,9 @@ import FeaturedProductGroup from "@/components/productListings/FeaturedProductGr
 import { toLongTimestamp } from "@/utils/timeUtils";
 import { scrollToTop } from "@/utils/scrollToTop";
 
+import { getProduct } from "@/api/product";
+import { getUserWithPoint } from "@/api/user";
+
 export default {
     name: "ProductDetails",
     components: {

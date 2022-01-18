@@ -5,9 +5,9 @@ export const CurrentUserModule = {
     namespaced: true,
 
     state: {
-        role: null,
         username: null,
         rating: 0.0,
+        role: null,
     },
 
     actions,

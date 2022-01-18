@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
+import { mapState } from "vuex";
 import UsernameCard from "@/components/productDetails/UsernameCard";
 import { BidActionModal } from "@/components/productActions/BidActionModal";
 import { formatPrice } from "@/utils/priceUtils";

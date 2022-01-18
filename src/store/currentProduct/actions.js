@@ -3,9 +3,8 @@ import { getProduct, getProductDescription, getProductImage, getProductBidding }
 
 import { find } from "lodash-es";
 import { generateCategories, generateMockProduct } from "@/utils/mockUtils";
-import { toLongTimestamp, today } from "@/utils/timeUtils";
+import { toLongTimestamp } from "@/utils/timeUtils";
 import { hiddenName } from "@/utils/hiddenName";
-import { showSnack } from "@/utils/showSnack";
 
 export default {
     setProductId({ commit }, { id }) {
@@ -13,8 +12,9 @@ export default {
     },
 
     async fetchAllDetails({ commit, state }) {
+        let productInfo = {}
         try {
-            const productInfo = await getProduct(state.id);
+            productInfo = await getProduct(state.id);
             commit("setProductInfo", productInfo);
         } catch (error) {
             console.log(`Fetching product info failed: ${error}`);

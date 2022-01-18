@@ -17,6 +17,9 @@ export default {
     registerStop: (state, errorMessage) => {
         state.registerError = errorMessage;
     },
+    verifyStop: (state, errorMessage) => {
+        state.verifyError = errorMessage;
+    },
     logoutStop: (state, errorMessage) => {
         state.logoutError = errorMessage;
     },

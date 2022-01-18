@@ -1,5 +1,5 @@
-import { generateMockProductTotalCount, generateMockProduct } from "@/utils/mockUtils";
 import { SEARCH_TYPES, SEARCH_RESULTS_PER_PAGE } from "@/utils/constants";
+import axios from "axios";
 
 export default {
     setQuery({ commit }, { keyword, categoryId, page }) {
@@ -18,24 +18,64 @@ export default {
         commit("setQuery", { type, content, page: _page });
     },
 
-    fetchResult({ commit, state }) {
-        let total, result;
+    async fetchResult({ commit, state }) {
+        let total, result = [];
+        let keyword = undefined;
+        let category = undefined;
+        let products = [];
         switch (state.queryType) {
             case SEARCH_TYPES.KEYWORD:
+                keyword = state.queryContent;
                 console.log(`Calling search API with: keyword = ${state.queryContent}, page = ${state.queryPage}`);
                 break;
             case SEARCH_TYPES.CATEGORY:
+                category = state.queryContent;
                 console.log(`Calling search API with: category ID = ${state.queryContent}, page = ${state.queryPage}`);
                 break;
         }
 
-        total = generateMockProductTotalCount();
-        result = generateMockProduct(
-            state.queryPage * SEARCH_RESULTS_PER_PAGE > total
-                ? total - (state.queryPage - 1) * SEARCH_RESULTS_PER_PAGE
-                : SEARCH_RESULTS_PER_PAGE
-        );
-
-        commit("setResult", { total, result });
+        try{
+            products = await axios.get("http://localhost:3000/api/products",
+            { params: { 
+                query: keyword,
+                category: category,
+             } }).then((response) => {
+                return response.data;
+            })
+    
+            total = products.length;
+    
+            products = await axios.get("http://localhost:3000/api/products",
+            { params: { 
+                query: keyword,
+                category: category,
+                number: SEARCH_RESULTS_PER_PAGE,
+                page: state.queryPage - 1
+             } }).then((response) => {
+                return response.data;
+            })
+         
+            let user = null
+            products.forEach(product => {
+                user = axios.get(`http://localhost:3000/api/users/${product.buyer_id}/point`)
+                result.push({
+                    id: product.product_id,
+                    title: product.name,
+                    image: "http://localhost:3000/"+ product.avatar,
+                    bidderCount: product.bidding_count,
+                    bidHighestPrice: product.current_price,
+                    bidHighestUser: user.full_name,
+                    buyNowPrice: product.buy_price,
+                    startTime: product.start_at,
+                    endTime: product.end_at,
+                    isOnWatchlist: false,
+                })
+            });
+    
+            commit("setResult", { total, result });
+        }
+        catch(error){
+            console.log(error.response.data);
+        }
     },
 };
