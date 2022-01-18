@@ -33,6 +33,9 @@ export default {
         state.primaryDescription = payload.primaryDescription;
         state.secondaryDescriptions = payload.secondaryDescriptions;
     },
+    appendProductDescriptions(state, payload) {
+        state.secondaryDescriptions.push(payload);
+    },
 
     setProductImages(state, payload) {
         state.primaryImage = payload.primaryImage;
@@ -53,5 +56,8 @@ export default {
     },
     setBuyNowModalState(state, open) {
         state.buyNow.isModalOpen = open;
+    },
+    setAppendDescriptionModalState(state, open) {
+        state.isAppendDescriptionOpen = open;
     },
 };

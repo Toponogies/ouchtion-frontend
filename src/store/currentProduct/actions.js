@@ -3,8 +3,9 @@ import { getProduct, getProductDescription, getProductImage, getProductBidding }
 
 import { find } from "lodash-es";
 import { generateCategories, generateMockProduct } from "@/utils/mockUtils";
-import { toLongTimestamp } from "@/utils/timeUtils";
+import { toLongTimestamp, today } from "@/utils/timeUtils";
 import { hiddenName } from "@/utils/hiddenName";
+import { showSnack } from "@/utils/showSnack";
 
 export default {
     setProductId({ commit }, { id }) {
@@ -86,5 +87,15 @@ export default {
         } catch (error) {
             console.log(`Fetching related products failed: ${error}`);
         }
+    },
+
+    appendProductDescription({ commit }, description) {
+        // call API with current product id
+        commit("appendProductDescriptions", {
+            description,
+            upload_date: today(),
+            isInit: false,
+        });
+        showSnack("Description appended.");
     },
 };
