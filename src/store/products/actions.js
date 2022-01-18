@@ -1,7 +1,8 @@
 import { showSnack } from "@/utils/showSnack";
+import axios from "axios";
 
 export default {
-    fetchOngoing({ commit }) {
+    async fetchOngoing({ commit,rootState,dispatch }) {
         commit("setOngoingProductsLoadingState", true);
         const data = [];
 
@@ -41,7 +42,7 @@ export default {
         }, 500);
     },
 
-    fetchCompleted({ commit,dispatch,rootState }) {
+    async fetchCompleted({ commit,dispatch,rootState }) {
         commit("setCompletedProductsLoadingState", true);
         const data = [];
 
