@@ -1,9 +1,8 @@
 import axios from "axios";
 export default {
-    someOtherAction ({dispatch}) {
-        dispatch('doRefresh');
-    },
-    async doGetUser({ commit,rootState }) {
+    async doGetUser({ commit,rootState, dispatch }) {
+        if (rootState.AuthModule.accessToken === null)
+            return
         let user = await axios.get("http://localhost:3000/api/users",{headers: {
             'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
         }}
@@ -11,10 +10,10 @@ export default {
             return response.data;
         })
         .catch( async (error) => {
-            console.log(error);
+            console.log(error.response.data);
             if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN")
             {
-                this.doRefresh()
+                await dispatch('AuthModule/doRefresh', null, { root: true });
             }
             return await axios.get("http://localhost:3000/api/users",{headers: {
                 'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
@@ -22,7 +21,7 @@ export default {
                 return response.data;
             })
             .catch((error) => {
-                console.log(error)
+               console.log(error.response.data)
                return null;
             });
         });

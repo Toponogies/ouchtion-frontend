@@ -36,7 +36,7 @@ export default {
             commit("updateRefreshToken", localStorage.getItem("refreshToken_ouchtion"));
         }
     },
-    doRefresh({ commit, state }) {
+    async doRefresh({ commit, state }) {
         axios
             .post("http://localhost:3000/api/auth/refresh", {
                 accessToken: state.accessToken,
