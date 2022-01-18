@@ -11,6 +11,7 @@ export const AuthModule = {
         loginError: null,
         refreshError: null,
         registerError: null,
+        verifyError: null,
         logoutError: null,
         resetError: null,
 

@@ -7,7 +7,9 @@ import AdminDashboard from "@/views/AdminDashboard";
 import BidderDashboard from "@/views/BidderDashboard";
 import SellerDashboard from "@/views/SellerDashboard";
 import UserProfile from "@/views/UserProfile";
+import VerifyAccount from "@/views/VerifyAccount";
 import ProductCreator from "@/views/ProductCreator";
+import ResetPass from "@/views/ResetPass"
 
 Vue.use(VueRouter);
 
@@ -51,6 +53,16 @@ const routes = [
         path: "/profile",
         name: "UserProfile",
         component: UserProfile,
+    },
+    {
+        path: "/verify",
+        name: "VerifyAccount",
+        component: VerifyAccount,
+    },
+    {
+        path: "/reset",
+        name: "ResetPassAccount",
+        component: ResetPass,
     },
     {
         path: "*",

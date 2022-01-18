@@ -36,6 +36,7 @@ export default {
                 localStorage.removeItem("refreshToken_ouchtion");
                 commit("updateAccessToken", null);
                 commit("updateRefreshToken", null);
+                commit("logoutStop", null);
             })
             .catch((error) => {
                 commit("logoutStop", error.response.data);
@@ -53,6 +54,7 @@ export default {
             })
             .then((response) => {
                 localStorage.setItem("accessToken_ouchtion", response.data.accessToken);
+                commit("refreshStop", null);
                 commit("updateAccessToken", response.data.accessToken);
             })
             .catch((error) => {
@@ -68,21 +70,25 @@ export default {
             })
             .then()
             .catch((error) => {
-                commit("registerError", error.response.data);
+                commit("registerStop", error.response.data);
             });
     },
     doVerify({ commit }, token) {
         axios
             .post("http://localhost:3000/api/auth/verify", null, { params: { token: token } })
-            .then()
+            .then(()=> {
+                commit("verifyStop", null);
+            })
             .catch((error) => {
-                commit("registerError", error.response.data);
+                commit("verifyStop", error.response.data);
             });
     },
     doSendReset({ commit }, email) {
         axios
             .post("http://localhost:3000/api/auth/reset", null, { params: { email: email } })
-            .then()
+            .then(()=> {
+                commit("resetStop", null);
+            })
             .catch((error) => {
                 commit("resetStop", error.response.data);
             });
@@ -92,7 +98,9 @@ export default {
             .put("http://localhost:3000/api/auth/reset", {
                 ...resetBody,
             })
-            .then()
+            .then(()=> {
+                commit("resetStop", null);
+            })
             .catch((error) => {
                 commit("resetStop", error.response.data);
             });
