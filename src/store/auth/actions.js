@@ -1,5 +1,4 @@
 import axios from "axios";
-import { jwtDecrypt } from "jose";
 
 export default {
     async doLogin({ commit }, loginData) {
