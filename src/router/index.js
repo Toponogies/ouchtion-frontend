@@ -9,6 +9,8 @@ import BidderDashboard from "@/views/BidderDashboard";
 import SellerDashboard from "@/views/SellerDashboard";
 import UserProfile from "@/views/UserProfile";
 import ProductCreator from "@/views/ProductCreator";
+import VerifyAccount from "@/views/VerifyAccount";
+import ResetPass from "@/views/ResetPass";
 
 Vue.use(VueRouter);
 
@@ -52,6 +54,16 @@ const routes = [
         path: "/profile",
         name: "UserProfile",
         component: UserProfile,
+    },
+    {
+        path: "/verify",
+        name: "VerifyAccount",
+        component: VerifyAccount,
+    },
+    {
+        path: "/reset",
+        name: "ResetPassAccount",
+        component: ResetPass,
     },
 
     // redirect on invalid route
