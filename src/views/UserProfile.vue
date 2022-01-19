@@ -14,7 +14,7 @@
                     <!-- Name (normal) -->
                     <v-row no-gutters class="mb-4" v-if="!isInEditModeName">
                         <v-col cols="10">
-                            <div class="text-h4 font-weight-light">{{ name }}</div>
+                            <div class="text-h4 font-weight-light">{{ username }}</div>
                         </v-col>
                         <v-spacer></v-spacer>
                         <v-btn icon @click="isInEditModeName = true">
@@ -30,7 +30,7 @@
                                 class="name-field"
                                 hide-details="auto"
                                 placeholder="Username"
-                                v-model="name_edit"
+                                v-model="username_edit"
                             ></v-text-field>
                         </v-col>
                         <v-spacer></v-spacer>
@@ -78,7 +78,7 @@
                     <v-row no-gutters class="mb-4" align="center" v-if="!isInEditModeBirthday">
                         <v-col cols="10">
                             <v-icon left>mdi-cake-variant</v-icon>
-                            <span>{{ birthday }}</span>
+                            <span>{{ dob }}</span>
                         </v-col>
                         <v-spacer></v-spacer>
                         <v-btn icon @click="isInEditModeBirthday = true">
@@ -93,7 +93,7 @@
                                 filled
                                 hide-details="auto"
                                 placeholder="Birthdate"
-                                v-model="birthday_edit"
+                                v-model="dob_edit"
                                 prepend-icon="mdi-cake-variant"
                             ></v-text-field>
                         </v-col>
@@ -190,30 +190,35 @@
                         </div>
                     </v-row>
 
-                    <v-divider class="mb-4"></v-divider>
+                    <v-row no-gutters v-if="role === utils.ROLES.BIDDER">
+                        <v-col>
+                            <v-divider class="mb-4"></v-divider>
 
-                    <v-row no-gutters class="mb-4">
-                        <div class="d-flex flex-column" style="width: 100%">
-                            <div class="text-h6 font-weight-bold mb-2">Upgrade to seller</div>
-                            <div class="mb-2">Press the button below to request upgrading to seller.</div>
-                            <div class="mb-2">
-                                Once completed, check your email for approval, then log out and log back in Ouchtion.
-                            </div>
-                            <v-btn
-                                class="mb-2"
-                                color="orange darken-3"
-                                dark
-                                v-if="!upgradeRequestSent"
-                                @click="requestUpgradeToSeller"
-                            >
-                                <v-icon left>mdi-star</v-icon>
-                                <span>Request Upgrading to Seller</span>
-                            </v-btn>
-                            <v-btn class="mb-2" disabled v-else>
-                                <v-icon left>mdi-star</v-icon>
-                                <span>You're already sent a request.</span>
-                            </v-btn>
-                        </div>
+                            <v-row no-gutters class="mb-4">
+                                <div class="d-flex flex-column" style="width: 100%">
+                                    <div class="text-h6 font-weight-bold mb-2">Upgrade to seller</div>
+                                    <div class="mb-2">Press the button below to request upgrading to seller.</div>
+                                    <div class="mb-2">
+                                        Once completed, check your email for approval, then log out and log back in
+                                        Ouchtion.
+                                    </div>
+                                    <v-btn
+                                        class="mb-2"
+                                        color="orange darken-3"
+                                        dark
+                                        v-if="!upgradeRequestSent"
+                                        @click="requestUpgradeToSeller"
+                                    >
+                                        <v-icon left>mdi-star</v-icon>
+                                        <span>Request Upgrading to Seller</span>
+                                    </v-btn>
+                                    <v-btn class="mb-2" disabled v-else>
+                                        <v-icon left>mdi-star</v-icon>
+                                        <span>You're already sent a request.</span>
+                                    </v-btn>
+                                </div>
+                            </v-row>
+                        </v-col>
                     </v-row>
                 </v-col>
             </v-row>
@@ -222,22 +227,23 @@
 </template>
 
 <script>
+import { redirectToHomeIf } from "@/utils/redirectToHomeIf";
 import { showSnack } from "@/utils/showSnack";
+import { mapState, mapActions } from "vuex";
+import { ROLES } from "@/utils/constants";
 
 export default {
     name: "UserProfile",
     data() {
         return {
+            utils: { ROLES },
+
             // Fields
-            name: "Real name",
-            email: "email@ouchtion.app",
-            birthday: "01/01/2022",
-            address: "1234 Street, City, Country",
 
             // Fields -- temp. for editing
-            name_edit: null,
+            username_edit: null,
             email_edit: null,
-            birthday_edit: null,
+            dob_edit: null,
             address_edit: null,
 
             // Fields -- Edit toggle
@@ -257,11 +263,11 @@ export default {
             newPassConfirmReveal: false,
 
             // Upgrade to Seller
-            rating: 4.8,
             upgradeRequestSent: false,
         };
     },
     computed: {
+        ...mapState("CurrentUserModule", ["username", "email", "dob", "address", "rating", "role"]),
         allowChangingPassword: function () {
             const conditions = [
                 this.oldPass.length > 0,
@@ -274,15 +280,21 @@ export default {
         },
     },
     methods: {
+        ...mapActions("CurrentUserModule", ["editUser"]),
+
+        // username
         editNameOK() {
             this.isInEditModeName = false;
-            // send update
-            this.name = this.name_edit;
+            this.editUser({
+                username: this.username_edit,
+            });
         },
         editNameCancel() {
-            this.name_edit = this.name;
+            this.username_edit = this.username;
             this.isInEditModeName = false;
         },
+
+        // email
         editEmailOK() {
             this.isInEditModeEmail = false;
             // send update
@@ -292,15 +304,19 @@ export default {
             this.email_edit = this.email;
             this.isInEditModeEmail = false;
         },
+
+        // dob
         editBirthdayOK() {
             this.isInEditModeBirthday = false;
             // send update
-            this.birthday = this.birthday_edit;
+            this.dob = this.dob_edit;
         },
         editBirthdayCancel() {
-            this.birthday_edit = this.birthday;
+            this.dob_edit = this.dob;
             this.isInEditModeBirthday = false;
         },
+
+        // address
         editAddressOK() {
             this.isInEditModeAddress = false;
             // send update
@@ -310,6 +326,8 @@ export default {
             this.address_edit = this.address;
             this.isInEditModeAddress = false;
         },
+
+        // password
         changePassword() {
             // send update
             this.oldPass = "";
@@ -317,15 +335,20 @@ export default {
             this.newPassConfirm = "";
             showSnack("Password changed");
         },
+
+        // upgrade
         requestUpgradeToSeller() {
             // send update
             this.upgradeRequestSent = true;
         },
     },
+    beforeCreate() {
+        redirectToHomeIf(this, [ROLES.BIDDER, ROLES.SELLER]);
+    },
     mounted() {
-        this.name_edit = this.name;
+        this.username_edit = this.username;
         this.email_edit = this.email;
-        this.birthday_edit = this.birthday;
+        this.dob_edit = this.dob;
         this.address_edit = this.address;
     },
 };
