@@ -25,7 +25,7 @@
             <v-expansion-panel-content>
                 <v-container class="pa-0">
                     <v-row no-gutters>
-                        <v-col class="my-4 lg5-custom" v-for="parent in getParentCategories()" :key="parent.id">
+                        <v-col class="my-4" lg="3" v-for="parent in getParentCategories()" :key="parent.id">
                             <v-card class="pa-4 ma-2" flat color="grey lighten-5">
                                 <div class="d-flex flex-column">
                                     <div class="d-flex">

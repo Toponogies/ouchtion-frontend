@@ -29,11 +29,17 @@
 </template>
 
 <script>
+import { redirectToHomeIf } from "@/utils/redirectToHomeIf";
+
 import OngoingProducts from "@/views/seller/OngoingProducts";
 import SoldProducts from "@/views/seller/SoldProducts";
+import { ROLES } from "@/utils/constants";
 
 export default {
     name: "BidderDashboard",
     components: { OngoingProducts, SoldProducts },
+    beforeCreate() {
+        redirectToHomeIf(this, [ROLES.SELLER]);
+    },
 };
 </script>

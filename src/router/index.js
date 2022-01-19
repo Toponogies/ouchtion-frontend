@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+
 import Home from "@/views/Home";
 import SearchResult from "@/views/SearchResult";
 import ProductDetails from "@/views/ProductDetails";
@@ -7,9 +8,9 @@ import AdminDashboard from "@/views/AdminDashboard";
 import BidderDashboard from "@/views/BidderDashboard";
 import SellerDashboard from "@/views/SellerDashboard";
 import UserProfile from "@/views/UserProfile";
-import VerifyAccount from "@/views/VerifyAccount";
 import ProductCreator from "@/views/ProductCreator";
-import ResetPass from "@/views/ResetPass"
+import VerifyAccount from "@/views/VerifyAccount";
+import ResetPass from "@/views/ResetPass";
 
 Vue.use(VueRouter);
 
@@ -64,6 +65,8 @@ const routes = [
         name: "ResetPassAccount",
         component: ResetPass,
     },
+
+    // redirect on invalid route
     {
         path: "*",
         redirect: "/",

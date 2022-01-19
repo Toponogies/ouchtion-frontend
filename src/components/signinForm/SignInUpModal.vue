@@ -33,9 +33,9 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import SignInForm from "@/components/topbar/SignInForm";
-import SignUpForm from "@/components/topbar/SignUpForm";
-import ResetForm from "@/components/topbar/ResetForm";
+import SignInForm from "@/components/signinForm/SignInForm";
+import SignUpForm from "@/components/signinForm/SignUpForm";
+import ResetForm from "@/components/signinForm/ResetForm";
 
 export default {
     name: "SignInUpModal",

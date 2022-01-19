@@ -4,29 +4,66 @@ import { showSnack } from "@/utils/showSnack";
 export default {
     async fetchAll({ commit }) {
         try {
-            const categories = await axios.get("http://localhost:3000/api/categorys").then((response) => {
-                return response.data;
+            const categories = await axios.get("http://localhost:3000/api/categorys").then((res) => {
+                return res.data;
             });
-            commit("updateCategories", categories);
+            commit("setCategories", categories);
         } catch (error) {
-            console.log(error.response.data);
+            console.log(error);
         }
     },
 
-    addParent({ commit, getters }, name) {
-        // get next id (somehow)
-        const id = getters.nextCategoryId;
-        // API
-        commit("addParent", { id, name });
-        showSnack(`Parent added, id = ${id}, name = ${name}`);
+    async addParent({ commit, rootState }, name) {
+        try {
+            // call API, then extract new ID
+            const headers = {
+                Authorization: "Bearer " + rootState.AuthModule.accessToken,
+            };
+            const payload = {
+                parent_category_id: null,
+                name,
+            };
+            const newCategory = await axios
+                .post("http://localhost:3000/api/categorys", payload, { headers })
+                .then((res) => {
+                    return res.data;
+                });
+            const id = newCategory.category_id;
+
+            // commit to store
+            commit("addParent", { id, name });
+            showSnack(`Parent category added with id = ${id}`);
+        } catch (error) {
+            console.log(error);
+            showSnack("Failed to add category");
+        }
     },
 
-    addChild({ commit, getters }, { parentId, name }) {
-        // get next id (somehow)
-        const id = getters.nextCategoryId;
-        // API
-        commit("addChild", { id, parentId, name });
-        showSnack(`Child added, id = ${id}, name = ${name}`);
+    async addChild({ commit, rootState }, { parentId, name }) {
+        try {
+            // call API, then extract new ID
+            const headers = {
+                Authorization: "Bearer " + rootState.AuthModule.accessToken,
+            };
+            const payload = {
+                parent_category_id: parentId,
+                name,
+            };
+            const newCategory = await axios
+                .post("http://localhost:3000/api/categorys", payload, { headers })
+                .then((res) => {
+                    return res.data;
+                });
+            const childId = newCategory.category_id;
+            const _parentId = newCategory.parent_category_id;
+
+            // commit to store
+            commit("addChild", { id: childId, parentId, name });
+            showSnack(`Child category added to id = ${_parentId} with id = ${childId}`);
+        } catch (error) {
+            console.log(error);
+            showSnack("Failed to add category");
+        }
     },
 
     edit({ commit }, { id, name }) {
@@ -35,9 +72,20 @@ export default {
         showSnack(`Item edited, id = ${id}, name = ${name}`);
     },
 
-    remove({ commit }, id) {
-        // API
-        commit("remove", id);
-        showSnack(`Item removed, id = ${id}`);
+    async remove({ commit, rootState }, id) {
+        try {
+            // call API
+            const headers = {
+                Authorization: "Bearer " + rootState.AuthModule.accessToken,
+            };
+            await axios.delete(`http://localhost:3000/api/categorys/${id}`, { headers });
+
+            // commit to store
+            commit("remove", id);
+            showSnack(`Item removed, id = ${id}`);
+        } catch (error) {
+            console.log(error);
+            showSnack("Failed to remove category");
+        }
     },
 };

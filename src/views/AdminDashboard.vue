@@ -51,9 +51,14 @@ import Categories from "@/views/admin/Categories";
 import Products from "@/views/admin/Products";
 import Users from "@/views/admin/Users";
 import UpgradeRequests from "@/views/admin/UpgradeRequests";
+import { redirectToHomeIf } from "@/utils/redirectToHomeIf";
+import { ROLES } from "@/utils/constants";
 
 export default {
     name: "AdminDashboard",
     components: { Categories, Products, Users, UpgradeRequests },
+    beforeCreate() {
+        redirectToHomeIf(this, [ROLES.ADMIN]);
+    },
 };
 </script>
