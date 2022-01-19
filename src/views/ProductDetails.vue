@@ -95,7 +95,6 @@ import BuyNowActionCard from "@/components/productActions/BuyNowActionCard";
 
 import FeaturedProductGroup from "@/components/productListings/FeaturedProductGroup";
 
-import { generateMockProduct, generateCategories } from "@/utils/mockUtils";
 import { toLongTimestamp } from "@/utils/timeUtils";
 import { scrollToTop } from "@/utils/scrollToTop";
 

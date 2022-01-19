@@ -49,6 +49,9 @@ export const CurrentProductModule = {
 
         // related products
         relatedProducts: [],
+
+        // append description modal
+        isAppendDescriptionOpen: false,
     },
 
     getters,
