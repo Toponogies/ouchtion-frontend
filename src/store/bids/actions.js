@@ -115,7 +115,7 @@ export default {
                 reviewToSeller: reviewToSeller,
             })
         });
-        
+
         setTimeout(() => {
             commit("setCompletedBidsItems", data);
             commit("setCompletedBidsLoadingState", false);

@@ -88,4 +88,14 @@ export default {
             console.log(`Fetching related products failed: ${error}`);
         }
     },
+
+    appendProductDescription({ commit }, description) {
+        // call API with current product id
+        commit("appendProductDescriptions", {
+            description,
+            upload_date: today(),
+            isInit: false,
+        });
+        showSnack("Description appended.");
+    },
 };
