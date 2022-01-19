@@ -1,3 +1,4 @@
+import getters from "./getters";
 import actions from "./actions";
 import mutations from "./mutations";
 
@@ -8,6 +9,7 @@ export const CategoryModule = {
         categories: [],
     },
 
+    getters,
     actions,
     mutations,
 };

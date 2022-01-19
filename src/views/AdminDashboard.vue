@@ -22,22 +22,22 @@
 
                 <!-- Sub-views -->
                 <v-tab-item>
-                    <v-container class="pa-4">
+                    <v-container class="pa-0">
                         <categories></categories>
                     </v-container>
                 </v-tab-item>
                 <v-tab-item>
-                    <v-container class="pa-4">
+                    <v-container class="pa-0">
                         <products></products>
                     </v-container>
                 </v-tab-item>
                 <v-tab-item>
-                    <v-container class="pa-4">
+                    <v-container class="pa-0">
                         <users></users>
                     </v-container>
                 </v-tab-item>
                 <v-tab-item>
-                    <v-container class="pa-4">
+                    <v-container class="pa-0">
                         <upgrade-requests></upgrade-requests>
                     </v-container>
                 </v-tab-item>
