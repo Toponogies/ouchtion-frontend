@@ -13,6 +13,8 @@ import { CurrentProductModule } from "./currentProduct";
 import { BiddingModule } from "./bids";
 import { ProductModule } from "./products";
 import { WatchlistModule } from "./watchlist";
+
+import { ProductsAdminModule } from "./productsAdmin";
 import { UsersModule } from "./users";
 
 Vue.use(Vuex);
@@ -32,6 +34,8 @@ export default new Vuex.Store({
         BiddingModule,
         ProductModule,
         WatchlistModule,
+
+        ProductsAdminModule,
         UsersModule,
     },
 });
