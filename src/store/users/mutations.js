@@ -34,12 +34,21 @@ export default {
         };
         state.users.splice(targetIndex, 1, targetItem);
     },
-    setUserAdSeller(state, id) {
+    setUserAsSeller(state, id) {
         const targetIndex = findIndex(state.users, { id });
         const targetItem = {
             ...state.users[targetIndex],
             role: ROLES.SELLER,
         };
         state.users.splice(targetIndex, 1, targetItem);
+    },
+
+    setUpgradeRequests(state, requests) {
+        state.upgradeRequests = requests;
+    },
+
+    removeUpgradeRequest(state, id) {
+        const targetIndex = findIndex(state.upgradeRequests, { userId: id });
+        state.upgradeRequests.splice(targetIndex, 1);
     },
 };

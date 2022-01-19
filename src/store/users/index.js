@@ -14,6 +14,15 @@ export const UsersModule = {
             { value: "actions", sortable: false, align: "end" },
         ],
         users: [],
+
+        upgradeRequestsHeaders: [
+            { value: "dummyAvatar", sortable: false, width: "128px" },
+            { text: "Full Name", value: "full_name" },
+            { text: "Email", value: "email" },
+            { text: "Rating", value: "rating" },
+            { value: "data-table-expand" },
+        ],
+        upgradeRequests: [],
     },
 
     actions,

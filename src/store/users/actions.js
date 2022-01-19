@@ -97,4 +97,48 @@ export default {
         commit("setIsLoading", false);
         showSnack(`Set user id = ${id} as seller`);
     },
+
+    fetchUpgradeRequests({ commit }) {
+        commit("setIsLoading", true);
+        setTimeout(() => {
+            const requests = [
+                {
+                    userId: 1,
+                    full_name: "Dummy user 01",
+                    email: "dummy.alpha@ouchtion.app",
+                    rating: 8.0,
+                    time: "2022-01-19T18:30:17.434Z",
+                    reason: "I want to sell 99% pure weed 🍁 kthxbye",
+                },
+                {
+                    userId: 2,
+                    full_name: "Dummy user 02",
+                    email: "dummy.bravo@ouchtion.app",
+                    rating: 6.5,
+                    time: "2022-01-19T18:30:17.434Z",
+                    reason: "I want to sell 100% more weed than whoever the hell is planning to sell 'em 🍁 kthxbai",
+                },
+            ];
+            commit("setUpgradeRequests", requests);
+            commit("setIsLoading", false);
+        }, 500);
+    },
+
+    acceptRequest({ commit, dispatch }, id) {
+        commit("setIsLoading", false);
+        setTimeout(() => {
+            dispatch("setAsSeller", id);
+            commit("removeUpgradeRequest", id);
+            commit("setIsLoading", false);
+        }, 250);
+    },
+
+    rejectRequest({ commit }, id) {
+        commit("setIsLoading", false);
+        setTimeout(() => {
+            commit("removeUpgradeRequest", id);
+            commit("setIsLoading", false);
+            showSnack(`Rejected request from user ${id}`);
+        }, 250);
+    },
 };
