@@ -16,6 +16,7 @@
         "dayjs": "^1.10.7",
         "jose": "^4.3.8",
         "lodash-es": "^4.17.21",
+        "socket.io-client": "^4.4.1",
         "source-map": "^0.7.3",
         "tiptap-vuetify": "^2.24.0",
         "vue": "^2.6.11",
