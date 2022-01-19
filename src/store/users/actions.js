@@ -39,6 +39,7 @@ export default {
         commit("setUsers", users);
         commit("setIsLoading", false);
     },
+
     create({ commit, dispatch }, payload) {
         commit("setIsLoading", true);
         // call API
@@ -60,6 +61,7 @@ export default {
         commit("setIsLoading", false);
         showSnack(`Created user id = ${newId}`);
     },
+
     update({ commit }, payload) {
         commit("setIsLoading", true);
         // call API
@@ -67,9 +69,11 @@ export default {
         commit("setIsLoading", false);
         showSnack(`Updated user id = ${payload.id}`);
     },
+
     updatePassword({ commit }, { id, password }) {
         // call API to set password separately -- store does not save password
     },
+
     delete({ commit }, id) {
         commit("setIsLoading", true);
         // call API
@@ -77,6 +81,7 @@ export default {
         commit("setIsLoading", false);
         showSnack(`Deleted user id = ${id}`);
     },
+
     setAsBidder({ commit }, id) {
         commit("setIsLoading", true);
         // call API
@@ -84,6 +89,7 @@ export default {
         commit("setIsLoading", false);
         showSnack(`Set user id = ${id} as bidder`);
     },
+
     setAsSeller({ commit }, id) {
         commit("setIsLoading", true);
         // call API
