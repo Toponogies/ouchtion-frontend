@@ -12,22 +12,22 @@ export default {
         }}).then((response) => {
                 return response.data;
         }).catch( async (error) => {
-            console.log(error.response.data);
             if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN")
             {
                 await dispatch('AuthModule/doRefresh', null, { root: true });
+                return await axios.get("http://localhost:3000/api/users/watchlist",{headers: {
+                    'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
+                }}).then((response) => {
+                    return response.data;
+                })
+                .catch((error) => {
+                   console.log(error.response.data)
+                   return [];
+                });
             }
-            return await axios.get("http://localhost:3000/api/users/watchlist",{headers: {
-                'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
-            }}).then((response) => {
-                return response.data;
-            })
-            .catch((error) => {
-               console.log(error.response.data)
-               return [];
-            });
         });
-        products.forEach(async product => {
+
+        products?.forEach(async product => {
             product = await axios.get(`http://localhost:3000/api/products/${product.product_id}`).then((response) => {
                 return response.data;
             })

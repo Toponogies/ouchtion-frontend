@@ -15,18 +15,18 @@ export default {
                 if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN")
                 {
                     await dispatch('AuthModule/doRefresh', null, { root: true });
+                    return await axios.get("http://localhost:3000/api/products/won",{headers: {
+                        'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
+                    }}).then((response) => {
+                        return response.data;
+                    })
+                    .catch((error) => {
+                       console.log(error.response.data)
+                       return [];
+                    });
                 }
-                return await axios.get("http://localhost:3000/api/products/bidding",{headers: {
-                    'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
-                }}).then((response) => {
-                    return response.data;
-                })
-                .catch((error) => {
-                   console.log(error.response.data)
-                   return [];
-                });
             });
-        products.forEach(product => {
+        products?.forEach(product => {
             data.push({
                 primaryImage: "http://localhost:3000/"+ product.avatar,
                 id: product.product_id,
@@ -54,25 +54,28 @@ export default {
                 if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN")
                 {
                     await dispatch('AuthModule/doRefresh', null, { root: true });
+                    return await axios.get("http://localhost:3000/api/products/won",{headers: {
+                        'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
+                    }}).then((response) => {
+                        return response.data;
+                    })
+                    .catch((error) => {
+                       console.log(error.response.data)
+                       return [];
+                    });
                 }
-                return await axios.get("http://localhost:3000/api/products/won",{headers: {
-                    'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
-                }}).then((response) => {
-                    return response.data;
-                })
-                .catch((error) => {
-                   console.log(error.response.data)
-                   return [];
-                });
             });
 
         let rates = await axios.get(`http://localhost:3000/api/users/rate`, {headers: {
                 'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
         }}).then((response) => {
             return response.data;
-        })
+        }).catch((error) => {
+            console.log(error.response.data)
+            return [];
+         });
 
-        products.forEach(async product => {
+        products?.forEach(async product => {
             let reviewToBidder = {
                 rating: null,
                 comment: null,
@@ -83,7 +86,7 @@ export default {
                 comment: null,
             }
 
-            rates.forEach(rate => {
+            rates?.forEach(rate => {
                 if (rate.type === "SELLER-BUYER" && rate.product_id === product.product_id)
                 {
                     reviewToBidder = {
@@ -112,9 +115,6 @@ export default {
                 reviewToSeller: reviewToSeller,
             })
         });
-
-        console.log(data);
-
         
         setTimeout(() => {
             commit("setCompletedBidsItems", data);

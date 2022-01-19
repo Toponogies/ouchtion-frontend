@@ -14,16 +14,16 @@ export default {
             if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN")
             {
                 await dispatch('AuthModule/doRefresh', null, { root: true });
+                return await axios.get("http://localhost:3000/api/users",{headers: {
+                    'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
+                }}).then((response) => {
+                    return response.data;
+                })
+                .catch((error) => {
+                   console.log(error.response.data)
+                   return null;
+                });
             }
-            return await axios.get("http://localhost:3000/api/users",{headers: {
-                'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
-            }}).then((response) => {
-                return response.data;
-            })
-            .catch((error) => {
-               console.log(error.response.data)
-               return null;
-            });
         });
         commit("updateUser", user);
     },
