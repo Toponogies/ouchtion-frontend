@@ -75,11 +75,9 @@ export default {
         },
         async fetchCurrentUser(){
             await this.fetchAccessToken();
-            await this.doGetUser();
         },
         async logOut() {
             await this.doLogout();
-            await this.logOutUser();
         },
     },
     mounted(){

@@ -39,15 +39,11 @@ export default {
     },
     methods: {
         ...mapActions("AuthModule", ["doLogin"]),
-        ...mapActions("CurrentUserModule", ["doGetUser"]),
-        ...mapActions("AuthModule", ["fetchAccessToken"]),
         async login() {
             await this.doLogin({
                 email: this.email,
                 password: this.password,
             });
-            await this.fetchAccessToken();
-            await this.doGetUser();
         },
     },
 };

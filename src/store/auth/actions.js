@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export default {
-    async doLogin({ commit }, loginData) {
+    async doLogin({ commit, dispatch }, loginData) {
         commit("loginStart");
 
         axios
@@ -16,6 +16,8 @@ export default {
                 commit("updateAccessToken", response.data.accessToken);
                 commit("updateRefreshToken", response.data.refreshToken);
                 commit("setModalState", false);
+
+                dispatch('CurrentUserModule/doGetUser', null, { root: true });
             })
             .catch((error) => {
                 commit("loginStop", error.response.data);
@@ -23,20 +25,24 @@ export default {
                 commit("updateRefreshToken", null);
             });
     },
-    doLogout({ commit }) {
+    doLogout({ commit,dispatch }) {
         localStorage.setItem("accessToken_ouchtion", null);
         localStorage.setItem("refreshToken_ouchtion", null);
         commit("updateAccessToken", null);
         commit("updateRefreshToken", null);
+        dispatch('CurrentUserModule/logOutUser', null, { root: true });
     },
-    fetchAccessToken({ commit, state }) {
+    fetchAccessToken({ commit, state, dispatch }) {
         if (state.accessToken === null)
         {
             commit("updateAccessToken", localStorage.getItem("accessToken_ouchtion"));
             commit("updateRefreshToken", localStorage.getItem("refreshToken_ouchtion"));
+            dispatch('CurrentUserModule/doGetUser', null, { root: true });
         }
     },
-    async doRefresh({ commit, state }) {
+    async doRefresh({ commit, state, dispatch }) {
+        if (state.accessToken === null)
+            return;
         axios
             .post("http://localhost:3000/api/auth/refresh", {
                 accessToken: state.accessToken,
@@ -51,6 +57,7 @@ export default {
                 console.log(error.response.data);
                 commit("refreshStop", error.response.data);
                 commit("updateAccessToken", null);
+                dispatch('CurrentUserModule/doGetUser', null, { root: true });
             });
     },
     doRegister({ commit }, registerData) {
