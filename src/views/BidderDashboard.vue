@@ -41,9 +41,14 @@
 import Watchlist from "@/views/bidder/Watchlist";
 import OngoingBids from "@/views/bidder/OngoingBids";
 import CompletedBids from "@/views/bidder/CompletedBids";
+import { redirectToHomeIf } from "@/utils/redirectToHomeIf";
+import { ROLES } from "@/utils/constants";
 
 export default {
     name: "BidderDashboard",
     components: { Watchlist, OngoingBids, CompletedBids },
+    beforeCreate() {
+        redirectToHomeIf(this, [ROLES.BIDDER]);
+    },
 };
 </script>
