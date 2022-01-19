@@ -48,6 +48,16 @@
                 <!-- Left pane list -->
                 <v-card outlined>
                     <v-list dense>
+                        <v-row
+                            no-gutters
+                            justify="center"
+                            align="center"
+                            class="d-flex flex-column"
+                            v-if="categories.length === 0"
+                        >
+                            <v-icon large color="grey" class="mb-1">mdi-shape-outline</v-icon>
+                            <div class="grey--text mt-1">No categories</div>
+                        </v-row>
                         <v-list-item-group v-model="selectedParent">
                             <v-list-item
                                 v-for="item in parentCategories"
