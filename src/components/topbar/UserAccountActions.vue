@@ -51,7 +51,7 @@
 <script>
 import { mapState, mapActions, mapMutations } from "vuex";
 import { ROLES } from "@/utils/constants";
-import SignInUpModal from "@/components/topbar/SignInUpModal";
+import SignInUpModal from "@/components/signinForm/SignInUpModal";
 
 export default {
     name: "UserAccountActions",
@@ -63,25 +63,25 @@ export default {
             currentUserAvatar: null,
         };
     },
-    computed:{
-        ...mapState("CurrentUserModule", ["username","rating","role"]),
+    computed: {
+        ...mapState("CurrentUserModule", ["username", "rating", "role"]),
     },
     methods: {
         ...mapMutations("AuthModule", ["setModalState"]),
-        ...mapActions("CurrentUserModule", ["doGetUser","logOutUser"]),
-        ...mapActions("AuthModule", ["fetchAccessToken","doLogout"]),
+        ...mapActions("CurrentUserModule", ["doGetUser", "logOutUser"]),
+        ...mapActions("AuthModule", ["fetchAccessToken", "doLogout"]),
         handleDialogOpen() {
             this.setModalState(true);
         },
-        async fetchCurrentUser(){
+        async fetchCurrentUser() {
             await this.fetchAccessToken();
         },
         async logOut() {
             await this.doLogout();
         },
     },
-    mounted(){
+    mounted() {
         this.fetchCurrentUser();
-    }
+    },
 };
 </script>
