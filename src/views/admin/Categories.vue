@@ -308,7 +308,6 @@
 </template>
 
 <script>
-import { showSnack } from "@/utils/showSnack";
 import { mapState, mapActions } from "vuex";
 import { find } from "lodash-es";
 
@@ -418,8 +417,9 @@ export default {
 
         // remove
         handleDeleteParentBtn() {
-            this.remove(this.selectedParent);
-            this.selectedParent === undefined;
+            const targetItem = this.selectedParent;
+            this.selectedParent = undefined;
+            this.remove(targetItem);
         },
         handleDeleteChildBtn() {
             this.remove(this.selectedChild);
