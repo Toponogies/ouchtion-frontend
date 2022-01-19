@@ -25,6 +25,17 @@ export default {
                 });
             }
         });
+
+        if (user && user.user_id)
+        {
+            let temp = await axios
+            .get(`http://localhost:3000/api/users/${user.user_id}/point`)
+            .then((response) => {
+                return response.data;
+            })
+            user.point = temp.point;
+        }
+
         commit("updateUser", user);
     },
     logOutUser({ commit }){
