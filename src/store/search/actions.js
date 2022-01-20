@@ -81,7 +81,7 @@ export default {
 
             commit("setResult", { total, result });
         } catch (error) {
-            console.log(error.response.data);
+            console.log(error);
         }
     },
 };

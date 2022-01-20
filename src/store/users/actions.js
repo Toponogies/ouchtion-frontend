@@ -20,7 +20,7 @@ export default {
                 return response.data;
             })
             .catch(async (error) => {
-                console.log(error.response.data);
+                console.log(error);
                 if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN") {
                     await dispatch("AuthModule/doRefresh", null, { root: true });
                     return await axios
@@ -33,7 +33,7 @@ export default {
                             return response.data;
                         })
                         .catch((error) => {
-                            console.log(error.response.data);
+                            console.log(error);
                             return [];
                         });
                 }
@@ -80,7 +80,7 @@ export default {
                 return response.data;
             })
             .catch(async (error) => {
-                console.log(error.response.data);
+                console.log(error);
                 if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN") {
                     await dispatch("AuthModule/doRefresh", null, { root: true });
                     return await axios
@@ -101,7 +101,7 @@ export default {
                             return response.data;
                         })
                         .catch((error) => {
-                            console.log(error.response.data);
+                            console.log(error);
                             return undefined;
                         });
                 }
@@ -166,7 +166,7 @@ export default {
                 return response.data;
             })
             .catch(async (error) => {
-                console.log(error.response.data);
+                console.log(error);
                 if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN") {
                     await dispatch("AuthModule/doRefresh", null, { root: true });
                     return await axios
@@ -185,7 +185,7 @@ export default {
                             return response.data;
                         })
                         .catch((error) => {
-                            console.log(error.response.data);
+                            console.log(error);
                             return undefined;
                         });
                 }
@@ -249,7 +249,7 @@ export default {
                 return response.data;
             })
             .catch(async (error) => {
-                console.log(error.response.data);
+                console.log(error);
                 if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN") {
                     await dispatch("AuthModule/doRefresh", null, { root: true });
                     return await axios
@@ -269,7 +269,7 @@ export default {
                             return response.data;
                         })
                         .catch((error) => {
-                            console.log(error.response.data);
+                            console.log(error);
                             return undefined;
                         });
                 }
@@ -306,7 +306,7 @@ export default {
                 return response.data;
             })
             .catch(async (error) => {
-                console.log(error.response.data);
+                console.log(error);
                 if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN") {
                     await dispatch("AuthModule/doRefresh", null, { root: true });
                     return await axios
@@ -326,7 +326,7 @@ export default {
                             return response.data;
                         })
                         .catch((error) => {
-                            console.log(error.response.data);
+                            console.log(error);
                             return undefined;
                         });
                 }
@@ -357,7 +357,7 @@ export default {
                 return response.data;
             })
             .catch(async (error) => {
-                console.log(error.response.data);
+                console.log(error);
                 if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN") {
                     await dispatch("AuthModule/doRefresh", null, { root: true });
                     return await axios
@@ -370,7 +370,7 @@ export default {
                             return response.data;
                         })
                         .catch((error) => {
-                            console.log(error.response.data);
+                            console.log(error);
                             return undefined;
                         });
                 }
@@ -399,7 +399,7 @@ export default {
                                 return response.data;
                             })
                             .catch((error) => {
-                                console.log(error.response.data);
+                                console.log(error);
                                 return undefined;
                             });
                     }
@@ -455,7 +455,7 @@ export default {
                 return response.data;
             })
             .catch(async (error) => {
-                console.log(error.response.data);
+                console.log(error);
                 if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN") {
                     await dispatch("AuthModule/doRefresh", null, { root: true });
                     return await axios
@@ -468,7 +468,7 @@ export default {
                             return response.data;
                         })
                         .catch((error) => {
-                            console.log(error.response.data);
+                            console.log(error);
                             return undefined;
                         });
                 }

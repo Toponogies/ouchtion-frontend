@@ -81,7 +81,7 @@ export default {
             });
             commit("updateProductsHighestPrice", productsHighestPrice);
         } catch (error) {
-            console.log(error.response.data);
+            console.log(error);
         }
     },
 };
