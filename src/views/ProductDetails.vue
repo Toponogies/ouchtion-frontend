@@ -147,6 +147,7 @@ export default {
     },
 
     beforeMount() {
+        this.setProductId(this.$route.params.id);
         this.fetchAllDetails();
     },
     mounted() {

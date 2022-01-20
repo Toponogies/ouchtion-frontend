@@ -1,5 +1,5 @@
 export default {
-    setProductId(state, { id }) {
+    setProductId(state, id) {
         state.id = id;
     },
 

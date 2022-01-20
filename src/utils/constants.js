@@ -1,7 +1,7 @@
 /* Environment constants */
 export const APP_TITLE = process.env.VUE_APP_TITLE;
 export const API_ENDPOINT_BASE = process.env.VUE_APP_API_ENDPOINT_BASE;
-export const API_IMAGE_ENDPOINT = process.env.VUE_APP_API_IMAGE_ENDPOINT;
+export const IMAGE_API_ENDPOINT = process.env.VUE_APP_IMAGE_API_ENDPOINT;
 export const JWT_SECRET = process.env.VUE_APP_JWT_SECRET;
 
 /* API endpoints */

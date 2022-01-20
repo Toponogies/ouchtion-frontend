@@ -3,7 +3,13 @@
         <div class="text-h6 font-weight-bold">{{ bidderListCount }} biddings</div>
         <v-card class="mt-3" flat outlined>
             <v-data-table :headers="tableHeaders" :items="bid.biddings" :items-per-page="5">
-                <template v-slot:[`item.actions`]="{ item }" v-if="userCurrentRole === consts.ROLES.SELLER">
+                <!-- Price -->
+                <template v-slot:[`item.bid_price`]="{ item }">
+                    <span>&#x20AB; {{ utils.formatPrice(item.bid_price) }}</span>
+                </template>
+
+                <!-- Actions (only shown to sellers) -->
+                <template v-slot:[`item.actions`]="{ item }" v-if="userCurrentRole === utils.ROLES.SELLER">
                     <v-btn text small @click="acceptBid(item)" color="success">
                         <v-icon left>mdi-check</v-icon>
                         <span>Accept</span>
@@ -21,12 +27,13 @@
 <script>
 import { mapState } from "vuex";
 import { ROLES } from "@/utils/constants";
+import { formatPrice } from "@/utils/priceUtils";
 
 export default {
     name: "BidderList",
     data() {
         return {
-            consts: { ROLES },
+            utils: { ROLES, formatPrice },
             expandedPanels: [0],
             local_tableHeaders: [
                 { text: "Time", value: "time" },

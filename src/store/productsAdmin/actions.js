@@ -1,40 +1,42 @@
 import { showSnack } from "@/utils/showSnack";
-import { API_ENDPOINTS, API_IMAGE_ENDPOINT } from "@/utils/constants";
+import { API_ENDPOINTS, IMAGE_API_ENDPOINT } from "@/utils/constants";
 import axios from "axios";
 
 export default {
-    async fetchAll({ commit,dispatch }) {
+    async fetchAll({ commit, dispatch }) {
         commit("setLoadingState", true);
 
         const data = [];
 
-        let products = await axios.get(`${API_ENDPOINTS.PRODUCTS}`
-            ).then((response) => {
-                    return response.data;
-            }).catch( async (error) => {
-                console.log(error.response.data);
-                if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN")
-                {
-                    await dispatch('AuthModule/doRefresh', null, { root: true });
-                    return await axios.get(`${API_ENDPOINTS.PRODUCTS}`
-                    ).then((response) => {
+        let products = await axios
+            .get(`${API_ENDPOINTS.PRODUCTS}`)
+            .then((response) => {
+                return response.data;
+            })
+            .catch(async (error) => {
+                console.log(error);
+                if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN") {
+                    await dispatch("AuthModule/doRefresh", null, { root: true });
+                    return await axios
+                        .get(`${API_ENDPOINTS.PRODUCTS}`)
+                        .then((response) => {
                             return response.data;
-                    })
-                    .catch((error) => {
-                       console.log(error.response.data)
-                       return [];
-                    });
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            return [];
+                        });
                 }
             });
 
-        products?.forEach(product => {
+        products?.forEach((product) => {
             data.push({
-                primaryImage: `${API_IMAGE_ENDPOINT}/${product.avatar}`,
+                primaryImage: `${IMAGE_API_ENDPOINT}/${product.avatar}`,
                 id: product.product_id,
                 name: product.name,
                 endTime: product.end_at,
                 highestBidPrice: product.current_price,
-            })
+            });
         });
 
         setTimeout(() => {
@@ -43,35 +45,42 @@ export default {
         }, 500);
     },
 
-    async removeItem({ commit,rootState,dispatch }, id) {
+    async removeItem({ commit, rootState, dispatch }, id) {
         commit("setLoadingState", true);
 
-        let check = await axios.delete(`${API_ENDPOINTS.PRODUCTS}`+`/${id}`, {headers: {
-                'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
-        }}).then(() => {
+        let check = await axios
+            .delete(`${API_ENDPOINTS.PRODUCTS}/${id}`, {
+                headers: {
+                    Authorization: "Bearer " + rootState.AuthModule.accessToken,
+                },
+            })
+            .then(() => {
                 return true;
-        }).catch( async (error) => {
-            console.log(error.response.data);
-            if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN")
-            {
-                await dispatch('AuthModule/doRefresh', null, { root: true });
-                return await axios.delete(`${API_ENDPOINTS.PRODUCTS}`+`/${id}`,{headers: {
-                    'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
-                }}).then((response) => {
-                    return response.data;
-                })
-                .catch((error) => {
-                    console.log(error.response.data)
-                    return [];
-                });
-            }
-        });
+            })
+            .catch(async (error) => {
+                console.log(error);
+                if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN") {
+                    await dispatch("AuthModule/doRefresh", null, { root: true });
+                    return await axios
+                        .delete(`${API_ENDPOINTS.PRODUCTS}/${id}`, {
+                            headers: {
+                                Authorization: "Bearer " + rootState.AuthModule.accessToken,
+                            },
+                        })
+                        .then((response) => {
+                            return response.data;
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            return [];
+                        });
+                }
+            });
 
-        if (check !== true)
-        {
+        if (check !== true) {
             showSnack(`Can't Removed item ${id}`);
             commit("setLoadingState", false);
-            return
+            return;
         }
 
         setTimeout(() => {

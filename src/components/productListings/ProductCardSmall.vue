@@ -7,7 +7,9 @@
                 </v-row>
             </template>
         </v-img>
-        <v-card-title>{{ title }}</v-card-title>
+        <v-card-title>
+            <div class="text-subtitle-1 font-weight-medium" v-line-clamp="2">{{ title }}</div>
+        </v-card-title>
         <v-card-text>
             <v-row class="my-n5">
                 <v-col>
