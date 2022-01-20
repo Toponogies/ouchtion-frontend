@@ -10,10 +10,6 @@ export const AuthModule = {
         loggingIn: false,
         loginError: null,
         refreshError: null,
-        registerError: null,
-        verifyError: null,
-        logoutError: null,
-        resetError: null,
 
         // modal
         isModalOpened: false,

@@ -14,18 +14,6 @@ export default {
     refreshStop: (state, errorMessage) => {
         state.refreshError = errorMessage;
     },
-    registerStop: (state, errorMessage) => {
-        state.registerError = errorMessage;
-    },
-    verifyStop: (state, errorMessage) => {
-        state.verifyError = errorMessage;
-    },
-    logoutStop: (state, errorMessage) => {
-        state.logoutError = errorMessage;
-    },
-    resetStop: (state, errorMessage) => {
-        state.resetError = errorMessage;
-    },
 
     // modal
     setModalState(state, isOpen) {
