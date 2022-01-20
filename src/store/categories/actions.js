@@ -64,7 +64,7 @@ export default {
         }
     },
 
-    async edit({ commit, state }, { id, name }) {
+    async edit({ commit, state, rootState }, { id, name }) {
         try {
             // get current category object from given id
             let parent_category_id = findIndex(state.categories, { category_id: id })?.parent_category_id;

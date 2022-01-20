@@ -5,13 +5,12 @@
             <input type="password" placeholder="Enter password" v-model="password" required />
 
             <button @click="reset">Reset</button>
-            <div>{{ resetError }}</div>
         </div>
     </div>
 </template>
 
 <script>
-import { mapActions,mapState } from "vuex";
+import { mapActions } from "vuex";
 
 export default {
     name: "VerifyAccount",
@@ -19,9 +18,6 @@ export default {
         return {
             password: "",
         };
-    },
-    computed: {
-        ...mapState("AuthModule", ["resetError"]),
     },
     methods: {
         ...mapActions("AuthModule", ["doReset"]),

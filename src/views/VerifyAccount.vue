@@ -1,17 +1,14 @@
 <template>
     <div>
-        {{ verifyError }}
+
     </div>
 </template>
 
 <script>
-import { mapActions,mapState } from "vuex";
+import { mapActions } from "vuex";
 
 export default {
     name: "VerifyAccount",
-    computed: {
-        ...mapState("AuthModule", ["verifyError"]),
-    },
     methods: {
         ...mapActions("AuthModule", ["doVerify"]),
         verify() {

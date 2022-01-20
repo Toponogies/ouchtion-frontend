@@ -1,54 +1,109 @@
 import { showSnack } from "@/utils/showSnack";
+import { fromTimestamp } from "@/utils/timeUtils";
+import { API_ENDPOINTS } from "@/utils/constants";
+
+import axios from "axios";
 
 export default {
-    fetchAll({ commit }) {
+    async fetchAll({ commit,dispatch,rootState }) {
         commit("setIsLoading", true);
         // call API
-        const users = [
+        const data = [];
+
+        let users = await axios.get(`${API_ENDPOINTS.USERS}`, {headers: {
+                'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
+        }}).then((response) => {
+                return response.data;
+        }).catch( async (error) => {
+            console.log(error.response.data);
+            if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN")
             {
-                id: 1,
-                full_name: "AB Nguyen",
-                email: "ab.nguyen@ouchtion.app",
-                role: "bidder",
-                address: "1 Road, City",
-                dob: "2000-01-01T00:00:00.000Z",
-                is_active: 1,
-                role: "seller",
-            },
-            {
-                id: 2,
-                full_name: "AB Nguyen",
-                email: "ab.nguyen@ouchtion.app",
-                role: "bidder",
-                address: "1 Road, City",
-                dob: "2000-01-01T00:00:00.000Z",
-                is_active: 1,
-                role: "bidder",
-            },
-            {
-                id: 3,
-                full_name: "AB Nguyen",
-                email: "ab.nguyen@ouchtion.app",
-                role: "bidder",
-                address: "1 Road, City",
-                dob: "2000-01-01T00:00:00.000Z",
-                is_active: 1,
-                role: "bidder",
-            },
-        ];
-        commit("setUsers", users);
+                await dispatch('AuthModule/doRefresh', null, { root: true });
+                return await axios.get(`${API_ENDPOINTS.USERS}`,{headers: {
+                    'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
+                }}).then((response) => {
+                    return response.data;
+                })
+                .catch((error) => {
+                    console.log(error.response.data)
+                    return [];
+                });
+            }
+        });
+
+        users?.forEach(user => {
+            data.push({
+                id: user.user_id,
+                full_name: user.full_name,
+                email: user.email,
+                address: user.address,
+                dob: user.dob,
+                is_active: user.is_active,
+                role: user.role,
+            })
+        });
+
+        commit("setUsers", data);
         commit("setIsLoading", false);
     },
 
-    create({ commit, dispatch }, payload) {
+    async create({ commit, dispatch,rootState }, payload) {
         commit("setIsLoading", true);
+        
+        // change date
+        let { date } = fromTimestamp(payload.dob);
+        payload.dob = date;
         // call API
+        let user = await axios.post(`${API_ENDPOINTS.USERS}`,
+            {
+                ...payload,
+                role:"bidder",
+                is_active:"1",
+            },    
+            {
+                headers: {
+                    'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
+                },
+            }
+        ).then((response) => {
+                return response.data;
+        }).catch( async (error) => {
+            console.log(error.response.data);
+            if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN")
+            {
+                await dispatch('AuthModule/doRefresh', null, { root: true });
+                return await axios.get(`${API_ENDPOINTS.USERS}`,{
+                    ...payload,
+                    role:"bidder",
+                    is_active:"1",
+                },    
+                {
+                    headers: {
+                        'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
+                    },
+                }).then((response) => {
+                    return response.data;
+                })
+                .catch((error) => {
+                    console.log(error.response.data)
+                    return undefined;
+                });
+            }
+        });
+
+        if (user === undefined || user === null)
+        {
+            showSnack("Can't create user");
+            return;
+        }   
+
         // get user id
-        const newId = 9999;
+        const newId = user.user_id;
         const targetPayload = {
             ...payload,
             id: newId,
         };
+
         // Remove password before pushing to the store...
         const password = targetPayload.password;
         delete targetPayload.password;
@@ -62,17 +117,71 @@ export default {
         showSnack(`Created user id = ${newId}`);
     },
 
-    update({ commit }, payload) {
+    async update({ commit,rootState,dispatch }, payload) {
         commit("setIsLoading", true);
+
+        // new payload 
+        let payloadTemp = payload;
+
+        // id
+        let id = payloadTemp.id;
+        
+        // remove field id
+        delete payloadTemp.id;
+
+        // change date
+        let { date } = fromTimestamp(payloadTemp.dob);
+        payloadTemp.dob = date;
+
         // call API
+        let user = await axios.put(`${API_ENDPOINTS.USERS}`+`/${id}`,
+            {
+                ...payloadTemp,
+            },    
+            {
+                headers: {
+                    'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
+                },
+            }
+        ).then((response) => {
+                return response.data;
+        }).catch( async (error) => {
+            console.log(error.response.data);
+            if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN")
+            {
+                await dispatch('AuthModule/doRefresh', null, { root: true });
+                return await axios.get(`${API_ENDPOINTS.USERS}`+`/${id}`,{
+                    ...payloadTemp,
+                },    
+                {
+                    headers: {
+                        'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
+                    },
+                }).then((response) => {
+                    return response.data;
+                })
+                .catch((error) => {
+                    console.log(error.response.data)
+                    return undefined;
+                });
+            }
+        });
+
+        if (user === undefined || user === null)
+        {
+            commit("setIsLoading", false);
+            showSnack("Can't update user");
+            return;
+        }   
+
         commit("updateUser", payload);
         commit("setIsLoading", false);
-        showSnack(`Updated user id = ${payload.id}`);
+        showSnack(`Updated user id = ${id}`);
     },
 
-    updatePassword({ commit }, { id, password }) {
-        // call API to set password separately -- store does not save password
-    },
+    // updatePassword({ commit }, { id, password }) {
+    //     // call API to set password separately -- store does not save password
+    // },
 
     delete({ commit }, id) {
         commit("setIsLoading", true);
@@ -82,44 +191,178 @@ export default {
         showSnack(`Deleted user id = ${id}`);
     },
 
-    setAsBidder({ commit }, id) {
+    async setAsBidder({ commit,rootState,dispatch }, id) {
         commit("setIsLoading", true);
         // call API
+        let user = await axios.put(`${API_ENDPOINTS.USERS}`+`/admin/role`,
+            {
+                user_id: id+"",
+                role: "bidder",
+            },    
+            {
+                headers: {
+                    'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
+                },
+            }
+        ).then((response) => {
+                return response.data;
+        }).catch( async (error) => {
+            console.log(error.response.data);
+            if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN")
+            {
+                await dispatch('AuthModule/doRefresh', null, { root: true });
+                return await axios.get(`${API_ENDPOINTS.USERS}`+`/admin/role`,{
+                    user_id: id+"",
+                    role: "bidder",
+                },    
+                {
+                    headers: {
+                        'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
+                    },
+                }).then((response) => {
+                    return response.data;
+                })
+                .catch((error) => {
+                    console.log(error.response.data)
+                    return undefined;
+                });
+            }
+        });
+
+        if (user === undefined || user === null)
+        {
+            commit("setIsLoading", false);
+            showSnack(`Can't user id = ${id} as bidder`);
+            return;
+        }  
+
         commit("setUserAsBidder", id);
         commit("setIsLoading", false);
         showSnack(`Set user id = ${id} as bidder`);
     },
 
-    setAsSeller({ commit }, id) {
+    async setAsSeller({ commit,rootState,dispatch }, id) {
         commit("setIsLoading", true);
         // call API
+        let user = await axios.put(`${API_ENDPOINTS.USERS}`+`/admin/role`,
+            {
+                user_id: id+"",
+                role: "seller",
+            },    
+            {
+                headers: {
+                    'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
+                },
+            }
+        ).then((response) => {
+                return response.data;
+        }).catch( async (error) => {
+            console.log(error.response.data);
+            if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN")
+            {
+                await dispatch('AuthModule/doRefresh', null, { root: true });
+                return await axios.get(`${API_ENDPOINTS.USERS}`+`/admin/role`,{
+                    user_id: id+"",
+                    role: "seller",
+                },    
+                {
+                    headers: {
+                        'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
+                    },
+                }).then((response) => {
+                    return response.data;
+                })
+                .catch((error) => {
+                    console.log(error.response.data)
+                    return undefined;
+                });
+            }
+        });
+
+        if (user === undefined || user === null)
+        {
+            commit("setIsLoading", false);
+            showSnack(`Can't user id = ${id} as bidder`);
+            return;
+        }  
+
         commit("setUserAdSeller", id);
         commit("setIsLoading", false);
         showSnack(`Set user id = ${id} as seller`);
     },
 
-    fetchUpgradeRequests({ commit }) {
+    async fetchUpgradeRequests({ commit,rootState,dispatch }) {
         commit("setIsLoading", true);
+        const data = [];
+
+        let requests = await axios.get(`${API_ENDPOINTS.USERS}`+`/admin/request`,
+            {
+                headers: {
+                    'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
+                },
+            }
+        ).then((response) => {
+                return response.data;
+        }).catch( async (error) => {
+            console.log(error.response.data);
+            if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN")
+            {
+                await dispatch('AuthModule/doRefresh', null, { root: true });
+                return await axios.get(`${API_ENDPOINTS.USERS}`+`/admin/request`,{headers: {
+                    'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
+                }}).then((response) => {
+                    return response.data;
+                })
+                .catch((error) => {
+                    console.log(error.response.data)
+                    return undefined;
+                });
+            }
+        });
+
+        requests?.forEach(async request => {
+            let user = await axios.get(`${API_ENDPOINTS.USERS}` + `/${request.user_id}`,
+            {
+                headers: {
+                    'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
+                },
+            }
+            ).then((response) => {
+                    return response.data;
+            }).catch( async (error) => {
+                if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN")
+                {
+                    await dispatch('AuthModule/doRefresh', null, { root: true });
+                    return await axios.get(`${API_ENDPOINTS.USERS}` + `/${request.user_id}`,{headers: {
+                        'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
+                    }}).then((response) => {
+                        return response.data;
+                    })
+                    .catch((error) => {
+                        console.log(error.response.data)
+                        return undefined;
+                    });
+                }
+            });
+
+            let {point} = await axios
+            .get(`${API_ENDPOINTS.USERS}` + `/${request.user_id}/point`)
+            .then((response) => {
+                return response.data;
+            })
+            
+            data.push({
+                userId: request.user_id,
+                full_name: user.full_name,
+                email: user.email,
+                rating: point,
+                time: request.time,
+                reason: request.reason,
+            })
+        });
+
         setTimeout(() => {
-            const requests = [
-                {
-                    userId: 1,
-                    full_name: "Dummy user 01",
-                    email: "dummy.alpha@ouchtion.app",
-                    rating: 8.0,
-                    time: "2022-01-19T18:30:17.434Z",
-                    reason: "I want to sell 99% pure weed 🍁 kthxbye",
-                },
-                {
-                    userId: 2,
-                    full_name: "Dummy user 02",
-                    email: "dummy.bravo@ouchtion.app",
-                    rating: 6.5,
-                    time: "2022-01-19T18:30:17.434Z",
-                    reason: "I want to sell 100% more weed than whoever the hell is planning to sell 'em 🍁 kthxbai",
-                },
-            ];
-            commit("setUpgradeRequests", requests);
+            commit("setUpgradeRequests", data);
             commit("setIsLoading", false);
         }, 500);
     },
@@ -128,17 +371,48 @@ export default {
         commit("setIsLoading", false);
         setTimeout(() => {
             dispatch("setAsSeller", id);
+            dispatch("deleteRequest",id);
             commit("removeUpgradeRequest", id);
             commit("setIsLoading", false);
         }, 250);
     },
 
-    rejectRequest({ commit }, id) {
+    async rejectRequest({ commit,dispatch }, id) {
         commit("setIsLoading", false);
         setTimeout(() => {
-            commit("removeUpgradeRequest", id);
+            dispatch("deleteRequest",id);
             commit("setIsLoading", false);
             showSnack(`Rejected request from user ${id}`);
+        }, 250);
+    },
+
+    async deleteRequest({ commit,rootState,dispatch }, id) {
+        await axios.delete(`${API_ENDPOINTS.USERS}` + `/admin/request/${id}`,
+            {
+                headers: {
+                    'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
+                },
+            }
+        ).then((response) => {
+                return response.data;
+        }).catch( async (error) => {
+            console.log(error.response.data);
+            if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN")
+            {
+                await dispatch('AuthModule/doRefresh', null, { root: true });
+                return await axios.delete(`${API_ENDPOINTS.USERS}` + `/admin/request/${id}`,{headers: {
+                    'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
+                }}).then((response) => {
+                    return response.data;
+                })
+                .catch((error) => {
+                    console.log(error.response.data)
+                    return undefined;
+                });
+            }
+        });
+        setTimeout(() => {
+            commit("removeUpgradeRequest", id);
         }, 250);
     },
 };
