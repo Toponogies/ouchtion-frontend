@@ -6,6 +6,7 @@ import vuetify from "./plugins/vuetify";
 
 import nprogress from "./plugins/nprogress";
 import "./plugins/tiptap-vuetify";
+import "./plugins/lineClamp";
 
 Vue.config.productionTip = false;
 
