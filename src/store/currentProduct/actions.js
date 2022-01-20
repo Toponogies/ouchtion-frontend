@@ -5,12 +5,12 @@ import { find } from "lodash-es";
 import { generateCategories, generateMockProduct } from "@/utils/mockUtils";
 import { today, toLongTimestamp } from "@/utils/timeUtils";
 import { hiddenName } from "@/utils/hiddenName";
-import { API_IMAGE_ENDPOINT } from "@/utils/constants";
+import { IMAGE_API_ENDPOINT } from "@/utils/constants";
 import { showSnack } from "@/utils/showSnack";
 
 export default {
-    setProductId({ commit }, { id }) {
-        commit("setProductId", { id });
+    setProductId({ commit }, id) {
+        commit("setProductId", id);
     },
 
     async fetchAllDetails({ commit, state }) {
@@ -60,7 +60,7 @@ export default {
             // Turn relative paths to absolute paths
             productImages = productImages.map((each) => ({
                 ...each,
-                path: `${API_IMAGE_ENDPOINT}/${each.path}`,
+                path: `${IMAGE_API_ENDPOINT}/${each.path}`,
             }));
             // Split into primary and secondary group
             let primaryImage = find(productImages, { is_primary: 1 }).path;

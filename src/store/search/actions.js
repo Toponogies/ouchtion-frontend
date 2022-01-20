@@ -1,4 +1,4 @@
-import { SEARCH_TYPES, SEARCH_RESULTS_PER_PAGE, API_ENDPOINTS, API_IMAGE_ENDPOINT } from "@/utils/constants";
+import { SEARCH_TYPES, SEARCH_RESULTS_PER_PAGE, API_ENDPOINTS, IMAGE_API_ENDPOINT } from "@/utils/constants";
 import axios from "axios";
 
 export default {
@@ -68,7 +68,7 @@ export default {
                 result.push({
                     id: product.product_id,
                     title: product.name,
-                    image: `${API_IMAGE_ENDPOINT}/${product.avatar}`,
+                    image: `${IMAGE_API_ENDPOINT}/${product.avatar}`,
                     bidderCount: product.bidding_count,
                     bidHighestPrice: product.current_price,
                     bidHighestUser: user.full_name,

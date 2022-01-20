@@ -1,4 +1,4 @@
-import { API_ENDPOINTS, API_IMAGE_ENDPOINT, HOME_FEATURED_PRODUCTS_LIMIT } from "@/utils/constants";
+import { API_ENDPOINTS, IMAGE_API_ENDPOINT, HOME_FEATURED_PRODUCTS_LIMIT } from "@/utils/constants";
 import axios from "axios";
 
 export default {
@@ -18,7 +18,7 @@ export default {
                 productsEndingSoon.push({
                     id: product.product_id,
                     title: product.name,
-                    image: `${API_IMAGE_ENDPOINT}/${product.avatar}`,
+                    image: `${IMAGE_API_ENDPOINT}/${product.avatar}`,
                     bidderCount: product.bidding_count,
                     bidHighestPrice: product.current_price,
                     bidHighestUser: user.full_name,
@@ -44,7 +44,7 @@ export default {
                 productsMostBidders.push({
                     id: product.product_id,
                     title: product.name,
-                    image: `${API_IMAGE_ENDPOINT}/${product.avatar}`,
+                    image: `${IMAGE_API_ENDPOINT}/${product.avatar}`,
                     bidderCount: product.bidding_count,
                     bidHighestPrice: product.current_price,
                     bidHighestUser: user.full_name,
@@ -69,7 +69,7 @@ export default {
                 productsHighestPrice.push({
                     id: product.product_id,
                     title: product.name,
-                    image: `${API_IMAGE_ENDPOINT}/${product.avatar}`,
+                    image: `${IMAGE_API_ENDPOINT}/${product.avatar}`,
                     bidderCount: product.bidding_count,
                     bidHighestPrice: product.current_price,
                     bidHighestUser: user.full_name,

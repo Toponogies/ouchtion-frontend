@@ -1,4 +1,4 @@
-import { API_ENDPOINTS, API_IMAGE_ENDPOINT } from "@/utils/constants";
+import { API_ENDPOINTS, IMAGE_API_ENDPOINT } from "@/utils/constants";
 import { showSnack } from "@/utils/showSnack";
 import axios from "axios";
 
@@ -37,7 +37,7 @@ export default {
             });
         products?.forEach((product) => {
             data.push({
-                primaryImage: `${API_IMAGE_ENDPOINT}/${product.avatar}`,
+                primaryImage: `${IMAGE_API_ENDPOINT}/${product.avatar}`,
                 id: product.product_id,
                 name: product.name,
                 endTime: product.end_at,
@@ -124,7 +124,7 @@ export default {
                 }
             });
             data.push({
-                primaryImage: `${API_IMAGE_ENDPOINT}/${product.avatar}`,
+                primaryImage: `${IMAGE_API_ENDPOINT}/${product.avatar}`,
                 id: product.product_id,
                 name: product.name,
                 highestBidPrice: product.current_price,
