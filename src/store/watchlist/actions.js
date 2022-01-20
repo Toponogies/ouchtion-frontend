@@ -55,7 +55,7 @@ export default {
         }, 500);
     },
 
-    async removeItem({ commit, rootState }, id) {
+    async removeItem({ commit, rootState, dispatch }, id) {
         commit("setLoadingState", true);
 
         await axios

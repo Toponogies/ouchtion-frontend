@@ -3,9 +3,10 @@ import { getProduct, getProductDescription, getProductImage, getProductBidding }
 
 import { find } from "lodash-es";
 import { generateCategories, generateMockProduct } from "@/utils/mockUtils";
-import { toLongTimestamp } from "@/utils/timeUtils";
+import { today, toLongTimestamp } from "@/utils/timeUtils";
 import { hiddenName } from "@/utils/hiddenName";
 import { API_IMAGE_ENDPOINT } from "@/utils/constants";
+import { showSnack } from "@/utils/showSnack";
 
 export default {
     setProductId({ commit }, { id }) {

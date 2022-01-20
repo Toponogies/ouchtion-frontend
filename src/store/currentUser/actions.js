@@ -1,12 +1,17 @@
 import { API_ENDPOINTS } from "@/utils/constants";
 import axios from "axios";
+import jwt from "jsonwebtoken";
 export default {
     async doGetUser({ commit, rootState, dispatch }) {
         if (rootState.AuthModule.accessToken === null) return;
 
+        // sprase jwt
+        let decoded = jwt.decode(rootState.AuthModule.accessToken);
+        let {userId} = decoded;
+
         // get user info
         let user = await axios
-            .get(`${API_ENDPOINTS.USERS}`, {
+            .get(`${API_ENDPOINTS.USERS}`+`/${userId}`, {
                 headers: {
                     Authorization: "Bearer " + rootState.AuthModule.accessToken,
                 },
@@ -18,7 +23,7 @@ export default {
                 if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN") {
                     await dispatch("AuthModule/doRefresh", null, { root: true });
                     return await axios
-                        .get(`${API_ENDPOINTS.USERS}`, {
+                        .get(`${API_ENDPOINTS.USERS}`+`/${userId}`, {
                             headers: {
                                 Authorization: "Bearer " + rootState.AuthModule.accessToken,
                             },
