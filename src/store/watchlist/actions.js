@@ -7,15 +7,17 @@ export default {
 
         const data = [];
 
-        let products = await axios.get("http://localhost:3000/api/users/watchlist", {headers: {
-            'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
-        }}).then((response) => {
+        let products = await axios.get("http://localhost:3000/api/products/bidders/watchlist", {
+            headers: {
+                Authorization: "Bearer " + rootState.AuthModule.accessToken,
+            },
+        }).then((response) => {
                 return response.data;
         }).catch( async (error) => {
             if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN")
             {
                 await dispatch('AuthModule/doRefresh', null, { root: true });
-                return await axios.get("http://localhost:3000/api/users/watchlist",{headers: {
+                return await axios.get("http://localhost:3000/api/products/bidders/watchlist",{headers: {
                     'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
                 }}).then((response) => {
                     return response.data;
@@ -46,10 +48,10 @@ export default {
         }, 500);
     },
 
-    async removeItem({ commit,rootState }, id) {
+    async removeItem({ commit,rootState,dispatch }, id) {
         commit("setLoadingState", true);
 
-        await axios.delete("http://localhost:3000/api/users/watchlist", {
+        await axios.delete("http://localhost:3000/api/products/bidders/watchlist", {
             headers: {
             'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
             },
@@ -62,7 +64,7 @@ export default {
             if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN")
             {
                 await dispatch('AuthModule/doRefresh', null, { root: true });
-                await axios.delete("http://localhost:3000/api/users/watchlist", {
+                await axios.delete("http://localhost:3000/api/products/bidders/watchlist", {
                     headers: {
                     'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
                     },
@@ -70,18 +72,22 @@ export default {
                         product_id: id,
                     },
                 }).then((response) => {
+                    setTimeout(() => {
+                        commit("removeItem", id);
+                        commit("setLoadingState", false);
+                        showSnack(`Removed item ${id}`);
+                    }, 250);
                     return response.data;
                 })
                 .catch((error) => {
+                    setTimeout(() => {
+                        commit("setLoadingState", false);
+                        showSnack(`Can't removed item ${id}`);
+                    }, 250);
                     console.log(error.response.data)
                 });
             }
         });
 
-        setTimeout(() => {
-            commit("removeItem", id);
-            commit("setLoadingState", false);
-            showSnack(`Removed item ${id}`);
-        }, 250);
     },
 };

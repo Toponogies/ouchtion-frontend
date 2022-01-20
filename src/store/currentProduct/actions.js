@@ -93,9 +93,9 @@ export default {
         // call API with current product id
         commit("appendProductDescriptions", {
             description,
-            upload_date: today(),
+            upload_date: 1,//today(),
             isInit: false,
         });
-        showSnack("Description appended.");
+        //showSnack("Description appended.");
     },
 };

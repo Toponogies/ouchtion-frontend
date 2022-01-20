@@ -1,16 +1,23 @@
 import axios from "axios";
+import jwt from "jsonwebtoken";
+
 export default {
     async doGetUser({ commit, rootState, dispatch }) {
         if (rootState.AuthModule.accessToken === null) return;
 
+        // sprase jwt
+        let decoded = jwt.decode(rootState.AuthModule.accessToken);
+        let {userId} = decoded;
+
         // get user info
         let user = await axios
-            .get("http://localhost:3000/api/users", {
+            .get("http://localhost:3000/api/users"+`/${userId}`, {
                 headers: {
                     Authorization: "Bearer " + rootState.AuthModule.accessToken,
                 },
             })
             .then((response) => {
+                commit("updateUser", response.data);
                 return response.data;
             })
             .catch(async (error) => {
@@ -24,6 +31,7 @@ export default {
                             },
                         })
                         .then((response) => {
+                            commit("updateUser", response.data);
                             return response.data;
                         })
                         .catch((error) => {
@@ -40,8 +48,6 @@ export default {
             });
             user.point = temp.point;
         }
-
-        commit("updateUser", user);
     },
 
     /*

@@ -48,7 +48,7 @@ export default {
             });
             commit("updateProductsMostBidders", productsMostBidders);
     
-            products = await axios.get("http://localhost:3000/api/products", { params: { sort: "price_asc",number: HOME_FEATURED_PRODUCTS_LIMIT } }).then((response) => {
+            products = await axios.get("http://localhost:3000/api/products", { params: { sort: "price_desc",number: HOME_FEATURED_PRODUCTS_LIMIT } }).then((response) => {
                 return response.data;
             })
             let productsHighestPrice = []

@@ -1,7 +1,8 @@
+import { showSnack } from "@/utils/showSnack";
 import axios from "axios";
 
 export default {
-    async doLogin({ commit, dispatch }, loginData) {
+    doLogin({ commit, dispatch }, loginData) {
         commit("loginStart");
 
         axios
@@ -9,12 +10,12 @@ export default {
                 ...loginData,
             })
             .then((response) => {
-                localStorage.setItem("accessToken_ouchtion", response.data.accessToken);
-                localStorage.setItem("refreshToken_ouchtion", response.data.refreshToken);
+                localStorage.setItem("accessToken_ouchtion", response.data.access_token);
+                localStorage.setItem("refreshToken_ouchtion", response.data.refresh_token);
 
                 commit("loginStop", null);
-                commit("updateAccessToken", response.data.accessToken);
-                commit("updateRefreshToken", response.data.refreshToken);
+                commit("updateAccessToken", response.data.access_token);
+                commit("updateRefreshToken", response.data.refresh_token);
                 commit("setModalState", false);
 
                 dispatch('CurrentUserModule/doGetUser', null, { root: true });
@@ -49,9 +50,9 @@ export default {
                 refreshToken: state.refreshToken,
             })
             .then((response) => {
-                localStorage.setItem("accessToken_ouchtion", response.data.accessToken);
+                localStorage.setItem("accessToken_ouchtion", response.data.access_token);
                 commit("refreshStop", null);
-                commit("updateAccessToken", response.data.accessToken);
+                commit("updateAccessToken", response.data.access_token);
             })
             .catch((error) => {
                 console.log(error.response.data);
@@ -60,46 +61,73 @@ export default {
                 dispatch('CurrentUserModule/doGetUser', null, { root: true });
             });
     },
-    doRegister({ commit }, registerData) {
+    doRegister(_context, registerData) {
         axios
             .post("http://localhost:3000/api/auth/register", {
                 ...registerData,
             })
-            .then()
-            .catch((error) => {
-                commit("registerStop", error.response.data);
+            .then(() => {
+                setTimeout(() => {
+                    showSnack(`Register success please check email to verify`);
+                }, 250);
+                return;
+            })
+            .catch(() => {
+                setTimeout(() => {
+                    showSnack(`Can't register`);
+                }, 250);
+               return;
             });
     },
-    doVerify({ commit }, token) {
+    doVerify(_context, token) {
         axios
-            .post("http://localhost:3000/api/auth/verify", null, { params: { token: token } })
-            .then(()=> {
-                commit("verifyStop", null);
+            .post("http://localhost:3000/api/auth/verify", {token:token})
+            .then(() => {
+                setTimeout(() => {
+                    showSnack(`Verify success`);
+                }, 250);
+                return;
             })
             .catch((error) => {
-                commit("verifyStop", error.response.data);
+                console.log(error.response.data);
+                setTimeout(() => {
+                    showSnack(`Can't verify`);
+                }, 250);
+               return;
             });
     },
-    doSendReset({ commit }, email) {
+    doSendReset(_context, email) {
         axios
-            .post("http://localhost:3000/api/auth/reset", null, { params: { email: email } })
-            .then(()=> {
-                commit("resetStop", null);
+            .post("http://localhost:3000/api/auth/reset", { email: email })
+            .then(() => {
+                setTimeout(() => {
+                    showSnack(`Send reset to email success`);
+                }, 250);
+                return;
             })
-            .catch((error) => {
-                commit("resetStop", error.response.data);
+            .catch(() => {
+                setTimeout(() => {
+                    showSnack(`Can't send email`);
+                }, 250);
+               return;
             });
     },
-    doReset({ commit }, resetBody) {
+    doReset(_context, resetBody) {
         axios
             .put("http://localhost:3000/api/auth/reset", {
                 ...resetBody,
             })
-            .then(()=> {
-                commit("resetStop", null);
+            .then(() => {
+                setTimeout(() => {
+                    showSnack(`Password reset`);
+                }, 250);
+                return;
             })
-            .catch((error) => {
-                commit("resetStop", error.response.data);
+            .catch(() => {
+                setTimeout(() => {
+                    showSnack(`Can't reset`);
+                }, 250);
+               return;
             });
     },
 };

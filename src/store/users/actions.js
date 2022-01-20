@@ -9,7 +9,6 @@ export default {
                 id: 1,
                 full_name: "AB Nguyen",
                 email: "ab.nguyen@ouchtion.app",
-                role: "bidder",
                 address: "1 Road, City",
                 dob: "2000-01-01T00:00:00.000Z",
                 is_active: 1,
@@ -19,7 +18,6 @@ export default {
                 id: 2,
                 full_name: "AB Nguyen",
                 email: "ab.nguyen@ouchtion.app",
-                role: "bidder",
                 address: "1 Road, City",
                 dob: "2000-01-01T00:00:00.000Z",
                 is_active: 1,
@@ -29,7 +27,6 @@ export default {
                 id: 3,
                 full_name: "AB Nguyen",
                 email: "ab.nguyen@ouchtion.app",
-                role: "bidder",
                 address: "1 Road, City",
                 dob: "2000-01-01T00:00:00.000Z",
                 is_active: 1,
@@ -70,9 +67,9 @@ export default {
         showSnack(`Updated user id = ${payload.id}`);
     },
 
-    updatePassword({ commit }, { id, password }) {
-        // call API to set password separately -- store does not save password
-    },
+    // updatePassword({ commit }, { id, password }) {
+    //     // call API to set password separately -- store does not save password
+    // },
 
     delete({ commit }, id) {
         commit("setIsLoading", true);

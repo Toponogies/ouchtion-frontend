@@ -4,7 +4,7 @@ import { showSnack } from "@/utils/showSnack";
 export default {
     async fetchAll({ commit }) {
         try {
-            const categories = await axios.get("http://localhost:3000/api/categorys").then((res) => {
+            const categories = await axios.get("http://localhost:3000/api/categories").then((res) => {
                 return res.data;
             });
             commit("setCategories", categories);

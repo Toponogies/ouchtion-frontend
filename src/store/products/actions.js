@@ -67,7 +67,7 @@ export default {
             }
         });
 
-        let rates = await axios.get(`http://localhost:3000/api/users/rate`, {headers: {
+        let rates = await axios.get(`http://localhost:3000/api/users/all/rate`, {headers: {
                 'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
         }}).then((response) => {
             return response.data;

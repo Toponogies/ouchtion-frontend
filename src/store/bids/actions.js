@@ -6,7 +6,7 @@ export default {
         commit("setOngoingBidsLoadingState", true);
         const data = [];
 
-        let products = await axios.get("http://localhost:3000/api/products/bidding", {headers: {
+        let products = await axios.get("http://localhost:3000/api/products/bidders/ongoingBids", {headers: {
                 'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
             }}).then((response) => {
                     return response.data;
@@ -15,7 +15,7 @@ export default {
                 if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN")
                 {
                     await dispatch('AuthModule/doRefresh', null, { root: true });
-                    return await axios.get("http://localhost:3000/api/products/won",{headers: {
+                    return await axios.get("http://localhost:3000/api/products/bidders/ongoingBids",{headers: {
                         'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
                     }}).then((response) => {
                         return response.data;
@@ -45,7 +45,7 @@ export default {
         commit("setCompletedBidsLoadingState", true);
         const data = [];
 
-        let products = await axios.get("http://localhost:3000/api/products/won", {headers: {
+        let products = await axios.get("http://localhost:3000/api/products/bidders/completedBids", {headers: {
                 'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
             }}).then((response) => {
                     return response.data;
@@ -54,7 +54,7 @@ export default {
                 if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN")
                 {
                     await dispatch('AuthModule/doRefresh', null, { root: true });
-                    return await axios.get("http://localhost:3000/api/products/won",{headers: {
+                    return await axios.get("http://localhost:3000/api/products/bidders/completedBids",{headers: {
                         'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
                     }}).then((response) => {
                         return response.data;
@@ -66,7 +66,7 @@ export default {
                 }
             });
 
-        let rates = await axios.get(`http://localhost:3000/api/users/rate`, {headers: {
+        let rates = await axios.get(`http://localhost:3000/api/users/all/rate`, {headers: {
                 'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
         }}).then((response) => {
             return response.data;
