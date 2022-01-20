@@ -6,7 +6,7 @@ export default {
         commit("setOngoingProductsLoadingState", true);
         const data = [];
 
-        let products = await axios.get("http://localhost:3000/api/products/active", {headers: {
+        let products = await axios.get("http://localhost:3000/api/products/sellers/ongoingProducts", {headers: {
                 'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
             }}).then((response) => {
                     return response.data;
@@ -15,7 +15,7 @@ export default {
                 if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN")
                 {
                     await dispatch('AuthModule/doRefresh', null, { root: true });
-                    return await axios.get("http://localhost:3000/api/products/active",{headers: {
+                    return await axios.get("http://localhost:3000/api/products/sellers/ongoingProducts",{headers: {
                         'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
                     }}).then((response) => {
                         return response.data;
@@ -46,7 +46,7 @@ export default {
         commit("setCompletedProductsLoadingState", true);
         const data = [];
 
-        let products = await axios.get("http://localhost:3000/api/products/inactive", {headers: {
+        let products = await axios.get("http://localhost:3000/api/products/sellers/finishedProducts", {headers: {
                 'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
         }}).then((response) => {
                 return response.data;
@@ -55,7 +55,7 @@ export default {
             if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN")
             {
                 await dispatch('AuthModule/doRefresh', null, { root: true });
-                return await axios.get("http://localhost:3000/api/products/inactive",{headers: {
+                return await axios.get("http://localhost:3000/api/products/sellers/finishedProducts",{headers: {
                     'Authorization': 'Bearer '+ rootState.AuthModule.accessToken,
                 }}).then((response) => {
                     return response.data;
