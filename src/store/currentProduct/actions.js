@@ -3,8 +3,10 @@ import { getProduct, getProductDescription, getProductImage, getProductBidding }
 
 import { find } from "lodash-es";
 import { generateCategories, generateMockProduct } from "@/utils/mockUtils";
-import { toLongTimestamp } from "@/utils/timeUtils";
+import { today, toLongTimestamp } from "@/utils/timeUtils";
 import { hiddenName } from "@/utils/hiddenName";
+import { showSnack } from "@/utils/showSnack";
+
 
 export default {
     setProductId({ commit }, { id }) {
@@ -93,9 +95,9 @@ export default {
         // call API with current product id
         commit("appendProductDescriptions", {
             description,
-            upload_date: 1,//today(),
+            upload_date: today(),
             isInit: false,
         });
-        //showSnack("Description appended.");
+        showSnack("Description appended.");
     },
 };
