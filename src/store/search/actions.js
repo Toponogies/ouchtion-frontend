@@ -1,4 +1,4 @@
-import { SEARCH_TYPES, SEARCH_RESULTS_PER_PAGE } from "@/utils/constants";
+import { SEARCH_TYPES, SEARCH_RESULTS_PER_PAGE, API_ENDPOINTS, API_IMAGE_ENDPOINT } from "@/utils/constants";
 import axios from "axios";
 
 export default {
@@ -19,7 +19,8 @@ export default {
     },
 
     async fetchResult({ commit, state }) {
-        let total, result = [];
+        let total,
+            result = [];
         let keyword = undefined;
         let category = undefined;
         let products = [];
@@ -34,34 +35,40 @@ export default {
                 break;
         }
 
-        try{
-            products = await axios.get("http://localhost:3000/api/products",
-            { params: { 
-                query: keyword,
-                category: category,
-             } }).then((response) => {
-                return response.data;
-            })
-    
+        try {
+            products = await axios
+                .get(`${API_ENDPOINTS.PRODUCTS}`, {
+                    params: {
+                        query: keyword,
+                        category: category,
+                    },
+                })
+                .then((response) => {
+                    return response.data;
+                });
+
             total = products.length;
-    
-            products = await axios.get("http://localhost:3000/api/products",
-            { params: { 
-                query: keyword,
-                category: category,
-                number: SEARCH_RESULTS_PER_PAGE,
-                page: state.queryPage - 1
-             } }).then((response) => {
-                return response.data;
-            })
-         
-            let user = null
-            products.forEach(product => {
-                user = axios.get(`http://localhost:3000/api/users/${product.buyer_id}/point`)
+
+            products = await axios
+                .get(`${API_ENDPOINTS.PRODUCTS}`, {
+                    params: {
+                        query: keyword,
+                        category: category,
+                        number: SEARCH_RESULTS_PER_PAGE,
+                        page: state.queryPage - 1,
+                    },
+                })
+                .then((response) => {
+                    return response.data;
+                });
+
+            let user = null;
+            products.forEach((product) => {
+                user = axios.get(`${API_ENDPOINTS.USERS}/${product.buyer_id}/point`);
                 result.push({
                     id: product.product_id,
                     title: product.name,
-                    image: "http://localhost:3000/"+ product.avatar,
+                    image: `${API_IMAGE_ENDPOINT}/${product.avatar}`,
                     bidderCount: product.bidding_count,
                     bidHighestPrice: product.current_price,
                     bidHighestUser: user.full_name,
@@ -69,12 +76,11 @@ export default {
                     startTime: product.start_at,
                     endTime: product.end_at,
                     isOnWatchlist: false,
-                })
+                });
             });
-    
+
             commit("setResult", { total, result });
-        }
-        catch(error){
+        } catch (error) {
             console.log(error.response.data);
         }
     },

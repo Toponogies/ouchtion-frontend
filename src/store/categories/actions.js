@@ -1,10 +1,12 @@
 import axios from "axios";
 import { showSnack } from "@/utils/showSnack";
+import { API_ENDPOINTS } from "@/utils/constants";
+import { findIndex } from "lodash-es";
 
 export default {
     async fetchAll({ commit }) {
         try {
-            const categories = await axios.get("http://localhost:3000/api/categorys").then((res) => {
+            const categories = await axios.get(`${API_ENDPOINTS.CATEGORIES}`).then((res) => {
                 return res.data;
             });
             commit("setCategories", categories);
@@ -23,11 +25,9 @@ export default {
                 parent_category_id: null,
                 name,
             };
-            const newCategory = await axios
-                .post("http://localhost:3000/api/categorys", payload, { headers })
-                .then((res) => {
-                    return res.data;
-                });
+            const newCategory = await axios.post(`${API_ENDPOINTS.CATEGORIES}`, payload, { headers }).then((res) => {
+                return res.data;
+            });
             const id = newCategory.category_id;
 
             // commit to store
@@ -49,11 +49,9 @@ export default {
                 parent_category_id: parentId,
                 name,
             };
-            const newCategory = await axios
-                .post("http://localhost:3000/api/categorys", payload, { headers })
-                .then((res) => {
-                    return res.data;
-                });
+            const newCategory = await axios.post(`${API_ENDPOINTS.CATEGORIES}`, payload, { headers }).then((res) => {
+                return res.data;
+            });
             const childId = newCategory.category_id;
             const _parentId = newCategory.parent_category_id;
 
@@ -66,10 +64,30 @@ export default {
         }
     },
 
-    edit({ commit }, { id, name }) {
-        // API
-        commit("edit", { id, name });
-        showSnack(`Item edited, id = ${id}, name = ${name}`);
+    async edit({ commit, state }, { id, name }) {
+        try {
+            // get current category object from given id
+            let parent_category_id = findIndex(state.categories, { category_id: id })?.parent_category_id;
+            if (!parent_category_id) throw new Error();
+
+            // call API
+            const payload = {
+                parent_category_id,
+                name,
+            };
+            const headers = {
+                Authorization: "Bearer " + rootState.AuthModule.accessToken,
+            };
+            const result = await axios.put(`${API_ENDPOINTS.CATEGORIES}/${id}`, payload, { headers });
+            if (result.name !== name) throw new Error();
+
+            // commit to store
+            commit("edit", { id, name });
+            showSnack(`Item edited, id = ${id}, name = ${name}`);
+        } catch (error) {
+            console.log(error);
+            showSnack("Failed to edit category");
+        }
     },
 
     async remove({ commit, rootState }, id) {
@@ -78,7 +96,7 @@ export default {
             const headers = {
                 Authorization: "Bearer " + rootState.AuthModule.accessToken,
             };
-            await axios.delete(`http://localhost:3000/api/categorys/${id}`, { headers });
+            await axios.delete(`${API_ENDPOINTS.CATEGORIES}/${id}`, { headers });
 
             // commit to store
             commit("remove", id);

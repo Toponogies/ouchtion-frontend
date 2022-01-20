@@ -1,5 +1,5 @@
 export default {
-    updateUser: (state, user) => {
+    updateUser(state, user) {
         state.id = user.user_id;
         state.username = user.full_name;
         state.email = user.email;

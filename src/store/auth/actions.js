@@ -1,3 +1,4 @@
+import { API_ENDPOINTS } from "@/utils/constants";
 import axios from "axios";
 
 export default {
@@ -5,19 +6,22 @@ export default {
         commit("loginStart");
 
         axios
-            .post("http://localhost:3000/api/auth", {
+            .post(`${API_ENDPOINTS.AUTH}`, {
                 ...loginData,
             })
             .then((response) => {
-                localStorage.setItem("accessToken_ouchtion", response.data.accessToken);
-                localStorage.setItem("refreshToken_ouchtion", response.data.refreshToken);
+                localStorage.setItem("accessToken_ouchtion", response.data.access_token);
+                localStorage.setItem("refreshToken_ouchtion", response.data.refresh_token);
 
                 commit("loginStop", null);
-                commit("updateAccessToken", response.data.accessToken);
-                commit("updateRefreshToken", response.data.refreshToken);
+                commit("updateAccessToken", response.data.access_token);
+
+                // extract id from access token, then decode using secret
+
+                commit("updateRefreshToken", response.data.refresh_token);
                 commit("setModalState", false);
 
-                dispatch('CurrentUserModule/doGetUser', null, { root: true });
+                dispatch("CurrentUserModule/doGetUser", null, { root: true });
             })
             .catch((error) => {
                 commit("loginStop", error.response.data);
@@ -25,26 +29,27 @@ export default {
                 commit("updateRefreshToken", null);
             });
     },
-    doLogout({ commit,dispatch }) {
+
+    doLogout({ commit, dispatch }) {
         localStorage.setItem("accessToken_ouchtion", null);
         localStorage.setItem("refreshToken_ouchtion", null);
         commit("updateAccessToken", null);
         commit("updateRefreshToken", null);
-        dispatch('CurrentUserModule/logOutUser', null, { root: true });
+        dispatch("CurrentUserModule/logOutUser", null, { root: true });
     },
+
     fetchAccessToken({ commit, state, dispatch }) {
-        if (state.accessToken === null)
-        {
+        if (state.accessToken === null) {
             commit("updateAccessToken", localStorage.getItem("accessToken_ouchtion"));
             commit("updateRefreshToken", localStorage.getItem("refreshToken_ouchtion"));
-            dispatch('CurrentUserModule/doGetUser', null, { root: true });
+            dispatch("CurrentUserModule/doGetUser", null, { root: true });
         }
     },
+
     async doRefresh({ commit, state, dispatch }) {
-        if (state.accessToken === null)
-            return;
+        if (state.accessToken === null) return;
         axios
-            .post("http://localhost:3000/api/auth/refresh", {
+            .post(`${API_ENDPOINTS.AUTH}/refresh`, {
                 accessToken: state.accessToken,
                 refreshToken: state.refreshToken,
             })
@@ -57,12 +62,13 @@ export default {
                 console.log(error.response.data);
                 commit("refreshStop", error.response.data);
                 commit("updateAccessToken", null);
-                dispatch('CurrentUserModule/doGetUser', null, { root: true });
+                dispatch("CurrentUserModule/doGetUser", null, { root: true });
             });
     },
+
     doRegister({ commit }, registerData) {
         axios
-            .post("http://localhost:3000/api/auth/register", {
+            .post(`${API_ENDPOINTS.AUTH}/register`, {
                 ...registerData,
             })
             .then()
@@ -70,32 +76,35 @@ export default {
                 commit("registerStop", error.response.data);
             });
     },
+
     doVerify({ commit }, token) {
         axios
-            .post("http://localhost:3000/api/auth/verify", null, { params: { token: token } })
-            .then(()=> {
+            .post(`${API_ENDPOINTS.AUTH}/verify`, null, { params: { token: token } })
+            .then(() => {
                 commit("verifyStop", null);
             })
             .catch((error) => {
                 commit("verifyStop", error.response.data);
             });
     },
+
     doSendReset({ commit }, email) {
         axios
-            .post("http://localhost:3000/api/auth/reset", null, { params: { email: email } })
-            .then(()=> {
+            .post(`${API_ENDPOINTS.AUTH}/reset`, null, { params: { email: email } })
+            .then(() => {
                 commit("resetStop", null);
             })
             .catch((error) => {
                 commit("resetStop", error.response.data);
             });
     },
+
     doReset({ commit }, resetBody) {
         axios
-            .put("http://localhost:3000/api/auth/reset", {
+            .put(`${API_ENDPOINTS.AUTH}/reset`, {
                 ...resetBody,
             })
-            .then(()=> {
+            .then(() => {
                 commit("resetStop", null);
             })
             .catch((error) => {
