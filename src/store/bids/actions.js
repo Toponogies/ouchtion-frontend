@@ -14,7 +14,6 @@ export default {
         } catch (error) {
             console.log(error);
         }
-
         products?.forEach((product) => {
             data.push({
                 primaryImage: `${IMAGE_API_ENDPOINT}/${product.avatar}`,
@@ -43,8 +42,17 @@ export default {
             console.log(error);
         }
 
-
         products?.forEach(async (product) => {
+            // fetch rate for each product
+            let rates = await axios
+                .get(`${API_ENDPOINTS.PRODUCTS}/${product.product_id}/rate`)
+                .then((res) => res.data)
+                .catch((error) => {
+                    console.log(error);
+                    return null;
+                });
+            if (rates === null) return;
+
             let reviewToBidder = {
                 rating: null,
                 comment: null,
@@ -89,12 +97,30 @@ export default {
         }, 500);
     },
 
-    leaveReviewCompleted({ commit }, { id, rating, comment }) {
+    async leaveReviewCompleted({ commit, rootState }, { id, rating, comment }) {
         commit("setCompletedBidsLoadingState", true);
-        setTimeout(() => {
+
+        const headers = {
+            Authorization: "Bearer " + rootState.AuthModule.accessToken,
+        };
+        let payload = {
+            product_id: id,
+            rate: rating,
+            comment: comment ? comment : "",
+        };
+        const success = await axios
+            .post(`${API_ENDPOINTS.USERS}/rate`, payload, { headers })
+            .then(() => true)
+            .catch((err) => {
+                console.log(err);
+                showSnack(`Failed to submit review for product id = ${id}`);
+                return false;
+            });
+
+        if (success) {
             commit("setCompletedBidReview", { id, rating, comment });
             commit("setCompletedBidsLoadingState", false);
-            showSnack(`Review submitted for bid id: ${id}`);
-        }, 250);
+            showSnack(`Review submitted for product id = ${id}`);
+        }
     },
 };

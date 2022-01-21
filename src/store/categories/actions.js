@@ -60,8 +60,8 @@ export default {
     async edit({ commit, state, rootState }, { id, name }) {
         try {
             // get current category object from given id
-            let parent_category_id = findIndex(state.categories, { category_id: id })?.parent_category_id;
-            if (!parent_category_id) throw new Error();
+            const targetIndex = findIndex(state.categories, { category_id: id });
+            const parent_category_id = state.categories[targetIndex].parent_category_id;
 
             // call API
             const payload = {

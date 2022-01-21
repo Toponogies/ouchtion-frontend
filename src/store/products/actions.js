@@ -14,7 +14,6 @@ export default {
         } catch (error) {
             console.log(error);
         }
-
         products?.forEach((product) => {
             data.push({
                 primaryImage: `${IMAGE_API_ENDPOINT}/${product.avatar}`,
@@ -36,16 +35,23 @@ export default {
         const data = [];
         let products = [];
         let rates = [];
-
         try {
             products = await sellerFinishedProduct(rootState.AuthModule.accessToken);
             rates = await getRates(rootState.AuthModule.accessToken);
         } catch (error) {
             console.log(error);
         }
-
-
         products?.forEach(async (product) => {
+            let rates = await axios
+                .get(`${API_ENDPOINTS.PRODUCTS}/${product.product_id}/rate`)
+                .then((response) => {
+                    return response.data;
+                })
+                .catch((error) => {
+                    console.log(error);
+                    return [];
+                });
+
             let reviewToBidder = {
                 rating: null,
                 comment: null,
@@ -90,12 +96,30 @@ export default {
         }, 500);
     },
 
-    leaveReviewCompleted({ commit }, { id, rating, comment }) {
+    async leaveReviewCompleted({ commit, rootState }, { id, rating, comment }) {
         commit("setCompletedProductsLoadingState", true);
-        setTimeout(() => {
+
+        const headers = {
+            Authorization: "Bearer " + rootState.AuthModule.accessToken,
+        };
+        let payload = {
+            product_id: id,
+            rate: rating,
+            comment: comment ? comment : "",
+        };
+        const success = await axios
+            .post(`${API_ENDPOINTS.USERS}/rate`, payload, { headers })
+            .then(() => true)
+            .catch((err) => {
+                console.log(err);
+                showSnack(`Failed to submit review for product id = ${id}`);
+                return false;
+            });
+
+        if (success) {
             commit("setCompletedBidReview", { id, rating, comment });
             commit("setCompletedProductsLoadingState", false);
-            showSnack(`Review submitted for bid id: ${id}`);
-        }, 250);
+            showSnack(`Review submitted for product id = ${id}`);
+        }
     },
 };

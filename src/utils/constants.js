@@ -38,3 +38,6 @@ export const SEARCH_PAGINATION_VISIBLE_PAGES = 7;
 export const DELTA_THRESHOLD_START_SHOW_BADGE = 21600; // 6 hours
 export const DELTA_THRESHOLD_END_SHOW_DAYS = 259200; // 3 days
 export const DELTA_THRESHOLD_END_SHOW_TIME = 86400; // 1 day
+
+/* Comment string for "Bidder did not pay" button */
+export const BIDDER_NOT_PAY_COMMENT = "Người thắng không thanh toán";

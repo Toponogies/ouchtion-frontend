@@ -59,14 +59,14 @@
 
                         <!-- Bidder's comment -->
                         <v-col cols="9">
-                            <span
-                                v-if="item.reviewToSeller.rating === null && item.reviewToSeller.comment === null"
-                                class="grey--text"
-                            >
-                                The seller has not left a review for this bidding yet.
+                            <span v-if="item.reviewToSeller.rating === null" class="grey--text">
+                                The bidder has not left a review for this bidding yet.
                             </span>
                             <span
-                                v-else-if="item.reviewToSeller.rating !== null && item.reviewToSeller.comment === null"
+                                v-else-if="
+                                    item.reviewToSeller.rating !== null &&
+                                    (item.reviewToSeller.comment === null || item.reviewToSeller.comment.length === 0)
+                                "
                                 class="grey--text"
                             >
                                 The seller did not left a comment for this review.
@@ -118,7 +118,10 @@
                         <!-- Seller's comment -->
                         <v-col cols="9">
                             <span
-                                v-if="item.reviewToBidder.rating !== null && item.reviewToBidder.comment === null"
+                                v-if="
+                                    item.reviewToBidder.rating !== null &&
+                                    (item.reviewToBidder.comment === null || item.reviewToBidder.comment.length === 0)
+                                "
                                 class="grey--text"
                             >
                                 You did not left a comment for this review.
@@ -180,6 +183,7 @@
 import { mapState, mapActions } from "vuex";
 import { toLongTimestamp } from "@/utils/timeUtils";
 import { formatPrice } from "@/utils/priceUtils";
+import { BIDDER_NOT_PAY_COMMENT } from "@/utils/constants";
 
 export default {
     name: "SoldProducts",
@@ -226,7 +230,7 @@ export default {
             this.leaveReviewCompleted({
                 id: this.expandedRows[0].id,
                 rating: -1,
-                comment: "Bidder did not pay",
+                comment: BIDDER_NOT_PAY_COMMENT,
             });
             this.clearReviewToBidder();
         },

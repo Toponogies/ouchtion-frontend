@@ -7,7 +7,6 @@ export default {
         try {
             let params1 = { sort: "time_desc", number: HOME_FEATURED_PRODUCTS_LIMIT }
             let products = await getData(params1);
-
             let user = null;
             let productsEndingSoon = [];
             products.forEach(async(product) => {
@@ -48,7 +47,6 @@ export default {
                 });
             });
             commit("updateProductsMostBidders", productsMostBidders);
-
             
             let params3 = { sort: "price_asc", number: HOME_FEATURED_PRODUCTS_LIMIT }
             products = await getData(params3);

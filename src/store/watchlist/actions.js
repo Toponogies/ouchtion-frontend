@@ -8,7 +8,6 @@ export default {
         commit("setLoadingState", true);
 
         const data = [];
-
         try {
             let products = await getWatchList(rootState.AuthModule.accessToken)
 
@@ -35,7 +34,6 @@ export default {
 
     async removeItem({ commit, rootState }, id) {
         commit("setLoadingState", true);
-
         try{
             await deleteWatchList(rootState.AuthModule.accessToken,id);
             setTimeout(() => {
@@ -46,7 +44,7 @@ export default {
         }catch(error){
             setTimeout(() => {
                 commit("setLoadingState", false);
-                showSnack(`Can't removed item ${id}`);
+                showSnack(`Can't remove item id = ${id}`);
             }, 250);
         }
     },
