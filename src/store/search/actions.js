@@ -1,5 +1,6 @@
-import { SEARCH_TYPES, SEARCH_RESULTS_PER_PAGE, API_ENDPOINTS, IMAGE_API_ENDPOINT } from "@/utils/constants";
-import axios from "axios";
+import { getData, getTotal } from "@/api/search";
+import { getUserWithPoint } from "@/api/user";
+import { SEARCH_TYPES, SEARCH_RESULTS_PER_PAGE, IMAGE_API_ENDPOINT } from "@/utils/constants";
 
 export default {
     setQuery({ commit }, { keyword, categoryId, page }) {
@@ -36,35 +37,22 @@ export default {
         }
 
         try {
-            products = await axios
-                .get(`${API_ENDPOINTS.PRODUCTS}`, {
-                    params: {
-                        query: keyword,
-                        category: category,
-                    },
-                })
-                .then((response) => {
-                    return response.data;
-                });
+            products = await getTotal(keyword,category);
 
             total = products.length;
 
-            products = await axios
-                .get(`${API_ENDPOINTS.PRODUCTS}`, {
-                    params: {
-                        query: keyword,
-                        category: category,
-                        number: SEARCH_RESULTS_PER_PAGE,
-                        page: state.queryPage - 1,
-                    },
-                })
-                .then((response) => {
-                    return response.data;
-                });
+            let params = {
+                query: keyword,
+                category: category,
+                number: SEARCH_RESULTS_PER_PAGE,
+                page: state.queryPage - 1,
+            }
+
+            products = await getData(params);
 
             let user = null;
-            products.forEach((product) => {
-                user = axios.get(`${API_ENDPOINTS.USERS}/${product.buyer_id}/point`);
+            products.forEach(async(product) => {
+                user = await getUserWithPoint(product.buyer_id);
                 result.push({
                     id: product.product_id,
                     title: product.name,

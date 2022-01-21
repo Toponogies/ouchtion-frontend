@@ -1,20 +1,17 @@
-import { API_ENDPOINTS, IMAGE_API_ENDPOINT, HOME_FEATURED_PRODUCTS_LIMIT } from "@/utils/constants";
-import axios from "axios";
+import { getData } from "@/api/search";
+import { getUserWithPoint } from "@/api/user";
+import { IMAGE_API_ENDPOINT, HOME_FEATURED_PRODUCTS_LIMIT } from "@/utils/constants";
 
 export default {
     async fetchAll({ commit }) {
         try {
-            let products = await axios
-                .get(`${API_ENDPOINTS.PRODUCTS}`, {
-                    params: { sort: "time_asc", number: HOME_FEATURED_PRODUCTS_LIMIT },
-                })
-                .then((response) => {
-                    return response.data;
-                });
+            let params1 = { sort: "time_desc", number: HOME_FEATURED_PRODUCTS_LIMIT }
+            let products = await getData(params1);
+
             let user = null;
             let productsEndingSoon = [];
-            products.forEach((product) => {
-                user = axios.get(`${API_ENDPOINTS.USERS}/${product.buyer_id}/point`);
+            products.forEach(async(product) => {
+                user = await getUserWithPoint(product.buyer_id);
                 productsEndingSoon.push({
                     id: product.product_id,
                     title: product.name,
@@ -31,16 +28,12 @@ export default {
 
             commit("updateProductsEndingSoon", productsEndingSoon);
 
-            products = await axios
-                .get(`${API_ENDPOINTS.PRODUCTS}`, {
-                    params: { sort: "bidding_desc", number: HOME_FEATURED_PRODUCTS_LIMIT },
-                })
-                .then((response) => {
-                    return response.data;
-                });
+            let params2 = { sort: "bidding_desc", number: HOME_FEATURED_PRODUCTS_LIMIT }
+            products = await getData(params2);
+
             let productsMostBidders = [];
-            products.forEach((product) => {
-                user = axios.get(`${API_ENDPOINTS.USERS}/${product.buyer_id}/point`);
+            products.forEach(async(product) => {
+                user = await getUserWithPoint(product.buyer_id);
                 productsMostBidders.push({
                     id: product.product_id,
                     title: product.name,
@@ -56,16 +49,13 @@ export default {
             });
             commit("updateProductsMostBidders", productsMostBidders);
 
-            products = await axios
-                .get(`${API_ENDPOINTS.PRODUCTS}`, {
-                    params: { sort: "price_asc", number: HOME_FEATURED_PRODUCTS_LIMIT },
-                })
-                .then((response) => {
-                    return response.data;
-                });
+            
+            let params3 = { sort: "price_asc", number: HOME_FEATURED_PRODUCTS_LIMIT }
+            products = await getData(params3);
+
             let productsHighestPrice = [];
-            products.forEach((product) => {
-                user = axios.get(`${API_ENDPOINTS.USERS}/${product.buyer_id}/point`);
+            products.forEach(async(product) => {
+                user = await getUserWithPoint(product.buyer_id);
                 productsHighestPrice.push({
                     id: product.product_id,
                     title: product.name,

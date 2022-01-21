@@ -35,3 +35,54 @@ export async function getProductRelate(category_id) {
         });
 }
 
+export async function sellerOnGoingProduct(accessToken) {
+    return await axios
+    .get(`${API_ENDPOINTS.PRODUCTS}/sellers/ongoingProducts`, {
+        headers: {
+            Authorization: "Bearer " + accessToken,
+        },
+    })
+    .then((response) => {
+        return response.data;
+    })
+}
+
+export async function sellerFinishedProduct(accessToken) {
+    return await axios
+    .get(`${API_ENDPOINTS.PRODUCTS}/sellers/finishedProducts`, {
+        headers: {
+            Authorization: "Bearer " + accessToken,
+        },
+    })
+    .then((response) => {
+        return response.data;
+    })
+}
+
+export async function bidderOngoingProduct(accessToken) {
+    return await axios
+    .get(`${API_ENDPOINTS.PRODUCTS}/bidders/ongoingBids`, {
+        headers: {
+            Authorization: "Bearer " + accessToken,
+        },
+    })
+    .then((response) => {
+        return response.data;
+    })
+}
+
+export async function bidderCompleteProduct(accessToken) {
+    return await axios
+    .get(`${API_ENDPOINTS.PRODUCTS}/bidders/completedBids`, {
+        headers: {
+            Authorization: "Bearer " + accessToken,
+        },
+    })
+    .then((response) => {
+        return response.data;
+    })
+}
+
+
+
+

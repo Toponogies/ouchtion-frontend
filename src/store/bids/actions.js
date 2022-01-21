@@ -1,40 +1,20 @@
-import { API_ENDPOINTS, IMAGE_API_ENDPOINT } from "@/utils/constants";
+import { bidderCompleteProduct, bidderOngoingProduct } from "@/api/product";
+import { getRates } from "@/api/rate";
+import { IMAGE_API_ENDPOINT } from "@/utils/constants";
 import { showSnack } from "@/utils/showSnack";
-import axios from "axios";
 
 export default {
-    async fetchOngoing({ commit, rootState, dispatch }) {
+    async fetchOngoing({ commit, rootState }) {
         commit("setOngoingBidsLoadingState", true);
         const data = [];
+        let products = [];
 
-        let products = await axios
-            .get(`${API_ENDPOINTS.PRODUCTS}/bidders/ongoingBids`, {
-                headers: {
-                    Authorization: "Bearer " + rootState.AuthModule.accessToken,
-                },
-            })
-            .then((response) => {
-                return response.data;
-            })
-            .catch(async (error) => {
-                console.log(error);
-                if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN") {
-                    await dispatch("AuthModule/doRefresh", null, { root: true });
-                    return await axios
-                        .get(`${API_ENDPOINTS.PRODUCTS}/bidders/ongoingBids`, {
-                            headers: {
-                                Authorization: "Bearer " + rootState.AuthModule.accessToken,
-                            },
-                        })
-                        .then((response) => {
-                            return response.data;
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                            return [];
-                        });
-                }
-            });
+        try {
+            products = await bidderOngoingProduct(rootState.AuthModule.accessToken);
+        } catch (error) {
+            console.log(error);
+        }
+
         products?.forEach((product) => {
             data.push({
                 primaryImage: `${IMAGE_API_ENDPOINT}/${product.avatar}`,
@@ -50,52 +30,19 @@ export default {
         }, 500);
     },
 
-    async fetchCompleted({ commit, rootState, dispatch }) {
+    async fetchCompleted({ commit, rootState }) {
         commit("setCompletedBidsLoadingState", true);
         const data = [];
+        let products = [];
+        let rates = [];
 
-        let products = await axios
-            .get(`${API_ENDPOINTS.PRODUCTS}/bidders/completedBids`, {
-                headers: {
-                    Authorization: "Bearer " + rootState.AuthModule.accessToken,
-                },
-            })
-            .then((response) => {
-                return response.data;
-            })
-            .catch(async (error) => {
-                console.log(error);
-                if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN") {
-                    await dispatch("AuthModule/doRefresh", null, { root: true });
-                    return await axios
-                        .get(`${API_ENDPOINTS.PRODUCTS}/bidders/completedBids`, {
-                            headers: {
-                                Authorization: "Bearer " + rootState.AuthModule.accessToken,
-                            },
-                        })
-                        .then((response) => {
-                            return response.data;
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                            return [];
-                        });
-                }
-            });
+        try {
+            products = await bidderCompleteProduct(rootState.AuthModule.accessToken)
+            rates = await getRates(rootState.AuthModule.accessToken);
+        } catch (error) {
+            console.log(error);
+        }
 
-        let rates = await axios
-            .get(`${API_ENDPOINTS.USERS}/rate`, {
-                headers: {
-                    Authorization: "Bearer " + rootState.AuthModule.accessToken,
-                },
-            })
-            .then((response) => {
-                return response.data;
-            })
-            .catch((error) => {
-                console.log(error);
-                return [];
-            });
 
         products?.forEach(async (product) => {
             let reviewToBidder = {

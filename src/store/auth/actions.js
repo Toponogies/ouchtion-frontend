@@ -1,35 +1,30 @@
-import { API_ENDPOINTS } from "@/utils/constants";
+import { login, refresh, register, resetPassword, sendResetEmail, verify } from "@/api/auth";
 import { showSnack } from "@/utils/showSnack";
-import axios from "axios";
 
 export default {
-    doLogin({ commit, dispatch }, loginData) {
+    async doLogin({ commit, dispatch }, loginData) {
         commit("loginStart");
+        try {
+            let {access_token,refresh_token} = await login(loginData)
+            localStorage.setItem("accessToken_ouchtion", access_token);
+            localStorage.setItem("refreshToken_ouchtion", refresh_token);
 
-        axios
-            .post(`${API_ENDPOINTS.AUTH}`, {
-                ...loginData,
-            })
-            .then((response) => {
-                localStorage.setItem("accessToken_ouchtion", response.data.access_token);
-                localStorage.setItem("refreshToken_ouchtion", response.data.refresh_token);
+            commit("loginStop", null);
+            commit("updateAccessToken", access_token);
+            commit("updateRefreshToken", refresh_token);
+            commit("setModalState", false);
 
-                commit("loginStop", null);
-                commit("updateAccessToken", response.data.access_token);
-                commit("updateRefreshToken", response.data.refresh_token);
-                commit("setModalState", false);
-
-                dispatch("CurrentUserModule/doGetUser", null, { root: true });
-            })
-            .catch((error) => {
-                setTimeout(() => {
-                    showSnack(`Login unsuccess`);
-                }, 250);
-                commit("loginStop", error.response.data);
-                commit("updateAccessToken", null);
-                commit("updateRefreshToken", null);
-            });
+            dispatch("CurrentUserModule/doGetUser", null, { root: true });
+        } catch (error) {
+            setTimeout(() => {
+                showSnack(`Login unsuccess`);
+            }, 250);
+            commit("loginStop", error.response.data);
+            commit("updateAccessToken", null);
+            commit("updateRefreshToken", null);
+        }
     },
+
     doLogout({ commit, dispatch }) {
         localStorage.setItem("accessToken_ouchtion", null);
         localStorage.setItem("refreshToken_ouchtion", null);
@@ -37,6 +32,7 @@ export default {
         commit("updateRefreshToken", null);
         dispatch("CurrentUserModule/logOutUser", null, { root: true });
     },
+
     fetchAccessToken({ commit, state, dispatch }) {
         if (state.accessToken === null) {
             commit("updateAccessToken", localStorage.getItem("accessToken_ouchtion"));
@@ -44,91 +40,70 @@ export default {
             dispatch("CurrentUserModule/doGetUser", null, { root: true });
         }
     },
+
     async doRefresh({ commit, state, dispatch }) {
         if (state.accessToken === null) return;
-        axios
-            .post(`${API_ENDPOINTS.AUTH}` + `/refresh`, {
-                refresh_token: state.refreshToken,
-            })
-            .then((response) => {
-                localStorage.setItem("accessToken_ouchtion", response.data.access_token);
-                commit("refreshStop", null);
-                commit("updateAccessToken", response.data.access_token);
-            })
-            .catch((error) => {
-                console.log(error);
-                commit("refreshStop", error.response.data);
-                commit("updateAccessToken", null);
-                dispatch("CurrentUserModule/doGetUser", null, { root: true });
-            });
+
+        try {
+            let {access_token} =  await refresh(state.refreshToken);
+            localStorage.setItem("accessToken_ouchtion", access_token);
+            commit("refreshStop", null);
+            commit("updateAccessToken", access_token);
+        } catch (error) {
+            commit("refreshStop", error.response.data);
+            commit("updateAccessToken", null);
+            dispatch("CurrentUserModule/doGetUser", null, { root: true });
+        }
     },
-    doRegister(_context, registerData) {
-        axios
-            .post(`${API_ENDPOINTS.AUTH}` + `/register`, {
-                ...registerData,
-            })
-            .then(() => {
-                setTimeout(() => {
-                    showSnack(`Register success please check email to verify`);
-                }, 250);
-                return;
-            })
-            .catch(() => {
-                setTimeout(() => {
-                    showSnack(`Can't register`);
-                }, 250);
-                return;
-            });
+
+    async doRegister(_context, registerData) {
+        try {
+            await register(registerData);
+            setTimeout(() => {
+                showSnack(`Register success please check email to verify`);
+            }, 250);
+        } catch (error) {
+            setTimeout(() => {
+                showSnack(`Can't register`);
+            }, 250);
+        }
     },
-    doVerify(_context, token) {
-        axios
-            .post(`${API_ENDPOINTS.AUTH}` + `/verify`, { token: token })
-            .then(() => {
-                setTimeout(() => {
-                    showSnack(`Verify success`);
-                }, 250);
-                return;
-            })
-            .catch((error) => {
-                console.log(error);
-                setTimeout(() => {
-                    showSnack(`Can't verify`);
-                }, 250);
-                return;
-            });
+
+    async doVerify(_context, token) {
+        try {
+            await verify(token);
+            setTimeout(() => {
+                showSnack(`Verify success`);
+            }, 250);
+        } catch (error) {
+            console.log(error);
+            setTimeout(() => {
+                showSnack(`Can't verify`);
+            }, 250);
+        }
     },
-    doSendReset(_context, email) {
-        axios
-            .post(`${API_ENDPOINTS.AUTH}` + `/reset`, { email: email })
-            .then(() => {
-                setTimeout(() => {
-                    showSnack(`Send reset to email success`);
-                }, 250);
-                return;
-            })
-            .catch(() => {
-                setTimeout(() => {
-                    showSnack(`Can't send email`);
-                }, 250);
-                return;
-            });
+    async doSendReset(_context, email) {
+        try {
+            await sendResetEmail(email);
+            setTimeout(() => {
+                showSnack(`Send reset to email success`);
+            }, 250);
+        } catch (error) {
+            setTimeout(() => {
+                showSnack(`Can't send email`);
+            }, 250);
+        }
     },
-    doReset(_context, resetBody) {
-        axios
-            .put(`${API_ENDPOINTS.AUTH}` + `/reset`, {
-                ...resetBody,
-            })
-            .then(() => {
-                setTimeout(() => {
-                    showSnack(`Password reset`);
-                }, 250);
-                return;
-            })
-            .catch(() => {
-                setTimeout(() => {
-                    showSnack(`Can't reset`);
-                }, 250);
-                return;
-            });
+    async doReset(_context, resetBody) {
+        try {
+            await resetPassword(resetBody);
+            setTimeout(() => {
+                showSnack(`Password reset`);
+            }, 250);
+        } catch (error) {
+            setTimeout(() => {
+                showSnack(`Can't reset`);
+            }, 250);
+        }
     },
 };
