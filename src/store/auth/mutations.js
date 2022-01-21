@@ -19,4 +19,15 @@ export default {
     setModalState(state, isOpen) {
         state.isModalOpened = isOpen;
     },
+
+    clearAll(state) {
+        state = {
+            accessToken: null,
+            refreshToken: null,
+            loggingIn: false,
+            loginError: null,
+            refreshError: null,
+            isModalOpened: false,
+        };
+    },
 };

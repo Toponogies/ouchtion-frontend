@@ -11,6 +11,7 @@ export const API_ENDPOINTS = {
     CATEGORIES: `${API_ENDPOINT_BASE}/categories`,
     PRODUCTS: `${API_ENDPOINT_BASE}/products`,
     BIDDINGS: `${API_ENDPOINT_BASE}/biddings`,
+    ADMIN: `${API_ENDPOINT_BASE}/admin`,
 };
 
 /* User roles */

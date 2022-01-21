@@ -11,6 +11,7 @@ export const ProductsAdminModule = {
             { text: "Product Name", value: "name" },
             { text: "Ends at", value: "endTime" },
             { text: "Price (\u20AB)", value: "highestBidPrice" },
+            { value: "isSold" },
             { text: "Actions", value: "actions", sortable: false, align: "end" },
         ],
         products: [],

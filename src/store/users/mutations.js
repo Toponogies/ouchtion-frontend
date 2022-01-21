@@ -11,7 +11,8 @@ export default {
     createUser(state, payload) {
         state.users.push(payload);
     },
-    updateUser(state, payload) { // chưa update được
+    updateUser(state, payload) {
+        // chưa update được
         const targetIndex = findIndex(state.users, { id: payload.id });
         const targetItem = {
             ...state.users[targetIndex],
@@ -50,5 +51,14 @@ export default {
     removeUpgradeRequest(state, id) {
         const targetIndex = findIndex(state.upgradeRequests, { userId: id });
         state.upgradeRequests.splice(targetIndex, 1);
+    },
+
+    clearAll(state) {
+        state = {
+            ...state,
+            isLoading: false,
+            users: [],
+            upgradeRequests: [],
+        };
     },
 };

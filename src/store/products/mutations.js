@@ -22,4 +22,17 @@ export default {
         };
         state.completedProducts.items.splice(targetIndex, 1, targetItem);
     },
+
+    clearAll(state) {
+        state.ongoingProducts = {
+            ...state.ongoingProducts,
+            isLoading: false,
+            items: [],
+        };
+        state.completedProducts = {
+            ...state.completedProducts,
+            isLoading: false,
+            items: [],
+        };
+    },
 };

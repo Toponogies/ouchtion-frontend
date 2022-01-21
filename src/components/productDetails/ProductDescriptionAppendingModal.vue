@@ -23,7 +23,7 @@
             <!-- Confirm button -->
             <v-row no-gutters class="px-4 pb-4">
                 <v-spacer></v-spacer>
-                <v-btn color="primary" @click="handleSubmit()" :disabled="isDescriptionEmpty === false">Append</v-btn>
+                <v-btn color="primary" @click="handleSubmit()" :disabled="isDescriptionEmpty">Append</v-btn>
             </v-row>
         </v-card>
     </v-dialog>

@@ -1,12 +1,28 @@
 <template>
     <v-container class="ma-0 pa-0">
         <v-card class="pa-4">
+            <!-- Header -->
             <div id="search-result-header" class="text-h5 font-weight-bold pa-2">
-                <span v-if="queryType === utils.SEARCH_TYPES.KEYWORD">
-                    {{ resultTotalCount }} results for "{{ queryContent }}"
-                </span>
-                <span v-else> Products in category "{{ utils.getCategoryName(queryContent) }}" </span>
+                <div v-if="queryType === utils.SEARCH_TYPES.KEYWORD">
+                    <span v-if="resultTotalCount === 0"> No results for "{{ queryContent }}" </span>
+                    <span v-else> {{ resultTotalCount }} results for "{{ queryContent }}" </span>
+                </div>
+                <div v-else-if="queryType === utils.SEARCH_TYPES.CATEGORY">
+                    Products in category "{{ utils.getCategoryName(queryContent) }}"
+                </div>
             </div>
+
+            <!-- Placeholder (no results) -->
+            <v-row no-gutters class="pa-2" v-if="resultTotalCount === 0">
+                <v-col>
+                    <v-row no-gutters justify="center" align="center" class="d-flex flex-column">
+                        <v-icon large color="grey" class="mb-1">mdi-magnify</v-icon>
+                        <div class="grey--text mt-1">No results</div>
+                    </v-row>
+                </v-col>
+            </v-row>
+
+            <!-- Listing -->
             <v-row no-gutters class="pa-2" v-for="product in resultCurrentContent" :key="product.id">
                 <product-card-large
                     :id="product.id"
@@ -21,12 +37,15 @@
                     :isOnWatchlist="product.isOnWatchlist"
                 ></product-card-large>
             </v-row>
+
+            <!-- List pager -->
             <v-pagination
                 circle
                 class="pt-4"
                 :length="resultPageCount"
                 v-model="local_queryPage"
                 :total-visible="resultPagerVisibleCount"
+                v-if="resultTotalCount > 0"
             ></v-pagination>
         </v-card>
     </v-container>

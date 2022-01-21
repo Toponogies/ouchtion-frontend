@@ -8,13 +8,13 @@ import { hiddenName } from "@/utils/hiddenName";
 import { IMAGE_API_ENDPOINT } from "@/utils/constants";
 import { showSnack } from "@/utils/showSnack";
 
-
 export default {
     setProductId({ commit }, id) {
-        commit("setProductId", id);
+        commit("setProductId", parseInt(id));
     },
 
-    async fetchAllDetails({ commit, state }) {
+    async fetchAllDetails({ commit, dispatch, state, rootState }) {
+        // Basic info
         let productInfo = {};
         try {
             productInfo = await getProduct(state.id);
@@ -23,6 +23,7 @@ export default {
             console.log(`Fetching product info failed: ${error}`);
         }
 
+        // Categories
         try {
             const categoryOfProduct = await getCategory(productInfo.category_id);
             commit("setCategoriesOfProduct", [categoryOfProduct]);
@@ -30,6 +31,7 @@ export default {
             console.log(`Fetching categories of this product failed: ${error}`);
         }
 
+        // Seller username/rating
         try {
             const sellerInfo = await getUserWithPoint(productInfo.seller_id);
             commit("setSellerInfo", sellerInfo);
@@ -37,6 +39,7 @@ export default {
             console.log(`Fetching seller info failed: ${error}`);
         }
 
+        // Highest bidder username/rating
         try {
             const highestBidderInfo = await getUserWithPoint(productInfo.buyer_id);
             commit("setHighestBidderInfo", highestBidderInfo);
@@ -44,6 +47,7 @@ export default {
             console.log(`Fetching highest bidder info failed: ${error}`);
         }
 
+        // Descriptions
         try {
             let productDescriptions = await getProductDescription(state.id);
             // Mark the first description as primary
@@ -56,6 +60,7 @@ export default {
             console.log(`Fetching product descriptions failed: ${error}`);
         }
 
+        // Images
         try {
             let productImages = await getProductImage(state.id);
             // Turn relative paths to absolute paths
@@ -64,13 +69,14 @@ export default {
                 path: `${IMAGE_API_ENDPOINT}/${each.path}`,
             }));
             // Split into primary and secondary group
-            let primaryImage = find(productImages, { is_primary: 1 }).path;
+            let primaryImage = find(productImages, { is_primary: 1 });
             let secondaryImages = productImages.filter((each) => each.is_primary !== 1);
             commit("setProductImages", { primaryImage, secondaryImages });
         } catch (error) {
             console.log(`Fetching product images failed: ${error}`);
         }
 
+        // Biddings
         try {
             let productBiddings = await getProductBidding(state.id);
             // Expand timestamp, then censor names
@@ -84,28 +90,41 @@ export default {
             console.log(`Fetching product biddings failed: ${error}`);
         }
 
+        // Related products
         try {
             const relatedProducts = await getProductRelate(productInfo.category_id);
-            const data = [];
-            relatedProducts?.forEach(async product => {
+            let data = [];
+            relatedProducts?.forEach(async (product) => {
                 let user = await getUserWithPoint(product.buyer_id);
-                data.push({
-                    id: product.product_id,
-                    title: product.name,
-                    image: `${IMAGE_API_ENDPOINT}/${product.avatar}`,
-                    bidderCount: product.bidding_count,
-                    bidHighestPrice: product.current_price,
-                    bidHighestUser: user.full_name,
-                    buyNowPrice: product.buy_price,
-                    startTime: product.start_at,
-                    endTime: product.end_at,
-                    isOnWatchlist: false,
-                })
-            })
+                // Remove current product from filtered list to prevent duplicates
+                if (product.product_id !== state.id) {
+                    data.push({
+                        id: product.product_id,
+                        title: product.name,
+                        image: `${IMAGE_API_ENDPOINT}/${product.avatar}`,
+                        bidderCount: product.bidding_count,
+                        bidHighestPrice: product.current_price,
+                        bidHighestUser: user.full_name,
+                        buyNowPrice: product.buy_price,
+                        startTime: product.start_at,
+                        endTime: product.end_at,
+                        isOnWatchlist: false,
+                    });
+                }
+            });
             commit("setRelatedProducts", data);
         } catch (error) {
             console.log(`Fetching related products failed: ${error}`);
         }
+
+        // Is the current product in user's watchlist?
+        // Dispatch a getWatchlist call (just in case)
+        dispatch("WatchlistModule/fetchAll", { root: true });
+        // Filter from watchlistItems
+        const isOnWatchlist = find(rootState.WatchlistModule.watchlistItems, { id: state.id }) !== undefined;
+        commit("setIsOnWatchlist", isOnWatchlist);
+
+        // Is the current user blocked from bidding on this product?
     },
 
     appendProductDescription({ commit }, description) {

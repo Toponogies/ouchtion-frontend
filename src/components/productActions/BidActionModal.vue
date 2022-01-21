@@ -37,7 +37,7 @@
             <!-- New price -->
             <v-row no-gutters cols="12" class="px-4 pb-4" v-if="!bid.isAutoBidEnabled">
                 <v-col cols="6">
-                    <username-card :username="myUsername" :rating="myRating"></username-card>
+                    <username-card :username="currentUsername" :rating="currentRating"></username-card>
                 </v-col>
                 <v-col cols="6">
                     <v-form v-model="newPriceValid">
@@ -137,7 +137,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
 import UsernameCard from "@/components/productDetails/UsernameCard";
 import { formatPrice } from "@/utils/priceUtils";
 
@@ -154,19 +154,18 @@ export default {
             priceRules: {
                 invalid: (value) => !Number.isNaN(parseInt(value)) || "Please enter a valid price",
                 moreThanSuggested: (value) =>
-                    parseInt(value) >= this.suggestedBidPrice || "Your price must NOT be less than the suggested price",
+                    parseInt(value) >= this.suggestedBidPrice * 1000 ||
+                    "Your price must NOT be less than the suggested price",
             },
         };
     },
     computed: {
         ...mapState("CurrentProductModule", ["bid"]),
+        ...mapGetters("CurrentProductModule", ["suggestedBidPrice"]),
         ...mapState("CurrentUserModule", {
             currentUsername: "username",
             currentRating: "rating",
         }),
-        suggestedBidPrice: function () {
-            return this.currentHighestBidPrice + this.priceIncrement;
-        },
     },
     methods: {
         ...mapMutations("CurrentProductModule", ["setBidModalState"]),

@@ -68,7 +68,6 @@ export default {
     },
     methods: {
         ...mapMutations("AuthModule", ["setModalState"]),
-        ...mapActions("CurrentUserModule", ["doGetUser", "logOutUser"]),
         ...mapActions("AuthModule", ["fetchAccessToken", "doLogout"]),
         handleDialogOpen() {
             this.setModalState(true);
@@ -77,7 +76,9 @@ export default {
             await this.fetchAccessToken();
         },
         async logOut() {
+            // Log out, then redirect back to home
             await this.doLogout();
+            this.$router.push({ name: "Home" });
         },
     },
     mounted() {

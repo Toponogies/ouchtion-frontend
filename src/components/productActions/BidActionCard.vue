@@ -41,39 +41,63 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions, mapMutations } from "vuex";
+import { ROLES } from "@/utils/constants";
 import UsernameCard from "@/components/productDetails/UsernameCard";
 import BidActionModal from "@/components/productActions/BidActionModal";
 import { formatPrice } from "@/utils/priceUtils";
-import { toRelativeTimestamp, isInCountdownThreshold } from "@/utils/timeUtils";
+import { toRelativeTimestamp, isInCountdownThreshold, fromTimestamp } from "@/utils/timeUtils";
 
 export default {
     name: "BidActionCard",
     components: { UsernameCard, BidActionModal },
+
     data() {
         return {
             utils: { formatPrice },
             formattedEndTime: toRelativeTimestamp(this.endTime),
         };
     },
+
     computed: {
-        ...mapState("CurrentProductModule", ["bid", "isBlockedFromBidding"]),
+        ...mapState("CurrentProductModule", ["endTime", "bid", "isBlockedFromBidding"]),
+        ...mapState("CurrentUserModule", ["role"]),
         cardColor: function () {
             return this.isBlockedFromBidding ? "grey darken-3 white--text" : "orange darken-3 white--text";
         },
     },
+
     methods: {
+        ...mapMutations("AuthModule", {
+            setLoginModalState: "setModalState",
+        }),
+        ...mapMutations("CurrentProductModule", ["setBidModalState"]),
         handleConfirmDialogOpen() {
-            this.newPrice = this.suggestedBidPrice;
-            this.confirmDialogOpened = true;
+            switch (this.role) {
+                // For not logged-in users: show login modal
+                case null:
+                    this.setLoginModalState(true);
+                    break;
+
+                // For bidders: show the modal
+                case ROLES.BIDDER:
+                    this.newPrice = this.suggestedBidPrice;
+                    this.setBidModalState(true);
+                    break;
+
+                // For everyone else: do nothing
+                default:
+                    break;
+            }
         },
+
         _refreshEndTime() {
             this.formattedEndTime = toRelativeTimestamp(this.endTime);
             setTimeout(this._refreshEndTime, 1000);
         },
     },
+
     mounted() {
-        console.log(this.endTime);
         if (isInCountdownThreshold(this.endTime)) {
             this._refreshEndTime();
         }
