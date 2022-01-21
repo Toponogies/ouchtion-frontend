@@ -1,4 +1,4 @@
-import { API_ENDPOINTS } from "@/utils/constants";
+import { API_ENDPOINTS, HOME_FEATURED_PRODUCTS_LIMIT } from "@/utils/constants";
 import axios from "axios";
 
 export async function getProduct(product_id) {
@@ -24,3 +24,65 @@ export async function getProductBidding(product_id) {
         return response.data;
     });
 }
+
+export async function getProductRelate(category_id) {
+    return await axios.get(`${API_ENDPOINTS.PRODUCTS}`, 
+        {
+            params: { category: category_id, number: HOME_FEATURED_PRODUCTS_LIMIT },
+        })
+        .then((response) => {
+            return response.data;
+        });
+}
+
+export async function sellerOnGoingProduct(accessToken) {
+    return await axios
+    .get(`${API_ENDPOINTS.PRODUCTS}/sellers/ongoingProducts`, {
+        headers: {
+            Authorization: "Bearer " + accessToken,
+        },
+    })
+    .then((response) => {
+        return response.data;
+    })
+}
+
+export async function sellerFinishedProduct(accessToken) {
+    return await axios
+    .get(`${API_ENDPOINTS.PRODUCTS}/sellers/finishedProducts`, {
+        headers: {
+            Authorization: "Bearer " + accessToken,
+        },
+    })
+    .then((response) => {
+        return response.data;
+    })
+}
+
+export async function bidderOngoingProduct(accessToken) {
+    return await axios
+    .get(`${API_ENDPOINTS.PRODUCTS}/bidders/ongoingBids`, {
+        headers: {
+            Authorization: "Bearer " + accessToken,
+        },
+    })
+    .then((response) => {
+        return response.data;
+    })
+}
+
+export async function bidderCompleteProduct(accessToken) {
+    return await axios
+    .get(`${API_ENDPOINTS.PRODUCTS}/bidders/completedBids`, {
+        headers: {
+            Authorization: "Bearer " + accessToken,
+        },
+    })
+    .then((response) => {
+        return response.data;
+    })
+}
+
+
+
+

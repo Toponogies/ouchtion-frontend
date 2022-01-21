@@ -11,7 +11,7 @@ export default {
     createUser(state, payload) {
         state.users.push(payload);
     },
-    updateUser(state, payload) {
+    updateUser(state, payload) { // chưa update được
         const targetIndex = findIndex(state.users, { id: payload.id });
         const targetItem = {
             ...state.users[targetIndex],

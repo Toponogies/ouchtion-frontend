@@ -318,6 +318,7 @@ import {
     BulletList,
     OrderedList,
 } from "tiptap-vuetify";
+import { mapActions } from 'vuex';
 
 export default {
     name: "ProductCreator",
@@ -404,11 +405,24 @@ export default {
         },
     },
     methods: {
+        ...mapActions("AddProductModule", ["addProduct"]),
         getCategories() {
             const fetchedCategories = generateCategories();
             this.availableCategories = fetchedCategories.map((each) => ({ text: each.name, value: each.category_id }));
         },
         submit() {
+            this.addProduct({
+                name: this.name,
+                images: this.images,
+                category_id: this.selectedCategories[0],
+                init_price: this.bidStartingPrice,
+                endDate: this.endDate,
+                endTime: this.endTime,
+                step_price: this.bidIncrement,
+                buy_price: this.enableBuyNow === true ? this.buyNowPrice : undefined,
+                is_extendable: this.allowAutoExtension,
+                description: this.description,
+            })
             console.log(`Call API create new product`);
         },
     },

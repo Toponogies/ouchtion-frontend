@@ -39,6 +39,7 @@ export default {
                 { text: "Time", value: "time" },
                 { text: "Bidder", value: "full_name", sortable: false },
                 { text: "Price", value: "bid_price" },
+                { text: "Max price", value: "max_price" },
             ],
             local_tableHeadersAction: [{ text: "Actions", value: "actions", sortable: false, align: "right" }],
             bidderList: [],

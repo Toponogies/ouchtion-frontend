@@ -1,14 +1,11 @@
-import axios from "axios";
 import { showSnack } from "@/utils/showSnack";
-import { API_ENDPOINTS } from "@/utils/constants";
 import { findIndex } from "lodash-es";
+import { createCategory, editCategory, getCategories, getCategory, removeCategory } from "@/api/category";
 
 export default {
     async fetchAll({ commit }) {
         try {
-            const categories = await axios.get(`${API_ENDPOINTS.CATEGORIES}`).then((res) => {
-                return res.data;
-            });
+            const categories = await getCategories();
             commit("setCategories", categories);
         } catch (error) {
             console.log(error);
@@ -25,9 +22,7 @@ export default {
                 parent_category_id: null,
                 name,
             };
-            const newCategory = await axios.post(`${API_ENDPOINTS.CATEGORIES}`, payload, { headers }).then((res) => {
-                return res.data;
-            });
+            const newCategory = await createCategory(payload, headers);
             const id = newCategory.category_id;
 
             // commit to store
@@ -49,9 +44,7 @@ export default {
                 parent_category_id: parentId,
                 name,
             };
-            const newCategory = await axios.post(`${API_ENDPOINTS.CATEGORIES}`, payload, { headers }).then((res) => {
-                return res.data;
-            });
+            const newCategory = await createCategory(payload, headers);
             const childId = newCategory.category_id;
             const _parentId = newCategory.parent_category_id;
 
@@ -78,14 +71,8 @@ export default {
             const headers = {
                 Authorization: "Bearer " + rootState.AuthModule.accessToken,
             };
-            const success = await axios
-                .put(`${API_ENDPOINTS.CATEGORIES}/${id}`, payload, { headers })
-                .then(() => true)
-                .catch((err) => {
-                    console.log(err);
-                    return false;
-                });
-            if (!success) throw new Error();
+            const result = await editCategory(id, payload, headers);
+            if (result.name !== name) throw new Error();
 
             // commit to store
             commit("edit", { id, name });
@@ -102,7 +89,7 @@ export default {
             const headers = {
                 Authorization: "Bearer " + rootState.AuthModule.accessToken,
             };
-            await axios.delete(`${API_ENDPOINTS.CATEGORIES}/${id}`, { headers });
+            await removeCategory(id,headers);
 
             // commit to store
             commit("remove", id);
@@ -110,6 +97,15 @@ export default {
         } catch (error) {
             console.log(error);
             showSnack("Failed to remove category");
+        }
+    },
+
+    async getCategory({ commit },id) {
+        try {
+            const category = await getCategory(id);
+            commit("category", category);
+        } catch (error) {
+            console.log(error);
         }
     },
 };

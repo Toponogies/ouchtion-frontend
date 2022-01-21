@@ -11,6 +11,7 @@ import UserProfile from "@/views/UserProfile";
 import ProductCreator from "@/views/ProductCreator";
 import VerifyAccount from "@/views/VerifyAccount";
 import ResetPass from "@/views/ResetPass";
+import UpdateEmail from "@/views/UpdateEmail";
 
 Vue.use(VueRouter);
 
@@ -64,6 +65,11 @@ const routes = [
         path: "/reset",
         name: "ResetPassAccount",
         component: ResetPass,
+    },
+    {
+        path: "/updateEmail",
+        name: "UpdateEmail",
+        component: UpdateEmail,
     },
 
     // redirect on invalid route

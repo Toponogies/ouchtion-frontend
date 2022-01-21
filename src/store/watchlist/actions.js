@@ -1,53 +1,30 @@
-import { API_ENDPOINTS, IMAGE_API_ENDPOINT } from "@/utils/constants";
+import { getProduct } from "@/api/product";
+import { deleteWatchList, getWatchList } from "@/api/watchlist";
+import { IMAGE_API_ENDPOINT } from "@/utils/constants";
 import { showSnack } from "@/utils/showSnack";
-import axios from "axios";
 
 export default {
-    async fetchAll({ commit, rootState, dispatch }) {
+    async fetchAll({ commit, rootState }) {
         commit("setLoadingState", true);
 
         const data = [];
+        try {
+            let products = await getWatchList(rootState.AuthModule.accessToken)
 
-        let products = await axios
-            .get(`${API_ENDPOINTS.PRODUCTS}/bidders/watchlist`, {
-                headers: {
-                    Authorization: "Bearer " + rootState.AuthModule.accessToken,
-                },
-            })
-            .then((response) => {
-                return response.data;
-            })
-            .catch(async (error) => {
-                if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN") {
-                    await dispatch("AuthModule/doRefresh", null, { root: true });
-                    return await axios
-                        .get(`${API_ENDPOINTS.PRODUCTS}/bidders/watchlist`, {
-                            headers: {
-                                Authorization: "Bearer " + rootState.AuthModule.accessToken,
-                            },
-                        })
-                        .then((response) => {
-                            return response.data;
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                            return [];
-                        });
-                }
+            products?.forEach(async (product) => {
+                product = await getProduct(product.product_id);
+                data.push({
+                    primaryImage: `${IMAGE_API_ENDPOINT}/${product.avatar}`,
+                    id: product.product_id,
+                    name: product.name,
+                    endTime: product.end_at,
+                    highestBidPrice: product.current_price,
+                });
             });
+        } catch (error) {
+            console.log(error.response);
+        }
 
-        products?.forEach(async (product) => {
-            product = await axios.get(`${API_ENDPOINTS.PRODUCTS}/${product.product_id}`).then((response) => {
-                return response.data;
-            });
-            data.push({
-                primaryImage: `${IMAGE_API_ENDPOINT}/${product.avatar}`,
-                id: product.product_id,
-                name: product.name,
-                endTime: product.end_at,
-                highestBidPrice: product.current_price,
-            });
-        });
 
         setTimeout(() => {
             commit("setItems", data);
@@ -55,46 +32,20 @@ export default {
         }, 500);
     },
 
-    async removeItem({ commit, rootState, dispatch }, id) {
+    async removeItem({ commit, rootState }, id) {
         commit("setLoadingState", true);
-
-        await axios
-            .delete(`${API_ENDPOINTS.PRODUCTS}/bidders/watchlist`, {
-                headers: {
-                    Authorization: "Bearer " + rootState.AuthModule.accessToken,
-                },
-                data: {
-                    product_id: id,
-                },
-            })
-            .then((response) => {
-                return response.data;
-            })
-            .catch(async (error) => {
-                if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN") {
-                    await dispatch("AuthModule/doRefresh", null, { root: true });
-                    await axios
-                        .delete(`${API_ENDPOINTS.PRODUCTS}/bidders/watchlist`, {
-                            headers: {
-                                Authorization: "Bearer " + rootState.AuthModule.accessToken,
-                            },
-                            data: {
-                                product_id: id,
-                            },
-                        })
-                        .then((response) => {
-                            return response.data;
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                        });
-                }
-            });
-
-        setTimeout(() => {
-            commit("removeItem", id);
-            commit("setLoadingState", false);
-            showSnack(`Removed item ${id}`);
-        }, 250);
+        try{
+            await deleteWatchList(rootState.AuthModule.accessToken,id);
+            setTimeout(() => {
+                commit("removeItem", id);
+                commit("setLoadingState", false);
+                showSnack(`Removed item ${id}`);
+            }, 250);
+        }catch(error){
+            setTimeout(() => {
+                commit("setLoadingState", false);
+                showSnack(`Can't remove item id = ${id}`);
+            }, 250);
+        }
     },
 };

@@ -5,6 +5,10 @@ export default {
         state.categories = categories;
     },
 
+    setCategory(state, category) {
+        state.category = category;
+    },
+
     addParent(state, { id, name }) {
         state.categories.push({
             category_id: id,

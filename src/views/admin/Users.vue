@@ -246,6 +246,7 @@ export default {
         return {
             utils: { ROLES },
             userEditorDialogOpened: false,
+            currentUser: null,
             currentUserId: null,
             currentFullName: null,
             currentEmail: null,
@@ -268,6 +269,7 @@ export default {
             "fetchAll",
             "create",
             "update",
+            "updateEmail",
             "updatePassword",
             "delete",
             "setAsBidder",
@@ -299,6 +301,7 @@ export default {
         },
 
         handleEditUserOpen(item) {
+            this.currentUser = item;
             this.currentUserId = item.id;
             this.currentFullName = item.full_name;
             this.currentEmail = item.email;
@@ -310,13 +313,22 @@ export default {
 
         handleEditUserOK() {
             this.currentDoB = toTimestamp(this.currentDoB, "00:00:00.000Z");
+
+            if (this.currentUser.email !== this.currentEmail)
+            {
+                this.updateEmail({
+                    id: this.currentUserId,
+                    email:this.currentEmail,
+                })
+            }
+
             this.update({
                 id: this.currentUserId,
                 full_name: this.currentFullName,
-                email: this.currentEmail,
                 address: this.currentAddress,
                 dob: this.currentDoB,
             });
+            
             if (this.newPassword.length > 0) {
                 this.updatePassword({
                     id: this.currentUserId,
