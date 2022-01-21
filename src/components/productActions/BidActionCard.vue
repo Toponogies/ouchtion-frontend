@@ -43,7 +43,7 @@
 <script>
 import { mapState } from "vuex";
 import UsernameCard from "@/components/productDetails/UsernameCard";
-import { BidActionModal } from "@/components/productActions/BidActionModal";
+import BidActionModal from "@/components/productActions/BidActionModal";
 import { formatPrice } from "@/utils/priceUtils";
 import { toRelativeTimestamp, isInCountdownThreshold } from "@/utils/timeUtils";
 

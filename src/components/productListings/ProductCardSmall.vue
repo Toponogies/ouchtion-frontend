@@ -40,7 +40,7 @@ import { toRelativeTimestamp, isInCountdownThreshold } from "@/utils/timeUtils";
 export default {
     name: "ProductCardSmall",
     props: {
-        id: String,
+        id: [String, Number],
         image: String,
         title: String,
         bidderCount: Number,
