@@ -59,14 +59,14 @@
 
                         <!-- Seller's comment -->
                         <v-col cols="9">
-                            <span
-                                v-if="item.reviewToBidder.rating === null && item.reviewToBidder.comment === null"
-                                class="grey--text"
-                            >
+                            <span v-if="item.reviewToBidder.rating === null" class="grey--text">
                                 The seller has not left a review for this bidding yet.
                             </span>
                             <span
-                                v-else-if="item.reviewToBidder.rating !== null && item.reviewToBidder.comment === null"
+                                v-else-if="
+                                    item.reviewToBidder.rating !== null &&
+                                    (item.reviewToBidder.comment === null || item.reviewToBidder.comment.length === 0)
+                                "
                                 class="grey--text"
                             >
                                 The seller did not left a comment for this review.
@@ -118,7 +118,10 @@
                         <!-- Bidder's comment -->
                         <v-col cols="9">
                             <span
-                                v-if="item.reviewToSeller.rating !== null && item.reviewToSeller.comment === null"
+                                v-if="
+                                    item.reviewToSeller.rating !== null &&
+                                    (item.reviewToSeller.comment === null || item.reviewToSeller.comment.length === 0)
+                                "
                                 class="grey--text"
                             >
                                 You did not left a comment for this review.
