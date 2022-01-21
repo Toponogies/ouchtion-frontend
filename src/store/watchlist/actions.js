@@ -9,7 +9,7 @@ export default {
         const data = [];
 
         let products = await axios
-            .get(`${API_ENDPOINTS.USERS}/watchlist`, {
+            .get(`${API_ENDPOINTS.PRODUCTS}/bidders/watchlist`, {
                 headers: {
                     Authorization: "Bearer " + rootState.AuthModule.accessToken,
                 },
@@ -21,7 +21,7 @@ export default {
                 if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN") {
                     await dispatch("AuthModule/doRefresh", null, { root: true });
                     return await axios
-                        .get(`${API_ENDPOINTS.USERS}/watchlist`, {
+                        .get(`${API_ENDPOINTS.PRODUCTS}/bidders/watchlist`, {
                             headers: {
                                 Authorization: "Bearer " + rootState.AuthModule.accessToken,
                             },
@@ -59,7 +59,7 @@ export default {
         commit("setLoadingState", true);
 
         await axios
-            .delete(`${API_ENDPOINTS.USERS}/watchlist`, {
+            .delete(`${API_ENDPOINTS.PRODUCTS}/bidders/watchlist`, {
                 headers: {
                     Authorization: "Bearer " + rootState.AuthModule.accessToken,
                 },
@@ -74,7 +74,7 @@ export default {
                 if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN") {
                     await dispatch("AuthModule/doRefresh", null, { root: true });
                     await axios
-                        .delete(`${API_ENDPOINTS.USERS}/watchlist`, {
+                        .delete(`${API_ENDPOINTS.PRODUCTS}/bidders/watchlist`, {
                             headers: {
                                 Authorization: "Bearer " + rootState.AuthModule.accessToken,
                             },
