@@ -166,7 +166,7 @@ export default {
                 return response.data;
             })
             .catch(async (error) => {
-                console.log(error);
+                console.log(error.response);
                 if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN") {
                     await dispatch("AuthModule/doRefresh", null, { root: true });
                     return await axios
@@ -208,13 +208,13 @@ export default {
             Authorization: "Bearer " + rootState.AuthModule.accessToken,
         };
         const payload = {
-            password,
+            new_password:password,
         };
         await axios
-            .put(`${API_ENDPOINTS.USERS}/${id}`, payload, { headers })
+            .put(`${API_ENDPOINTS.USERS}/${id}/changePassword`, payload, { headers })
             .then((res) => res.data)
             .catch((err) => {
-                console.log(err);
+                console.log(err.response);
                 showSnack(`Cannot set password for user ${id}`);
             });
 
@@ -227,6 +227,25 @@ export default {
         commit("deleteUser", id);
         commit("setIsLoading", false);
         showSnack(`Deleted user id = ${id}`);
+    },
+
+    async updateEmail({ commit, rootState }, { id, email }) {
+        commit("setIsLoading", true);
+        const headers = {
+            Authorization: "Bearer " + rootState.AuthModule.accessToken,
+        };
+        const payload = {
+            email,
+        };
+        await axios
+            .post(`${API_ENDPOINTS.USERS}/${id}/email`, payload, { headers })
+            .then(() => showSnack(`Send email to user ${id}`))
+            .catch((err) => {
+                console.log(err);
+                showSnack(`Can't change email to user ${id}`);
+            });
+
+        commit("setIsLoading", false);
     },
 
     async setAsBidder({ commit, rootState, dispatch }, id) {

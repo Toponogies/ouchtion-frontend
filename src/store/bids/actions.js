@@ -8,7 +8,7 @@ export default {
         const data = [];
 
         let products = await axios
-            .get(`${API_ENDPOINTS.PRODUCTS}/bidding`, {
+            .get(`${API_ENDPOINTS.PRODUCTS}/bidders/ongoingBids`, {
                 headers: {
                     Authorization: "Bearer " + rootState.AuthModule.accessToken,
                 },
@@ -21,7 +21,7 @@ export default {
                 if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN") {
                     await dispatch("AuthModule/doRefresh", null, { root: true });
                     return await axios
-                        .get(`${API_ENDPOINTS.PRODUCTS}/won`, {
+                        .get(`${API_ENDPOINTS.PRODUCTS}/bidders/ongoingBids`, {
                             headers: {
                                 Authorization: "Bearer " + rootState.AuthModule.accessToken,
                             },
@@ -55,7 +55,7 @@ export default {
         const data = [];
 
         let products = await axios
-            .get(`${API_ENDPOINTS.PRODUCTS}/won`, {
+            .get(`${API_ENDPOINTS.PRODUCTS}/bidders/completedBids`, {
                 headers: {
                     Authorization: "Bearer " + rootState.AuthModule.accessToken,
                 },
@@ -68,7 +68,7 @@ export default {
                 if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN") {
                     await dispatch("AuthModule/doRefresh", null, { root: true });
                     return await axios
-                        .get(`${API_ENDPOINTS.PRODUCTS}/won`, {
+                        .get(`${API_ENDPOINTS.PRODUCTS}/bidders/completedBids`, {
                             headers: {
                                 Authorization: "Bearer " + rootState.AuthModule.accessToken,
                             },
