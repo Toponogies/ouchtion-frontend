@@ -6,7 +6,7 @@ export default {
         try {
             let products = await axios
                 .get(`${API_ENDPOINTS.PRODUCTS}`, {
-                    params: { sort: "time_desc", number: HOME_FEATURED_PRODUCTS_LIMIT },
+                    params: { sort: "time_asc", number: HOME_FEATURED_PRODUCTS_LIMIT },
                 })
                 .then((response) => {
                     return response.data;

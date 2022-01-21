@@ -22,6 +22,9 @@ export default {
                 dispatch("CurrentUserModule/doGetUser", null, { root: true });
             })
             .catch((error) => {
+                setTimeout(() => {
+                    showSnack(`Login unsuccess`);
+                }, 250);
                 commit("loginStop", error.response.data);
                 commit("updateAccessToken", null);
                 commit("updateRefreshToken", null);

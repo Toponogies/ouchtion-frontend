@@ -7,6 +7,7 @@ export const CategoryModule = {
 
     state: {
         categories: [],
+        category: null,
     },
 
     getters,

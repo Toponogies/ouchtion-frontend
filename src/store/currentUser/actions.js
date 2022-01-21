@@ -1,5 +1,6 @@
 import { API_ENDPOINTS } from "@/utils/constants";
 import axios from "axios";
+import { showSnack } from "@/utils/showSnack";
 import { jwtGetPayload } from "@/utils/jwtGetPayload";
 
 export default {
@@ -54,35 +55,99 @@ export default {
     PUT /api/users
     { id (token), { username?, email?, ... } } -> { { username?, email?, ...} }
     */
-    async editUser({ commit, rootState, dispatch, state }, payload) {
+    async editUser({ rootState, dispatch, state }, payload) {
+        if (rootState.AuthModule.accessToken === null) return;
+
+        if (payload.email)
+        {
+            let check = await axios
+            .post(`${API_ENDPOINTS.USERS}`+`/${state.id}/email`, 
+            {
+                ...payload,
+            }, 
+            {
+                headers: {
+                    Authorization: "Bearer " + rootState.AuthModule.accessToken,
+                },
+            })
+            .then(() => {
+                return true;
+            })
+            .catch((error) => {
+                console.log(error.response);
+                return null;
+            });
+            if (check !== true)
+            {
+                showSnack("Can't send to new user email");
+                return;
+            }
+            showSnack("Email send check and update email");
+            return;
+        }
+
+        // call with updated info
+        let user = await axios
+            .put(`${API_ENDPOINTS.USERS}`+`/${state.id}`, 
+            {
+                ...payload,
+            }, 
+            {
+                headers: {
+                    Authorization: "Bearer " + rootState.AuthModule.accessToken,
+                },
+            })
+            .then(() => {
+                return true;
+            })
+            .catch(async (error) => {
+                console.log(error.response);
+                return null;
+            });
+
+        if (user !== true)
+        {
+            showSnack("Can't update user");
+            return;
+        }
+
+
+        // if successful, update the user again in store
+        dispatch("CurrentUserModule/doGetUser", null, { root: true });
+    },
+
+    async editPassword({ rootState, dispatch, state }, payload) {
         if (rootState.AuthModule.accessToken === null) return;
 
         // call with updated info
         let user = await axios
-            .put(`${API_ENDPOINTS.USERS}`, {
+            .put(`${API_ENDPOINTS.USERS}`+`/${state.id}/changePassword`, 
+            {
+                ...payload,
+            }, 
+            {
                 headers: {
                     Authorization: "Bearer " + rootState.AuthModule.accessToken,
                 },
-                body: {
-                    id: state.id,
-                    ...payload,
-                },
             })
-            .then((response) => {
-                return response.data;
+            .then(() => {
+                return true;
             })
             .catch(async (error) => {
-                console.log(error);
                 if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN") {
                     await dispatch("AuthModule/doRefresh", null, { root: true });
                     return await axios
-                        .get(`${API_ENDPOINTS.USERS}`, {
+                        .put(`${API_ENDPOINTS.USERS}`+`/${state.id}/changePassword`, 
+                        {
+                            ...payload,
+                        }, 
+                        {
                             headers: {
                                 Authorization: "Bearer " + rootState.AuthModule.accessToken,
                             },
                         })
-                        .then((response) => {
-                            return response.data;
+                        .then(() => {
+                            return true;
                         })
                         .catch((error) => {
                             console.log(error);
@@ -91,9 +156,32 @@ export default {
                 }
             });
 
-        // if successful, update the user again in store
-        commit("updateUser", user);
+        if (user !== true)
+        {
+            showSnack("Can't update password user");
+            return;
+        }
+        showSnack("Update password user");
     },
+
+    doUpdateEmail(_context, token) {
+        axios
+            .put(`${API_ENDPOINTS.USERS}` + `/user/email`, { token: token })
+            .then(() => {
+                setTimeout(() => {
+                    showSnack(`Update success`);
+                }, 250);
+                return;
+            })
+            .catch((error) => {
+                console.log(error.response);
+                setTimeout(() => {
+                    showSnack(`Can't update`);
+                }, 250);
+                return;
+            });
+    },
+
 
     logOutUser({ commit }) {
         commit("clearUser");

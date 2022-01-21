@@ -106,4 +106,15 @@ export default {
             showSnack("Failed to remove category");
         }
     },
+
+    async getCategory({ commit },id) {
+        try {
+            const category = await axios.get(`${API_ENDPOINTS.CATEGORIES}/${id}`).then((res) => {
+                return res.data;
+            });
+            commit("category", category);
+        } catch (error) {
+            console.log(error);
+        }
+    },
 };

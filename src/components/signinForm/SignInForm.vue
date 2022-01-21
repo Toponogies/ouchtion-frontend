@@ -9,13 +9,12 @@
             <input type="password" placeholder="Enter Password" v-model="password" required />
 
             <button :disabled="isValid" @click="login">Login</button>
-            <div>{{ loginError }}</div>
         </div>
     </div>
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapActions } from "vuex";
 
 export default {
     name: "SignInForm",
@@ -26,7 +25,6 @@ export default {
         };
     },
     computed: {
-        ...mapState("AuthModule", ["loginError"]),
         isValid() {
             const regexPatternEmail = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
             if (regexPatternEmail.test(this.email) && this.password !== "") return false;

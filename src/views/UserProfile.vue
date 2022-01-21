@@ -280,13 +280,23 @@ export default {
         },
     },
     methods: {
-        ...mapActions("CurrentUserModule", ["editUser"]),
+        ...mapActions("CurrentUserModule", ["editUser","editPassword"]),
+
+        //need password
+        checkOldPass() {
+            if(this.oldPass.length > 0)
+                return true;
+            showSnack("Need old password")
+            return false;
+        },
 
         // username
         editNameOK() {
+            if (this.checkOldPass() === false) return;
             this.isInEditModeName = false;
             this.editUser({
-                username: this.username_edit,
+                full_name: this.username_edit,
+                password: this.oldPass,
             });
         },
         editNameCancel() {
@@ -296,9 +306,13 @@ export default {
 
         // email
         editEmailOK() {
+            if (this.checkOldPass() === false) return;
             this.isInEditModeEmail = false;
             // send update
-            this.email = this.email_edit;
+            this.editUser({
+                email: this.email_edit,
+                password: this.oldPass,
+            });
         },
         editEmailCancel() {
             this.email_edit = this.email;
@@ -307,9 +321,13 @@ export default {
 
         // dob
         editBirthdayOK() {
+            if (this.checkOldPass() === false) return;
             this.isInEditModeBirthday = false;
             // send update
-            this.dob = this.dob_edit;
+            this.editUser({
+                dob: this.dob_edit,
+                password: this.oldPass,
+            });
         },
         editBirthdayCancel() {
             this.dob_edit = this.dob;
@@ -318,9 +336,13 @@ export default {
 
         // address
         editAddressOK() {
+            if (this.checkOldPass() === false) return;
             this.isInEditModeAddress = false;
             // send update
-            this.address = this.address_edit;
+            this.editUser({
+                address: this.address_edit,
+                password: this.oldPass,
+            });
         },
         editAddressCancel() {
             this.address_edit = this.address;
@@ -329,6 +351,11 @@ export default {
 
         // password
         changePassword() {
+            // update password
+            this.editPassword({
+                old_password: this.oldPass,
+                new_password: this.newPass,
+            });
             // send update
             this.oldPass = "";
             this.newPass = "";

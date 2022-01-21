@@ -1,12 +1,13 @@
 import { getUserWithPoint } from "@/api/user";
-import { getProduct, getProductDescription, getProductImage, getProductBidding } from "@/api/product";
+import { getProduct, getProductDescription, getProductImage, getProductBidding, getProductRelate } from "@/api/product";
+import { getCategory } from "@/api/category";
 
 import { find } from "lodash-es";
-import { generateCategories, generateMockProduct } from "@/utils/mockUtils";
 import { today, toLongTimestamp } from "@/utils/timeUtils";
 import { hiddenName } from "@/utils/hiddenName";
 import { IMAGE_API_ENDPOINT } from "@/utils/constants";
 import { showSnack } from "@/utils/showSnack";
+
 
 export default {
     setProductId({ commit }, id) {
@@ -23,8 +24,8 @@ export default {
         }
 
         try {
-            const categoriesOfProduct = generateCategories();
-            commit("setCategoriesOfProduct", categoriesOfProduct);
+            const categoryOfProduct = await getCategory(productInfo.category_id);
+            commit("setCategoriesOfProduct", [categoryOfProduct]);
         } catch (error) {
             console.log(`Fetching categories of this product failed: ${error}`);
         }
@@ -84,8 +85,24 @@ export default {
         }
 
         try {
-            const relatedProducts = generateMockProduct(8);
-            commit("setRelatedProducts", relatedProducts);
+            const relatedProducts = await getProductRelate(productInfo.category_id);
+            const data = [];
+            relatedProducts?.forEach(async product => {
+                let user = await getUserWithPoint(product.buyer_id);
+                data.push({
+                    id: product.product_id,
+                    title: product.name,
+                    image: `${IMAGE_API_ENDPOINT}/${product.avatar}`,
+                    bidderCount: product.bidding_count,
+                    bidHighestPrice: product.current_price,
+                    bidHighestUser: user.full_name,
+                    buyNowPrice: product.buy_price,
+                    startTime: product.start_at,
+                    endTime: product.end_at,
+                    isOnWatchlist: false,
+                })
+            })
+            commit("setRelatedProducts", data);
         } catch (error) {
             console.log(`Fetching related products failed: ${error}`);
         }
