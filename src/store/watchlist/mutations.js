@@ -8,4 +8,12 @@ export default {
     removeItem(state, id) {
         state.watchlistItems = state.watchlistItems.filter((each) => each.id !== id);
     },
+
+    clearAll(state) {
+        state = {
+            ...state,
+            isLoading: false,
+            watchlistItems: [],
+        };
+    },
 };

@@ -8,7 +8,7 @@
                     <span>Categories</span>
                 </v-tab>
                 <v-tab>
-                    <v-icon left>mdi-package-up</v-icon>
+                    <v-icon left>mdi-package-variant-closed</v-icon>
                     <span>Products</span>
                 </v-tab>
                 <v-tab>

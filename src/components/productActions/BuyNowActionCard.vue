@@ -41,6 +41,8 @@
 </template>
 
 <script>
+import { mapState, mapActions, mapMutations } from "vuex";
+import { ROLES } from "@/utils/constants";
 import UsernameCard from "@/components/productDetails/UsernameCard";
 import BuyNowActionModal from "@/components/productActions/BuyNowActionModal";
 import { formatPrice } from "@/utils/priceUtils";
@@ -48,20 +50,20 @@ import { formatPrice } from "@/utils/priceUtils";
 export default {
     name: "BuyNowActionCard",
     components: { UsernameCard, BuyNowActionModal },
-    props: {
-        price: Number,
-        myUsername: String,
-        myRating: Number,
-    },
+    props: ["price", "myUsername", "myRating"],
+
     data() {
         return {
             utils: { formatPrice },
             confirmDialogOpened: false,
         };
     },
+
     computed: {
+        ...mapState("CurrentUserModule", ["role"]),
+        ...mapState("CurrentProductModule", ["buyNow"]),
         isBuyNowOptionAvailable: function () {
-            return this.price !== null;
+            return this.buyNow.price !== null;
         },
         cardColor: function () {
             return this.isBuyNowOptionAvailable ? "red darken-3 white--text" : "grey darken-3 white--text";
@@ -70,9 +72,28 @@ export default {
             return this.isBuyNowOptionAvailable ? this.utils.formatPrice(this.price) : "Not applicable";
         },
     },
+
     methods: {
+        ...mapMutations("AuthModule", {
+            setLoginModalState: "setModalState",
+        }),
+        ...mapMutations("CurrentProductModule", ["setBuyNowModalState"]),
         handleConfirmDialogOpen() {
-            this.confirmDialogOpened = true;
+            switch (this.role) {
+                // For not logged-in users: show login modal
+                case null:
+                    this.setLoginModalState(true);
+                    break;
+
+                // For bidders: show the modal
+                case ROLES.BIDDER:
+                    this.setBuyNowModalState(true);
+                    break;
+
+                // For everyone else: do nothing
+                default:
+                    break;
+            }
         },
     },
 };

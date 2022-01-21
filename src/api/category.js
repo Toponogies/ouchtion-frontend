@@ -26,9 +26,3 @@ export async function createCategory(payload, headers) {
         return res.data;
     });
 }
-
-
-
-
-
-

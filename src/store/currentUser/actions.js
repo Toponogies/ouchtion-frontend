@@ -1,6 +1,12 @@
 import { showSnack } from "@/utils/showSnack";
 import { jwtGetPayload } from "@/utils/jwtGetPayload";
-import { getCurrentUser, updateCurrentUser, updateEmailCurrentUser, updateEmailWithToken, updatePasswordCurrentUser } from "@/api/currentUser";
+import {
+    getCurrentUser,
+    updateCurrentUser,
+    updateEmailCurrentUser,
+    updateEmailWithToken,
+    updatePasswordCurrentUser,
+} from "@/api/currentUser";
 import { getUserWithPoint } from "@/api/user";
 
 export default {
@@ -14,11 +20,10 @@ export default {
         let user = undefined;
         // get user info
         try {
-            user = await getCurrentUser(rootState.AuthModule.accessToken,userId);
+            user = await getCurrentUser(rootState.AuthModule.accessToken, userId);
         } catch (error) {
             console.log(error);
         }
-
 
         // get user point
         if (user && user.user_id) {
@@ -37,11 +42,9 @@ export default {
         if (rootState.AuthModule.accessToken === null) return;
 
         try {
-            if (payload.email)
-            {
-                let check = await updateEmailCurrentUser(rootState.AuthModule.accessToken,state.id,payload);
-                if (check !== true)
-                {
+            if (payload.email) {
+                let check = await updateEmailCurrentUser(rootState.AuthModule.accessToken, state.id, payload);
+                if (check !== true) {
                     showSnack("Can't send to new user email");
                 }
                 showSnack("Email send check and update email");
@@ -52,14 +55,12 @@ export default {
 
             // call with updated info
             try {
-                user = await updateCurrentUser(rootState.AuthModule.accessToken,state.id,payload);
+                user = await updateCurrentUser(rootState.AuthModule.accessToken, state.id, payload);
             } catch (error) {
                 console.log(error);
             }
 
-
-            if (user !== true)
-            {
+            if (user !== true) {
                 showSnack("Can't update user");
                 return;
             }
@@ -78,14 +79,12 @@ export default {
 
         // call with updated info
         try {
-            user = await updatePasswordCurrentUser(rootState.AuthModule.accessToken,state.id,payload)
+            user = await updatePasswordCurrentUser(rootState.AuthModule.accessToken, state.id, payload);
         } catch (error) {
             console.log(error);
         }
 
-
-        if (user !== true)
-        {
+        if (user !== true) {
             showSnack("Can't update password user");
             return;
         }
@@ -104,10 +103,5 @@ export default {
                 showSnack(`Can't update`);
             }, 250);
         }
-    },
-
-
-    logOutUser({ commit }) {
-        commit("clearUser");
     },
 };

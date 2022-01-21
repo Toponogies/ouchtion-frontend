@@ -1,89 +1,102 @@
 <template>
     <v-container class="ma-0 pa-0">
-        <!-- Image gallery -->
-        <v-card class="pa-4 mb-4">
-            <product-image-gallery></product-image-gallery>
-        </v-card>
+        <!-- Placeholder (product not exists) -->
+        <div v-if="title === null">
+            <v-card class="pa-4">
+                <v-row no-gutters justify="center" align="center" class="d-flex flex-column">
+                    <v-icon large color="grey" class="mb-1">mdi-package-variant-closed</v-icon>
+                    <div class="grey--text mt-1">Product does not exists</div>
+                </v-row>
+            </v-card>
+        </div>
 
-        <!-- Product details -->
-        <v-card class="pa-0 mb-4">
-            <!-- Title -->
-            <v-row no-gutters class="px-6 pt-6 pb-3">
-                <v-col>
-                    <div class="text-h4 font-weight-light">{{ title }}</div>
-                </v-col>
-                <username-card class="mx-4" :username="seller.username" :rating="seller.rating"></username-card>
-                <v-btn icon @click="toggleWatchState">
-                    <v-icon v-if="isOnWatchlist === false">mdi-bookmark-outline</v-icon>
-                    <v-icon v-else>mdi-bookmark</v-icon>
-                </v-btn>
-            </v-row>
+        <!-- Details (product *do* exists) -->
+        <div v-else>
+            <!-- Image gallery -->
+            <v-card class="pa-4 mb-4">
+                <product-image-gallery></product-image-gallery>
+            </v-card>
 
-            <!-- Action cards -->
-            <v-row no-gutters class="px-6 pt-3">
-                <v-col class="mr-2">
-                    <bid-action-card></bid-action-card>
-                </v-col>
-                <v-col class="ml-2">
-                    <buy-now-action-card></buy-now-action-card>
-                </v-col>
-            </v-row>
+            <!-- Product details -->
+            <v-card class="pa-0 mb-4">
+                <!-- Title -->
+                <v-row no-gutters class="px-6 pt-6 pb-3">
+                    <v-col>
+                        <div class="text-h4 font-weight-light">{{ title }}</div>
+                    </v-col>
+                    <username-card class="mx-4" :username="seller.username" :rating="seller.rating"></username-card>
+                    <v-btn icon @click="toggleWatchState" v-if="role === utils.ROLES.BIDDER">
+                        <v-icon v-if="isOnWatchlist === false">mdi-bookmark-outline</v-icon>
+                        <v-icon v-else>mdi-bookmark</v-icon>
+                    </v-btn>
+                </v-row>
 
-            <!-- Start/end time -->
-            <v-row no-gutters class="px-6 pt-6 pb-3">
-                <v-col>
-                    <div class="d-flex flex-align-center">
-                        <v-icon left small>mdi-clock</v-icon>
-                        <span>Posted at {{ utils.toLongTimestamp(startTime) }}</span>
-                    </div>
-                    <div class="d-flex flex-align-center">
-                        <v-icon left small>mdi-clock-outline</v-icon>
-                        <span>Ends at {{ utils.toLongTimestamp(endTime) }}</span>
-                    </div>
-                </v-col>
-            </v-row>
+                <!-- Action cards -->
+                <v-row no-gutters class="px-6 pt-3">
+                    <v-col class="mr-2">
+                        <bid-action-card></bid-action-card>
+                    </v-col>
+                    <v-col class="ml-2">
+                        <buy-now-action-card></buy-now-action-card>
+                    </v-col>
+                </v-row>
 
-            <!-- Category list -->
-            <v-row no-gutters class="px-6 pt-3 pb-6">
-                <v-col>
-                    <v-chip
-                        class="mr-2 mb-2"
-                        v-for="category in categories"
-                        :key="category.category_id"
-                        @click.stop="handleCategoryClick(category.category_id)"
-                    >
-                        {{ category.name }}
-                    </v-chip>
-                </v-col>
-            </v-row>
+                <!-- Start/end time -->
+                <v-row no-gutters class="px-6 pt-6 pb-3">
+                    <v-col>
+                        <div class="d-flex flex-align-center">
+                            <v-icon left small>mdi-clock</v-icon>
+                            <span>Posted at {{ utils.toLongTimestamp(startTime) }}</span>
+                        </div>
+                        <div class="d-flex flex-align-center">
+                            <v-icon left small>mdi-clock-outline</v-icon>
+                            <span>Ends at {{ utils.toLongTimestamp(endTime) }}</span>
+                        </div>
+                    </v-col>
+                </v-row>
 
-            <v-divider></v-divider>
+                <!-- Category list -->
+                <v-row no-gutters class="px-6 pt-3 pb-6">
+                    <v-col>
+                        <v-chip
+                            class="mr-2 mb-2"
+                            v-for="category in categories"
+                            :key="category.category_id"
+                            @click.stop="handleCategoryClick(category.category_id)"
+                        >
+                            {{ category.name }}
+                        </v-chip>
+                    </v-col>
+                </v-row>
 
-            <!-- Description -->
-            <v-row no-gutters class="pa-6">
-                <v-col>
-                    <product-description></product-description>
-                </v-col>
-            </v-row>
+                <v-divider></v-divider>
 
-            <v-divider></v-divider>
+                <!-- Description -->
+                <v-row no-gutters class="pa-6">
+                    <v-col>
+                        <product-description></product-description>
+                    </v-col>
+                </v-row>
 
-            <!-- Bidder list -->
-            <v-row no-gutters class="pa-6">
-                <v-col>
-                    <bidder-list></bidder-list>
-                </v-col>
-            </v-row>
-        </v-card>
+                <v-divider></v-divider>
 
-        <!-- Related products -->
-        <featured-product-group :title="'Related products'" :products="relatedProducts"></featured-product-group>
+                <!-- Bidder list -->
+                <v-row no-gutters class="pa-6">
+                    <v-col>
+                        <bidder-list></bidder-list>
+                    </v-col>
+                </v-row>
+            </v-card>
+
+            <!-- Related products -->
+            <featured-product-group :title="'Related products'" :products="relatedProducts"></featured-product-group>
+        </div>
     </v-container>
 </template>
 
 <script>
-/* eslint-disable */
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapMutations } from "vuex";
+import { ROLES } from "@/utils/constants";
 
 import ProductImageGallery from "@/components/productDetails/ProductImageGallery";
 import UsernameCard from "@/components/productDetails/UsernameCard";
@@ -112,12 +125,14 @@ export default {
         BidActionCard,
         BuyNowActionCard,
     },
+
     data() {
         return {
-            utils: { toLongTimestamp },
+            utils: { toLongTimestamp, ROLES },
             id: this.$route.params.id,
         };
     },
+
     computed: {
         ...mapState("CurrentProductModule", [
             "title",
@@ -130,9 +145,13 @@ export default {
             "isOnWatchlist",
             "relatedProducts",
         ]),
+        ...mapState("CurrentUserModule", ["role"]),
     },
+
     methods: {
         ...mapActions("CurrentProductModule", ["setProductId", "fetchAllDetails"]),
+        ...mapMutations("CurrentProductModule", ["clearAll"]),
+        ...mapActions("WatchlistModule", ["addItem", "removeItem"]),
 
         handleCategoryClick(id) {
             const nextPath = `/search?cat=${id}`;
@@ -142,7 +161,15 @@ export default {
         },
 
         toggleWatchState() {
-            // call add this product to watchlist
+            // add
+            if (!this.isOnWatchlist) {
+                this.addItem(this.id);
+            }
+
+            // remove
+            else {
+                this.removeItem(this.id);
+            }
         },
     },
 
@@ -150,16 +177,22 @@ export default {
         this.setProductId(this.$route.params.id);
         this.fetchAllDetails();
     },
+
     mounted() {
+        scrollToTop(this);
+    },
+
+    updated() {
         scrollToTop(this);
     },
 
     beforeRouteUpdate(to, _, next) {
         // We have to manually set query on route update -- Vue Router is not "reactive" enough in this case (prolly)
-        this.id = null;
+        this.setProductId(null);
         if (to.params.id) {
-            this.id = to.params.id;
+            this.setProductId(to.params.id);
         }
+        this.clearAll();
         this.fetchAllDetails();
         next();
     },

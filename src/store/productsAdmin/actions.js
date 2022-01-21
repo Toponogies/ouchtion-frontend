@@ -1,6 +1,7 @@
 import { showSnack } from "@/utils/showSnack";
 import { API_ENDPOINTS, IMAGE_API_ENDPOINT } from "@/utils/constants";
 import axios from "axios";
+import { getAllProducts } from "@/api/productsAdmin";
 
 export default {
     async fetchAll({ commit, dispatch }) {
@@ -8,26 +9,28 @@ export default {
 
         const data = [];
 
-        let products = await axios
-            .get(`${API_ENDPOINTS.PRODUCTS}`)
-            .then((response) => {
-                return response.data;
-            })
-            .catch(async (error) => {
-                console.log(error);
-                if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN") {
-                    await dispatch("AuthModule/doRefresh", null, { root: true });
-                    return await axios
-                        .get(`${API_ENDPOINTS.PRODUCTS}`)
-                        .then((response) => {
-                            return response.data;
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                            return [];
-                        });
-                }
-            });
+        // let products = await axios
+        //     .get(`${API_ENDPOINTS.PRODUCTS}`)
+        //     .then((response) => {
+        //         return response.data;
+        //     })
+        //     .catch(async (error) => {
+        //         console.log(error);
+        //         if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN") {
+        //             await dispatch("AuthModule/doRefresh", null, { root: true });
+        //             return await axios
+        //                 .get(`${API_ENDPOINTS.PRODUCTS}`)
+        //                 .then((response) => {
+        //                     return response.data;
+        //                 })
+        //                 .catch((error) => {
+        //                     console.log(error);
+        //                     return [];
+        //                 });
+        //         }
+        //     });
+
+        let products = await getAllProducts();
 
         products?.forEach((product) => {
             data.push({
@@ -36,6 +39,7 @@ export default {
                 name: product.name,
                 endTime: product.end_at,
                 highestBidPrice: product.current_price,
+                isSold: product.is_sold === 1 ? true : false,
             });
         });
 

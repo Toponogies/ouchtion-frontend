@@ -21,6 +21,11 @@
             <span>{{ utils.formatPrice(item.highestBidPrice) }}</span>
         </template>
 
+        <!-- Column: Is sold (only show if product is sold) -->
+        <template v-slot:[`item.isSold`]="{ item }">
+            <v-chip v-if="item.isSold" color="success">SOLD</v-chip>
+        </template>
+
         <!-- Column: Action buttons -->
         <template v-slot:[`item.actions`]="{ item }">
             <!-- Button with tooltip: remove this item from watchlist -->

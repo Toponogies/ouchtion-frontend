@@ -13,7 +13,6 @@ export default {
         state.buyNow.price = payload.buy_price;
 
         state.isBlockedFromBidding = payload.is_sold;
-        state.isOnWatchlist = payload.isOnWatchlist;
     },
 
     setCategoriesOfProduct(state, categories) {
@@ -50,6 +49,10 @@ export default {
         state.relatedProducts = products;
     },
 
+    setIsOnWatchlist(state, isOnWatchlist) {
+        state.isOnWatchlist = isOnWatchlist;
+    },
+
     // modal states
     setBidModalState(state, open) {
         state.bid.isModalOpen = open;
@@ -59,5 +62,42 @@ export default {
     },
     setAppendDescriptionModalState(state, open) {
         state.isAppendDescriptionOpen = open;
+    },
+
+    clearAll(state) {
+        state = {
+            id: null,
+            title: null,
+            seller: {
+                username: null,
+                rating: 0.0,
+            },
+            startTime: null,
+            endTime: null,
+            categories: [],
+            primaryDescription: null,
+            secondaryDescriptions: [],
+            primaryImage: null,
+            secondaryImages: [],
+            bid: {
+                highestPrice: null,
+                highestUser: {
+                    username: null,
+                    rating: 0.0,
+                },
+                priceIncrement: null,
+                biddings: [],
+                isModalOpen: false,
+                isAutoBidEnabled: false,
+            },
+            buyNow: {
+                price: null,
+                isModalOpen: false,
+            },
+            isBlockedFromBidding: false,
+            isOnWatchlist: false,
+            relatedProducts: [],
+            isAppendDescriptionOpen: false,
+        };
     },
 };

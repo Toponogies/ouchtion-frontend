@@ -5,7 +5,7 @@ export default {
     async doLogin({ commit, dispatch }, loginData) {
         commit("loginStart");
         try {
-            let {access_token,refresh_token} = await login(loginData)
+            let { access_token, refresh_token } = await login(loginData);
             localStorage.setItem("accessToken_ouchtion", access_token);
             localStorage.setItem("refreshToken_ouchtion", refresh_token);
 
@@ -26,11 +26,26 @@ export default {
     },
 
     doLogout({ commit, dispatch }) {
+        // Remove tokens from localStorage
         localStorage.setItem("accessToken_ouchtion", null);
         localStorage.setItem("refreshToken_ouchtion", null);
-        commit("updateAccessToken", null);
-        commit("updateRefreshToken", null);
-        dispatch("CurrentUserModule/logOutUser", null, { root: true });
+
+        // Clear all related stores
+
+        // Tokens & User info
+        commit("AuthModule/clearAll", null, { root: true });
+        commit("CurrentUserModule/clearUser", null, { root: true });
+
+        // Bidder's dashboard
+        commit("BiddingModule/clearAll", null, { root: true });
+        commit("WatchlistModule/clearAll", null, { root: true });
+
+        // Seller's dashboard
+        commit("ProductModule/clearAll", null, { root: true });
+
+        // Admin's dashboard
+        commit("ProductsAdminModule/clearAll", null, { root: true });
+        commit("UsersModule/clearAll", null, { root: true });
     },
 
     fetchAccessToken({ commit, state, dispatch }) {
@@ -45,7 +60,7 @@ export default {
         if (state.accessToken === null) return;
 
         try {
-            let {access_token} =  await refresh(state.refreshToken);
+            let { access_token } = await refresh(state.refreshToken);
             localStorage.setItem("accessToken_ouchtion", access_token);
             commit("refreshStop", null);
             commit("updateAccessToken", access_token);

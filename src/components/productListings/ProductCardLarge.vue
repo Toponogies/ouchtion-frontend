@@ -15,7 +15,7 @@
                     <span>{{ title }}</span>
                     <v-spacer></v-spacer>
                     <v-chip color="red white--text" small class="mr-2" v-if="isNewProduct">NEW</v-chip>
-                    <v-btn icon @click.stop="toggleWatchState">
+                    <v-btn icon @click.stop="toggleWatchState" v-if="role === utils.ROLES.BIDDER">
                         <v-icon v-if="local_isOnWatchlist === false">mdi-bookmark-outline</v-icon>
                         <v-icon v-else>mdi-bookmark</v-icon>
                     </v-btn>
@@ -67,6 +67,8 @@
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
+import { ROLES } from "@/utils/constants";
 import { formatPrice } from "@/utils/priceUtils";
 import { isNewProduct, toLongTimestamp } from "@/utils/timeUtils";
 
@@ -86,10 +88,21 @@ export default {
     },
     data() {
         return {
+            utils: { ROLES },
             local_isOnWatchlist: this.isOnWatchlist,
         };
     },
+    watch: {
+        local_isOnWatchlist(newVal) {
+            // add to watchlist
+            if (newVal) this.addItem(this.id);
+            // remove from watchlist
+            else this.removeItem(this.id);
+        },
+    },
+
     computed: {
+        ...mapState("CurrentUserModule", ["role"]),
         isNewProduct: function () {
             return isNewProduct(this.startTime);
         },
@@ -106,7 +119,9 @@ export default {
             return toLongTimestamp(this.endTime);
         },
     },
+
     methods: {
+        ...mapActions("WatchlistModule", ["addItem", "removeItem"]),
         toggleWatchState() {
             this.local_isOnWatchlist = !this.local_isOnWatchlist;
         },
