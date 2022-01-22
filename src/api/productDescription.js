@@ -2,8 +2,14 @@ import axios from "axios";
 import { API_ENDPOINTS } from "@/utils/constants";
 import { getAuthHeader } from "@/api/utils/getAuthHeader";
 
-export const appendDescription = async (product_id, description, upload_date) => {
+export const appendDescription = async (product_id, description) => {
     const headers = await getAuthHeader();
-    const payload = { description, upload_date };
-    return await axios.post(`${API_ENDPOINTS.PRODUCTS}/${product_id}/descriptions`, payload, { headers });
+    const payload = { description };
+    return await axios.post(`${API_ENDPOINTS.PRODUCTS}/${product_id}/descriptions`, payload, { headers })
+    .then(() => {
+        return true;
+    })
+    .catch(()=>{
+        return false;
+    })
 };

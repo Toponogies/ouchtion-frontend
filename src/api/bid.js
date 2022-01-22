@@ -36,9 +36,12 @@ export const turnOnAutoBid = async (product_id, max_price) => {
 // ⚠️ AUTO BID/OFF
 export const turnOffAutoBid = async (product_id) => {
     const headers = await getAuthHeader();
-    const payload = { product_id };
+    const payload = { product_id:product_id };
     return await axios
-        .post(``, payload, { headers })
+        .delete(`${API_ENDPOINTS.BIDDINGS}/autoBidding`, {
+            headers,
+            data:payload,
+          })
         .then(() => true)
         .catch(() => false);
 };

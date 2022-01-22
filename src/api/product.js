@@ -1,5 +1,6 @@
 import { API_ENDPOINTS, HOME_FEATURED_PRODUCTS_LIMIT } from "@/utils/constants";
 import axios from "axios";
+import { getAuthHeader } from "./utils/getAuthHeader";
 
 export async function getProduct(product_id) {
     return await axios.get(`${API_ENDPOINTS.PRODUCTS}/${product_id}`).then((response) => {
@@ -81,4 +82,48 @@ export async function bidderCompleteProduct(accessToken) {
         .then((response) => {
             return response.data;
         });
+}
+
+export async function addProductData(formData) {
+    let headers = await getAuthHeader();
+    return await axios.post(`${API_ENDPOINTS.PRODUCTS}`, formData ,
+        {
+            headers:{
+                Authorization:headers.Authorization,
+                "Content-Type": "multipart/form-data",
+            }
+        })
+        .then((res) => {
+            return res.data;
+        })
+}
+
+export async function addProductImageData(product_id,formDataImage) {
+    let headers = await getAuthHeader();
+
+    return await axios.post(`${API_ENDPOINTS.PRODUCTS}/${product_id}/images`, formDataImage,
+        {
+            headers:{
+                Authorization:headers.Authorization,
+                "Content-Type": "multipart/form-data",
+            }
+        })
+        .then((res) => {
+            return res.data;
+        })
+}
+
+export async function removeProduct(id) {
+    let headers = await getAuthHeader();
+
+    return await axios
+        .delete(`${API_ENDPOINTS.PRODUCTS}/${id}`, {
+            headers,
+        })
+        .then(() => {
+            return true;
+        })
+        .catch(() =>{
+            return false
+        })
 }

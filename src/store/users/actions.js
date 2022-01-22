@@ -1,7 +1,7 @@
 import { showSnack } from "@/utils/showSnack";
 import { fromTimestamp } from "@/utils/timeUtils";
 
-import { createUser, getAllUser, getUser, getUserWithPoint, updateEmailAdmin, updatePasswordAdmin, updateRole, updateUserAdmin } from "@/api/user";
+import { createUser, getAllUser, getUser, getUserWithPoint, removeUser, updateEmailAdmin, updatePasswordAdmin, updateRole, updateUserAdmin } from "@/api/user";
 import { deleteUpgradeRequests, getUpgradeRequests } from "@/api/upgradeRequest";
 
 export default {
@@ -77,7 +77,12 @@ export default {
         commit("setIsLoading", true);
 
         // new payload
-        let payloadTemp = payload;
+        let payloadTemp = {
+            id: payload.id,
+            full_name: payload.full_name,
+            address: payload.address,
+            dob: payload.dob,
+        };
 
         // id
         let id = payloadTemp.id;
@@ -123,12 +128,20 @@ export default {
         commit("setIsLoading", false);
     },
 
-    delete({ commit }, id) {
+    async delete({ commit }, id) {
         commit("setIsLoading", true);
-        // call API
-        commit("deleteUser", id);
+        let check = await removeUser(id);
+        if (check ===  true)
+        {
+            commit("deleteUser", id);
+            showSnack(`Deleted user id = ${id}`);
+        }
+        else{
+            showSnack(`Can't deleted user id = ${id}`);
+        }
+
         commit("setIsLoading", false);
-        showSnack(`Deleted user id = ${id}`);
+
     },
 
     async updateEmail({ commit, rootState }, { id, email }) {

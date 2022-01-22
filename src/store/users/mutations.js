@@ -17,7 +17,6 @@ export default {
         const targetItem = {
             ...state.users[targetIndex],
             full_name: payload.full_name,
-            email: payload.email,
             address: payload.address,
             dob: payload.dob,
         };

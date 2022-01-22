@@ -1,10 +1,10 @@
-import { API_ENDPOINTS } from "@/utils/constants";
-import axios from "axios";
 import { showSnack } from "@/utils/showSnack";
 import { toTimestamp } from "@/utils/timeUtils";
+import { addProductData, addProductImageData } from "@/api/product";
+import { appendDescription } from "@/api/productDescription";
 
 export default {
-    async addProduct({ rootState }, {
+    async addProduct(_context, {
         name,
         images,
         category_id,
@@ -45,14 +45,7 @@ export default {
         // add product
         let product = null;
         try{
-            product = await axios.post(`${API_ENDPOINTS.PRODUCTS}`, formData, {
-                headers: {
-                  "Content-Type": "multipart/form-data",
-                  Authorization: "Bearer " + rootState.AuthModule.accessToken,
-                }})
-                .then((res) => {
-                    return res.data;
-                })
+            product = await addProductData(formData);
         }catch(error){
             console.log(error.response);
             showSnack("Can't add product")
@@ -61,13 +54,7 @@ export default {
 
         // update description
         try{
-            await axios.post(`${API_ENDPOINTS.PRODUCTS}/${product.product_id}/descriptions`, {description:description}, {
-                headers: {
-                  Authorization: "Bearer " + rootState.AuthModule.accessToken,
-                }})
-                .then((res) => {
-                    return res.data;
-                })
+            await appendDescription(product.product_id,description);
         }catch(error){
             console.log(error);
             showSnack("Can't add product description")
@@ -78,14 +65,7 @@ export default {
         images.forEach(async image => {
             let formDataImage = new FormData();
             formDataImage.append("image", image);
-            await axios.post(`${API_ENDPOINTS.PRODUCTS}/${product.product_id}/images`, formDataImage, {
-                headers: {
-                  "Content-Type": "multipart/form-data",
-                  Authorization: "Bearer " + rootState.AuthModule.accessToken,
-                }})
-                .then((res) => {
-                    return res.data;
-                })
+            await addProductImageData(product.product_id,formDataImage);
         });
 
         showSnack("Create success");

@@ -15,6 +15,8 @@ import { today, toLongTimestamp } from "@/utils/timeUtils";
 import { hiddenName } from "@/utils/hiddenName";
 import { IMAGE_API_ENDPOINT } from "@/utils/constants";
 import { showSnack } from "@/utils/showSnack";
+import { appendDescription } from "@/api/productDescription";
+import { buyProductNow, placeBids, turnOffAutoBid, turnOnAutoBid } from "@/api/bid";
 
 export default {
     setProductId({ commit }, id) {
@@ -28,6 +30,7 @@ export default {
             productInfo = await getProduct(state.id);
             commit("setProductInfo", productInfo);
         } catch (error) {
+            console.log(error.response);
             console.log(`Fetching product info failed: ${error}`);
         }
 
@@ -93,7 +96,15 @@ export default {
                 time: toLongTimestamp(each.time),
                 full_name: hiddenName(each.full_name),
             }));
+
+            let isAutoBidEnabled = false;
+
+            productBiddings.forEach(bidding => {
+                if (bidding.user_id === rootState.CurrentUserModule.id && bidding.max_price !== null && bidding.is_auto_process === 1)
+                    isAutoBidEnabled = true;
+            });
             commit("setProductBiddings", productBiddings);
+            commit("setIsAutoBidState", isAutoBidEnabled);
         } catch (error) {
             console.log(`Fetching product biddings failed: ${error}`);
         }
@@ -225,13 +236,57 @@ export default {
         }
     },
 
-    appendProductDescription({ commit }, description) {
-        // call API with current product id
-        commit("appendProductDescriptions", {
-            description,
-            upload_date: today(),
-            isInit: false,
-        });
-        showSnack("Description appended.");
+    async appendProductDescription({ commit }, {product_id,description}) {
+        let check = await appendDescription(product_id,description)
+        if (check ===  true)
+        {
+            showSnack("Description appended.");
+            commit("appendProductDescriptions", {
+                description,
+                upload_date: today(),
+                isInit: false,
+            });
+        }
+        else{
+            showSnack("Description not appended.");
+        }
     },
+
+    async addManualBid({commit}, {product_id,bid_price}){
+        let check = await placeBids(product_id,bid_price);
+        if (check === true)
+            showSnack("Add new bid");
+        else
+            showSnack("Can't add new bidding");
+    },
+
+    async buyProduct({commit}, {product_id}){
+        let check = await buyProductNow(product_id);
+        if (check === true)
+            showSnack("Buy product success");
+        else
+            showSnack("Can't buy this product");
+    },
+
+    async addAutoBidding({commit}, {product_id,max_price}){
+        let check = await turnOnAutoBid(product_id,max_price);
+        if (check === true)
+        {
+            commit("setIsAutoBidState", true);
+            showSnack("Turn on auto bidding success");
+        }
+        else
+            showSnack("Can't turn on auto bidding");
+    },
+
+    async turnOffAutoBidding({commit}, {product_id}){
+        let check = await turnOffAutoBid(product_id);
+        if (check === true)
+        {
+            commit("setIsAutoBidState", false);
+            showSnack("Turn off auto bidding success");
+        }
+        else
+            showSnack("Can't turn off auto bidding");
+    }
 };
