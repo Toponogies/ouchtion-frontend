@@ -93,10 +93,8 @@ export default {
                 if (bidding.user_id === rootState.CurrentUserModule.id && bidding.max_price !== null && bidding.is_auto_process === 1)
                     isAutoBidEnabled = true;
             });
-            commit("setProductBiddings", {
-                biddings:productBiddings,
-                isAutoBidEnabled: isAutoBidEnabled,
-            });
+            commit("setProductBiddings", productBiddings);
+            commit("setIsAutoBidState", isAutoBidEnabled);
         } catch (error) {
             console.log(`Fetching product biddings failed: ${error}`);
         }
@@ -167,7 +165,10 @@ export default {
     async addAutoBidding({commit}, {product_id,max_price}){
         let check = await turnOnAutoBid(product_id,max_price);
         if (check === true)
+        {
+            commit("setIsAutoBidState", true);
             showSnack("Turn on auto bidding success");
+        }
         else
             showSnack("Can't turn on auto bidding");
     },
@@ -175,7 +176,10 @@ export default {
     async turnOffAutoBidding({commit}, {product_id}){
         let check = await turnOffAutoBid(product_id);
         if (check === true)
+        {
+            commit("setIsAutoBidState", false);
             showSnack("Turn off auto bidding success");
+        }
         else
             showSnack("Can't turn off auto bidding");
     }

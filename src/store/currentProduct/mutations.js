@@ -41,9 +41,8 @@ export default {
         state.secondaryImages = payload.secondaryImages;
     },
 
-    setProductBiddings(state, payload) {
-        state.bid.biddings = payload.biddings;
-        state.bid.isAutoBidEnabled = payload.isAutoBidEnabled;
+    setProductBiddings(state, biddings) {
+        state.bid.biddings = biddings;
     },
 
     setRelatedProducts(state, products) {
@@ -63,6 +62,9 @@ export default {
     },
     setAppendDescriptionModalState(state, open) {
         state.isAppendDescriptionOpen = open;
+    },
+    setIsAutoBidState(state, open) {
+        state.bid.isAutoBidEnabled = open;
     },
 
     clearAll(state) {
