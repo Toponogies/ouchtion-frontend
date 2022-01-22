@@ -129,16 +129,18 @@ export default {
         // Is the current user blocked from bidding on this product?
     },
 
-    appendProductDescription({ commit }, {product_id,description}) {
-        try {
-            appendDescription(product_id,description)
+    async appendProductDescription({ commit }, {product_id,description}) {
+        let check = await appendDescription(product_id,description)
+        if (check ===  true)
+        {
+            showSnack("Description appended.");
             commit("appendProductDescriptions", {
                 description,
                 upload_date: today(),
                 isInit: false,
             });
-            showSnack("Description appended.");
-        } catch (error) {
+        }
+        else{
             showSnack("Description not appended.");
         }
     },
