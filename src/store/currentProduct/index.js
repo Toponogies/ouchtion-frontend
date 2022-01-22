@@ -11,12 +11,14 @@ export const CurrentProductModule = {
         // product basic info
         title: null,
         seller: {
+            id: null,
             username: null,
             rating: 0.0,
         },
         startTime: null,
         endTime: null,
         categories: [],
+        isSold: false,
 
         // product description
         primaryDescription: null,
@@ -35,18 +37,8 @@ export const CurrentProductModule = {
             },
             priceIncrement: null,
             biddings: [],
-            bidderRequests: [],
             isModalOpen: false,
             isAutoBidEnabled: false,
-        },
-        bidRequests: {
-            headers: [
-                { text: "Request #", value: "requestId", sortable: false },
-                { text: "Username", value: "username" },
-                { text: "User rating", value: "rating" },
-                { value: "actions", align: "end" },
-            ],
-            items: [],
         },
         buyNow: {
             price: null,
@@ -56,6 +48,24 @@ export const CurrentProductModule = {
         // current user status for this product
         isBlockedFromBidding: false,
         isOnWatchlist: false,
+
+        // bidding requests (bidder's button)
+        request: {
+            isSent: false,
+            isModalOpen: false,
+            isBlockedFromRequesting: false,
+        },
+
+        // bidding requests (seller's table)
+        bidRequests: {
+            headers: [
+                { text: "Request #", value: "requestId", sortable: false },
+                { text: "Username", value: "username" },
+                { text: "User rating", value: "rating" },
+                { value: "actions", align: "end" },
+            ],
+            items: [],
+        },
 
         // related products
         relatedProducts: [],
