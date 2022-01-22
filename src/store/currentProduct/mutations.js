@@ -13,6 +13,7 @@ export default {
         state.buyNow.price = payload.buy_price;
 
         state.isBlockedFromBidding = payload.is_sold;
+        state.seller.id = payload.seller_id;
     },
 
     setCategoriesOfProduct(state, categories) {
@@ -69,6 +70,7 @@ export default {
             id: null,
             title: null,
             seller: {
+                id: null,
                 username: null,
                 rating: 0.0,
             },

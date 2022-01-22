@@ -11,6 +11,7 @@ export const CurrentProductModule = {
         // product basic info
         title: null,
         seller: {
+            id: null,
             username: null,
             rating: 0.0,
         },
