@@ -1,7 +1,7 @@
 import { API_ENDPOINTS } from "@/utils/constants";
 import axios from "axios";
 import { showSnack } from "@/utils/showSnack";
-import { toTimestamp } from "@/utils/timeUtils";
+import { today, toTimestamp } from "@/utils/timeUtils";
 
 export default {
     async addProduct({ rootState }, {
@@ -61,7 +61,9 @@ export default {
 
         // update description
         try{
-            await axios.post(`${API_ENDPOINTS.PRODUCTS}/${product.product_id}/descriptions`, {description:description}, {
+            await axios.post(`${API_ENDPOINTS.PRODUCTS}/${product.product_id}/descriptions`, {
+                description:description,
+            }, {
                 headers: {
                   Authorization: "Bearer " + rootState.AuthModule.accessToken,
                 }})

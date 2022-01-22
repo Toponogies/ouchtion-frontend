@@ -1,5 +1,5 @@
 import { bidderCompleteProduct, bidderOngoingProduct } from "@/api/product";
-import { getRates } from "@/api/rate";
+import { getRates, getRatesProduct } from "@/api/rate";
 import { IMAGE_API_ENDPOINT } from "@/utils/constants";
 import { showSnack } from "@/utils/showSnack";
 
@@ -33,24 +33,16 @@ export default {
         commit("setCompletedBidsLoadingState", true);
         const data = [];
         let products = [];
-        let rates = [];
 
         try {
             products = await bidderCompleteProduct(rootState.AuthModule.accessToken)
-            rates = await getRates(rootState.AuthModule.accessToken);
         } catch (error) {
             console.log(error);
         }
 
         products?.forEach(async (product) => {
             // fetch rate for each product
-            let rates = await axios
-                .get(`${API_ENDPOINTS.PRODUCTS}/${product.product_id}/rate`)
-                .then((res) => res.data)
-                .catch((error) => {
-                    console.log(error);
-                    return null;
-                });
+            let rates = await getRatesProduct(product.product_id);
             if (rates === null) return;
 
             let reviewToBidder = {
@@ -108,14 +100,7 @@ export default {
             rate: rating,
             comment: comment ? comment : "",
         };
-        const success = await axios
-            .post(`${API_ENDPOINTS.USERS}/rate`, payload, { headers })
-            .then(() => true)
-            .catch((err) => {
-                console.log(err);
-                showSnack(`Failed to submit review for product id = ${id}`);
-                return false;
-            });
+        const success = await getRates(payload,headers);
 
         if (success) {
             commit("setCompletedBidReview", { id, rating, comment });

@@ -7,6 +7,7 @@ import { today, toLongTimestamp } from "@/utils/timeUtils";
 import { hiddenName } from "@/utils/hiddenName";
 import { IMAGE_API_ENDPOINT } from "@/utils/constants";
 import { showSnack } from "@/utils/showSnack";
+import { appendDescription } from "@/api/productDescription";
 
 export default {
     setProductId({ commit }, id) {
@@ -20,6 +21,7 @@ export default {
             productInfo = await getProduct(state.id);
             commit("setProductInfo", productInfo);
         } catch (error) {
+            console.log(error.response);
             console.log(`Fetching product info failed: ${error}`);
         }
 
@@ -127,13 +129,17 @@ export default {
         // Is the current user blocked from bidding on this product?
     },
 
-    appendProductDescription({ commit }, description) {
-        // call API with current product id
-        commit("appendProductDescriptions", {
-            description,
-            upload_date: today(),
-            isInit: false,
-        });
-        showSnack("Description appended.");
+    appendProductDescription({ commit }, {product_id,description}) {
+        try {
+            appendDescription(product_id,description)
+            commit("appendProductDescriptions", {
+                description,
+                upload_date: today(),
+                isInit: false,
+            });
+            showSnack("Description appended.");
+        } catch (error) {
+            showSnack("Description not appended.");
+        }
     },
 };

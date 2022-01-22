@@ -96,7 +96,10 @@ export default {
         ...mapActions("CurrentProductModule", ["appendProductDescription"]),
         ...mapMutations("CurrentProductModule", ["setAppendDescriptionModalState"]),
         handleSubmit() {
-            this.appendProductDescription(this.description);
+            this.appendProductDescription({
+                description:this.description,
+                product_id:this.$route.params.id,
+            });
             this.clearDescription();
             this.setAppendDescriptionModalState(false);
         },
