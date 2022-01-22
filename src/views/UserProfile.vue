@@ -280,7 +280,7 @@ export default {
         },
     },
     methods: {
-        ...mapActions("CurrentUserModule", ["editUser","editPassword"]),
+        ...mapActions("CurrentUserModule", ["editUser","editPassword","addRequestSeller"]),
 
         //need password
         checkOldPass() {
@@ -365,6 +365,8 @@ export default {
 
         // upgrade
         requestUpgradeToSeller() {
+            let reason = "I want to be a seller"
+            this.addRequestSeller(reason);
             // send update
             this.upgradeRequestSent = true;
         },

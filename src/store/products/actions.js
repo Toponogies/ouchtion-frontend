@@ -1,5 +1,5 @@
 import { sellerFinishedProduct, sellerOnGoingProduct } from "@/api/product";
-import { getRates } from "@/api/rate";
+import { getRates, getRatesProduct } from "@/api/rate";
 import { API_ENDPOINTS, IMAGE_API_ENDPOINT } from "@/utils/constants";
 import { showSnack } from "@/utils/showSnack";
 import axios from "axios";
@@ -37,20 +37,11 @@ export default {
         let products = [];
         try {
             products = await sellerFinishedProduct(rootState.AuthModule.accessToken);
-            rates = await getRates(rootState.AuthModule.accessToken);
         } catch (error) {
             console.log(error);
         }
         products?.forEach(async (product) => {
-            let rates = await axios
-                .get(`${API_ENDPOINTS.PRODUCTS}/${product.product_id}/rate`)
-                .then((response) => {
-                    return response.data;
-                })
-                .catch((error) => {
-                    console.log(error);
-                    return [];
-                });
+            let rates = await getRatesProduct(product.product_id);
 
             let reviewToBidder = {
                 rating: null,
@@ -107,14 +98,7 @@ export default {
             rate: rating,
             comment: comment ? comment : "",
         };
-        const success = await axios
-            .post(`${API_ENDPOINTS.USERS}/rate`, payload, { headers })
-            .then(() => true)
-            .catch((err) => {
-                console.log(err);
-                showSnack(`Failed to submit review for product id = ${id}`);
-                return false;
-            });
+        const success = await getRates(payload,headers);
 
         if (success) {
             commit("setCompletedBidReview", { id, rating, comment });

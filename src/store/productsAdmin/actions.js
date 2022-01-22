@@ -1,34 +1,13 @@
 import { showSnack } from "@/utils/showSnack";
-import { API_ENDPOINTS, IMAGE_API_ENDPOINT } from "@/utils/constants";
-import axios from "axios";
+import { IMAGE_API_ENDPOINT } from "@/utils/constants";
 import { getAllProducts } from "@/api/productsAdmin";
+import { removeProduct } from "@/api/product";
 
 export default {
-    async fetchAll({ commit}) {
+    async fetchAll({ commit }) {
         commit("setLoadingState", true);
 
         const data = [];
-
-        // let products = await axios
-        //     .get(`${API_ENDPOINTS.PRODUCTS}`)
-        //     .then((response) => {
-        //         return response.data;
-        //     })
-        //     .catch(async (error) => {
-        //         console.log(error);
-        //         if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN") {
-        //             await dispatch("AuthModule/doRefresh", null, { root: true });
-        //             return await axios
-        //                 .get(`${API_ENDPOINTS.PRODUCTS}`)
-        //                 .then((response) => {
-        //                     return response.data;
-        //                 })
-        //                 .catch((error) => {
-        //                     console.log(error);
-        //                     return [];
-        //                 });
-        //         }
-        //     });
 
         let products = await getAllProducts();
 
@@ -49,37 +28,10 @@ export default {
         }, 500);
     },
 
-    async removeItem({ commit, rootState, dispatch }, id) {
+    async removeItem({ commit }, id) {
         commit("setLoadingState", true);
 
-        let check = await axios
-            .delete(`${API_ENDPOINTS.PRODUCTS}/${id}`, {
-                headers: {
-                    Authorization: "Bearer " + rootState.AuthModule.accessToken,
-                },
-            })
-            .then(() => {
-                return true;
-            })
-            .catch(async (error) => {
-                console.log(error);
-                if (error.response.data && error.response.data.title === "EXPIRED_ACCESSTOKEN") {
-                    await dispatch("AuthModule/doRefresh", null, { root: true });
-                    return await axios
-                        .delete(`${API_ENDPOINTS.PRODUCTS}/${id}`, {
-                            headers: {
-                                Authorization: "Bearer " + rootState.AuthModule.accessToken,
-                            },
-                        })
-                        .then((response) => {
-                            return response.data;
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                            return [];
-                        });
-                }
-            });
+        let check = await removeProduct(id);
 
         if (check !== true) {
             showSnack(`Can't Removed item ${id}`);

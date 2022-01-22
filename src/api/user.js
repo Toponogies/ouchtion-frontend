@@ -1,10 +1,16 @@
 import axios from "axios";
 import { API_ENDPOINTS } from "@/utils/constants";
+import { getAuthHeader } from "./utils/getAuthHeader";
 
 export async function getUserWithPoint(user_id) {
+    if (user_id === null) return {
+        full_name: "",
+        point: 0.0,
+    };
     return await axios.get(`${API_ENDPOINTS.USERS}/${user_id}/point`).then((response) => {
         return response.data;
-    });
+    })
+    .catch(() => false);
 }
 
 export async function getUser(accessToken, user_id) {
@@ -98,3 +104,14 @@ export async function createUser(accessToken, payload) {
             return response.data;
         });
 }
+
+export async function removeUser(id) {
+    const headers = await getAuthHeader();
+    return await axios.delete(`${API_ENDPOINTS.USERS}/${id}`, null, { headers })
+    .then(() => {
+        return true;
+    })
+    .catch(()=>{
+        return false;
+    })
+};
