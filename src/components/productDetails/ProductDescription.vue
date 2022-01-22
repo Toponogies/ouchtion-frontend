@@ -22,7 +22,7 @@
                 <div class="ma-0 pa-0" v-html="desc2.description"></div>
             </div>
         </v-card>
-        <v-row no-gutters class="mb-2" v-if="role === utils.ROLES.SELLER">
+        <v-row no-gutters class="mb-2" v-if="role === utils.ROLES.SELLER && id === seller.id">
             <v-col>
                 <v-spacer></v-spacer>
                 <v-btn @click="handleAppendDescriptionBtnClick">
@@ -52,8 +52,8 @@ export default {
         };
     },
     computed: {
-        ...mapState("CurrentProductModule", ["primaryDescription", "secondaryDescriptions"]),
-        ...mapState("CurrentUserModule", ["role"]),
+        ...mapState("CurrentProductModule", ["seller", "primaryDescription", "secondaryDescriptions"]),
+        ...mapState("CurrentUserModule", ["id", "role"]),
     },
     methods: {
         ...mapMutations("CurrentProductModule", ["setAppendDescriptionModalState"]),

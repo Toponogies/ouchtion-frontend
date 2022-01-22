@@ -11,7 +11,7 @@ export default {
         state.bid.highestPrice = payload.current_price;
         state.bid.priceIncrement = payload.step_price;
         state.buyNow.price = payload.buy_price;
-
+        state.seller.id = payload.seller_id;
         state.isSold = payload.is_sold;
     },
 
@@ -93,6 +93,7 @@ export default {
             id: null,
             title: null,
             seller: {
+                id: null,
                 username: null,
                 rating: 0.0,
             },
