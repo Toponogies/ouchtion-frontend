@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 import UsernameCard from "@/components/productDetails/UsernameCard";
 import { formatPrice } from "@/utils/priceUtils";
 
@@ -58,7 +58,11 @@ export default {
     },
     methods: {
         ...mapMutations("CurrentProductModule", ["setBuyNowModalState"]),
+        ...mapActions("CurrentProductModule", ["buyProduct"]),
         handleConfirmDialogOK() {
+            this.buyProduct({
+                product_id: this.$route.params.id,
+            })
             // TRIGGER: BUY THIS PRODUCT
             this.setBuyNowModalState(false);
         },

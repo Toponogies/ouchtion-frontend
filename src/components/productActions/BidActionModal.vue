@@ -125,7 +125,6 @@
                     color="orange--text text--darken-3"
                     @click="handleConfirmDialogAutobidOff"
                     large
-                    :disabled="!newAutoBidPriceValid"
                     v-else
                 >
                     Turn off Auto-bidding
@@ -169,16 +168,28 @@ export default {
     },
     methods: {
         ...mapMutations("CurrentProductModule", ["setBidModalState"]),
+        ...mapActions("CurrentProductModule", ["addManualBid","addAutoBidding","turnOffAutoBidding"]),
         handleConfirmDialogOK() {
+            this.addManualBid({
+                product_id: this.$route.params.id,
+                bid_price: this.newPrice,
+            })
             this.setBidModalState(false);
         },
         handleConfirmDialogAutobidOK() {
             this.setBidModalState(false);
+            this.addAutoBidding({
+                product_id: this.$route.params.id,
+                max_price: this.autoBidMaximumPrice,
+            })
             // TRIGGER: ENABLE AUTO BID
             this.autoBidEnabled = true;
         },
         handleConfirmDialogAutobidOff() {
             this.setBidModalState(false);
+            this.turnOffAutoBidding({
+                product_id: this.$route.params.id,
+            })
             // TRIGGER: DISABLE AUTO BID
             this.autoBidEnabled = false;
         },
