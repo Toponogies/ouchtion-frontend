@@ -34,7 +34,7 @@ export default {
     async addItem({ commit, rootState }, id) {
         commit("setLoadingState", true);
         try {
-            await addToWatchlist(rootState.AuthModule.accessToken, id);
+            await addToWatchlist(id);
             commit("addItem", id);
             showSnack(`Added item id = ${id} to watchlist`);
         } catch (error) {
@@ -46,7 +46,7 @@ export default {
     async removeItem({ commit, rootState }, id) {
         commit("setLoadingState", true);
         try {
-            await removeFromWatchlist(rootState.AuthModule.accessToken, id);
+            await removeFromWatchlist(id);
             commit("removeItem", id);
             showSnack(`Removed item ${id}`);
         } catch (error) {

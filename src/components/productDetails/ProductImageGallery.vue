@@ -58,5 +58,9 @@ export default {
             this.largeImageDialogSelectedUrl = null;
         },
     },
+    mounted() {
+        console.log(this.primaryImage);
+        console.log(this.secondaryImages);
+    },
 };
 </script>

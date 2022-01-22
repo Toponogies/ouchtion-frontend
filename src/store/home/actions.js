@@ -5,11 +5,11 @@ import { IMAGE_API_ENDPOINT, HOME_FEATURED_PRODUCTS_LIMIT } from "@/utils/consta
 export default {
     async fetchAll({ commit }) {
         try {
-            let params1 = { sort: "time_desc", number: HOME_FEATURED_PRODUCTS_LIMIT }
+            let params1 = { sort: "time_asc", number: HOME_FEATURED_PRODUCTS_LIMIT };
             let products = await getData(params1);
             let user = null;
             let productsEndingSoon = [];
-            products.forEach(async(product) => {
+            products.forEach(async (product) => {
                 user = await getUserWithPoint(product.buyer_id);
                 productsEndingSoon.push({
                     id: product.product_id,
@@ -27,11 +27,11 @@ export default {
 
             commit("updateProductsEndingSoon", productsEndingSoon);
 
-            let params2 = { sort: "bidding_desc", number: HOME_FEATURED_PRODUCTS_LIMIT }
+            let params2 = { sort: "bidding_desc", number: HOME_FEATURED_PRODUCTS_LIMIT };
             products = await getData(params2);
 
             let productsMostBidders = [];
-            products.forEach(async(product) => {
+            products.forEach(async (product) => {
                 user = await getUserWithPoint(product.buyer_id);
                 productsMostBidders.push({
                     id: product.product_id,
@@ -47,12 +47,12 @@ export default {
                 });
             });
             commit("updateProductsMostBidders", productsMostBidders);
-            
-            let params3 = { sort: "price_asc", number: HOME_FEATURED_PRODUCTS_LIMIT }
+
+            let params3 = { sort: "price_desc", number: HOME_FEATURED_PRODUCTS_LIMIT };
             products = await getData(params3);
 
             let productsHighestPrice = [];
-            products.forEach(async(product) => {
+            products.forEach(async (product) => {
                 user = await getUserWithPoint(product.buyer_id);
                 productsHighestPrice.push({
                     id: product.product_id,

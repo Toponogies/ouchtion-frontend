@@ -207,14 +207,6 @@
                         </v-row>
                     </v-form>
 
-                    <!-- Error line (only shown on errors) -->
-                    <!-- We don't use inline verification because this form
-                     has dual duty (create/edit)
-                 -->
-                    <v-row no-gutters class="px-4 pb-4" v-if="formError !== null">
-                        <div class="red--text">{{ formError }}</div>
-                    </v-row>
-
                     <!-- Submit Button -->
                     <v-row no-gutters class="px-4 pb-4">
                         <v-spacer></v-spacer>
@@ -306,7 +298,7 @@ export default {
             this.currentFullName = item.full_name;
             this.currentEmail = item.email;
             this.currentAddress = item.address;
-            this.currentDoB = fromTimestamp(item.dob).date;
+            this.currentDoB = item.dob ? fromTimestamp(item.dob).date : null;
             this.newPassword = null;
             this.userEditorDialogOpened = true;
         },
@@ -314,12 +306,11 @@ export default {
         handleEditUserOK() {
             this.currentDoB = toTimestamp(this.currentDoB, "00:00:00.000Z");
 
-            if (this.currentUser.email !== this.currentEmail)
-            {
+            if (this.currentUser.email !== this.currentEmail) {
                 this.updateEmail({
                     id: this.currentUserId,
-                    email:this.currentEmail,
-                })
+                    email: this.currentEmail,
+                });
             }
 
             this.update({
@@ -328,13 +319,14 @@ export default {
                 address: this.currentAddress,
                 dob: this.currentDoB,
             });
-            
-            if (this.newPassword.length > 0) {
+
+            if (this.newPassword?.length > 0) {
                 this.updatePassword({
                     id: this.currentUserId,
                     password: this.newPassword,
                 });
             }
+
             this.userEditorDialogOpened = false;
         },
 
