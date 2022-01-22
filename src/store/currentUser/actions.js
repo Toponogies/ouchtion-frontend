@@ -50,6 +50,7 @@ export default {
                 }
                 showSnack("Email send check and update email");
                 delete payload.email;
+                return;
             }
 
             let user = null;
@@ -65,8 +66,10 @@ export default {
                 showSnack("Can't update user");
                 return;
             }
+            showSnack("Update complete");
         } catch (error) {
             console.log(error);
+            showSnack("Can't update user");
         }
 
         // if successful, update the user again in store

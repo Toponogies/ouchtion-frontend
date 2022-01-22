@@ -77,7 +77,12 @@ export default {
         commit("setIsLoading", true);
 
         // new payload
-        let payloadTemp = payload;
+        let payloadTemp = {
+            id: payload.id,
+            full_name: payload.full_name,
+            address: payload.address,
+            dob: payload.dob,
+        };
 
         // id
         let id = payloadTemp.id;
