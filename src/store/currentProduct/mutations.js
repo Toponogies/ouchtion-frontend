@@ -1,3 +1,5 @@
+import { findIndex } from "lodash-es";
+
 export default {
     setProductId(state, id) {
         state.id = id;
@@ -82,7 +84,7 @@ export default {
     removeBidderRequest(state, requestId) {
         const targetIndex = findIndex(state.bidRequests.items, { requestId });
         state.bidRequests.items.splice(targetIndex, 1);
-    }
+    },
 
     setIsAutoBidState(state, open) {
         state.bid.isAutoBidEnabled = open;

@@ -49,7 +49,7 @@ export default {
     },
 
     methods: {
-        ...mapActions("CurrentProductModule", ["fetchBidderRequests", "acceptBidderRequest", "rejectBidderRequest"]),
+        ...mapActions("CurrentProductModule", ["getBidderRequests", "acceptBidderRequest", "rejectBidderRequest"]),
         async acceptRequest(item) {
             await this.acceptBidderRequest(item.requestId);
         },
@@ -59,7 +59,7 @@ export default {
     },
 
     async mounted() {
-        await this.fetchBidderRequests();
+        await this.getBidderRequests();
     },
 };
 </script>

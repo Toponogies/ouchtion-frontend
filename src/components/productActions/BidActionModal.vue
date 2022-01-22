@@ -121,12 +121,7 @@
                 >
                     Turn on Auto-bidding
                 </v-btn>
-                <v-btn
-                    color="orange--text text--darken-3"
-                    @click="handleConfirmDialogAutobidOff"
-                    large
-                    v-else
-                >
+                <v-btn color="orange--text text--darken-3" @click="handleConfirmDialogAutobidOff" large v-else>
                     Turn off Auto-bidding
                 </v-btn>
                 <v-spacer></v-spacer>
@@ -153,8 +148,7 @@ export default {
             priceRules: {
                 invalid: (value) => !Number.isNaN(parseInt(value)) || "Please enter a valid price",
                 moreThanSuggested: (value) =>
-                    parseInt(value) >= this.suggestedBidPrice * 1000 ||
-                    "Your price must NOT be less than the suggested price",
+                    parseInt(value) >= this.suggestedBidPrice || "Your price must NOT be less than the suggested price",
             },
         };
     },
@@ -168,12 +162,12 @@ export default {
     },
     methods: {
         ...mapMutations("CurrentProductModule", ["setBidModalState"]),
-        ...mapActions("CurrentProductModule", ["addManualBid","addAutoBidding","turnOffAutoBidding"]),
+        ...mapActions("CurrentProductModule", ["addManualBid", "addAutoBidding", "turnOffAutoBidding"]),
         handleConfirmDialogOK() {
             this.addManualBid({
                 product_id: this.$route.params.id,
                 bid_price: this.newPrice,
-            })
+            });
             this.setBidModalState(false);
         },
         handleConfirmDialogAutobidOK() {
@@ -181,7 +175,7 @@ export default {
             this.addAutoBidding({
                 product_id: this.$route.params.id,
                 max_price: this.autoBidMaximumPrice,
-            })
+            });
             // TRIGGER: ENABLE AUTO BID
             this.autoBidEnabled = true;
         },
@@ -189,7 +183,7 @@ export default {
             this.setBidModalState(false);
             this.turnOffAutoBidding({
                 product_id: this.$route.params.id,
-            })
+            });
             // TRIGGER: DISABLE AUTO BID
             this.autoBidEnabled = false;
         },

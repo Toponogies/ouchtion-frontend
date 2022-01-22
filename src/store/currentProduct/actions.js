@@ -80,8 +80,8 @@ export default {
                 path: `${IMAGE_API_ENDPOINT}/${each.path}`,
             }));
             // Split into primary and secondary group
-            let primaryImage = find(productImages, { is_primary: 1 });
-            let secondaryImages = productImages.filter((each) => each.is_primary !== 1);
+            let primaryImage = productImages[0];
+            let secondaryImages = productImages.filter((_, index) => index !== 0);
             commit("setProductImages", { primaryImage, secondaryImages });
         } catch (error) {
             console.log(`Fetching product images failed: ${error}`);
@@ -99,8 +99,12 @@ export default {
 
             let isAutoBidEnabled = false;
 
-            productBiddings.forEach(bidding => {
-                if (bidding.user_id === rootState.CurrentUserModule.id && bidding.max_price !== null && bidding.is_auto_process === 1)
+            productBiddings.forEach((bidding) => {
+                if (
+                    bidding.user_id === rootState.CurrentUserModule.id &&
+                    bidding.max_price !== null &&
+                    bidding.is_auto_process === 1
+                )
                     isAutoBidEnabled = true;
             });
             commit("setProductBiddings", productBiddings);
@@ -144,14 +148,15 @@ export default {
         commit("setIsOnWatchlist", isOnWatchlist);
 
         // Can the bidder bid on this product?
-        let canBid = await getBiddingPermisson();
+        let canBid = await getBiddingPermisson(productInfo.product_id);
         // No, because...
         if (!canBid) {
             // The bidder cannot bid directly, and...
             let isBlockedFromBidding = true;
             let requestSent = false;
             let isBlockedFromRequesting = false;
-            let existingBidRequest = await checkBidRequest();
+
+            let existingBidRequest = await checkBidRequest(productInfo.product_id);
 
             // They haven't sent a request to the seller. They can send one.
             if (existingBidRequest.length === 0) {
@@ -173,14 +178,16 @@ export default {
                 }
             }
 
-            commit("setBiddingAvailability", { isBlockedFromBidding, requestSent, isBlockedFromRequesting });
+            console.log("This should reach here");
+
+            commit("setBidAvailability", { isBlockedFromBidding, requestSent, isBlockedFromRequesting });
         }
     },
 
     async sendBidRequest({ commit, state }) {
         const result = await sendBidRequest(state.id);
         if (result) {
-            commit("setBiddingAvailability", {
+            commit("setBidAvailability", {
                 isBlockedFromBidding: true,
                 requestSent: true,
                 isBlockedFromRequesting: false,
@@ -196,97 +203,85 @@ export default {
         if (requests) {
             let data = [];
             requests.forEach(async (request) => {
-                const { full_name, point } = await getUserWithPoint(request.user_id);
+                const { point } = await getUserWithPoint(request.user_id);
                 data.push({
                     requestId: request.request_id,
                     userId: request.user_id,
-                    username: full_name,
+                    username: request.full_name,
                     rating: point,
                 });
             });
-            commit("setBidderRequests", requests);
+            commit("setBidderRequests", data);
         } else {
             showSnack(`Failed to get bidding requests for this product.`);
         }
     },
 
-    async acceptBidderRequests({ commit, state }, requestId) {
+    async acceptBidderRequest({ commit, state }, requestId) {
         // find request object corresponding to request_id
         const targetRequest = find(state.bidRequests.items, { requestId });
 
         const result = await acceptBidRequest(requestId, targetRequest.userId, state.id);
         if (result) {
-            showSnack(`Accepted request id = ${requestId}`);
             commit("removeBidderRequest", requestId);
+            showSnack(`Accepted request id = ${requestId}`);
         } else {
             showSnack(`Failed to accept request id = ${requestId}`);
         }
     },
 
-    async rejectBidderRequests({ commit, state }, requestId) {
+    async rejectBidderRequest({ commit, state }, requestId) {
         // find request object corresponding to request_id
         const targetRequest = find(state.bidRequests.items, { requestId });
 
         const result = await rejectBidRequest(requestId, targetRequest.userId, state.id);
         if (result) {
-            showSnack(`Rejected request id = ${requestId}`);
             commit("removeBidderRequest", requestId);
+            showSnack(`Rejected request id = ${requestId}`);
         } else {
             showSnack(`Failed to reject request id = ${requestId}`);
         }
     },
 
-    async appendProductDescription({ commit }, {product_id,description}) {
-        let check = await appendDescription(product_id,description)
-        if (check ===  true)
-        {
+    async appendProductDescription({ commit }, { product_id, description }) {
+        let check = await appendDescription(product_id, description);
+        if (check === true) {
             showSnack("Description appended.");
             commit("appendProductDescriptions", {
                 description,
                 upload_date: today(),
                 isInit: false,
             });
-        }
-        else{
+        } else {
             showSnack("Description not appended.");
         }
     },
 
-    async addManualBid({commit}, {product_id,bid_price}){
-        let check = await placeBids(product_id,bid_price);
-        if (check === true)
-            showSnack("Add new bid");
-        else
-            showSnack("Can't add new bidding");
+    async addManualBid({ commit }, { product_id, bid_price }) {
+        let check = await placeBids(product_id, bid_price);
+        if (check === true) showSnack("Add new bid");
+        else showSnack("Can't add new bidding");
     },
 
-    async buyProduct({commit}, {product_id}){
+    async buyProduct({ commit }, { product_id }) {
         let check = await buyProductNow(product_id);
-        if (check === true)
-            showSnack("Buy product success");
-        else
-            showSnack("Can't buy this product");
+        if (check === true) showSnack("Buy product success");
+        else showSnack("Can't buy this product");
     },
 
-    async addAutoBidding({commit}, {product_id,max_price}){
-        let check = await turnOnAutoBid(product_id,max_price);
-        if (check === true)
-        {
+    async addAutoBidding({ commit }, { product_id, max_price }) {
+        let check = await turnOnAutoBid(product_id, max_price);
+        if (check === true) {
             commit("setIsAutoBidState", true);
             showSnack("Turn on auto bidding success");
-        }
-        else
-            showSnack("Can't turn on auto bidding");
+        } else showSnack("Can't turn on auto bidding");
     },
 
-    async turnOffAutoBidding({commit}, {product_id}){
+    async turnOffAutoBidding({ commit }, { product_id }) {
         let check = await turnOffAutoBid(product_id);
-        if (check === true)
-        {
+        if (check === true) {
             commit("setIsAutoBidState", false);
             showSnack("Turn off auto bidding success");
-        }
-        else
-            showSnack("Can't turn off auto bidding");
-    }
+        } else showSnack("Can't turn off auto bidding");
+    },
 };

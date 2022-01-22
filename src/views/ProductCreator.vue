@@ -68,7 +68,7 @@
                                 dark
                             >
                                 <template v-slot:prepend>
-                                    <div>&#x20AB;</div>
+                                    <div>k&#x20AB;</div>
                                 </template></v-text-field
                             >
                         </v-row>
@@ -84,7 +84,7 @@
                                 dark
                             >
                                 <template v-slot:prepend>
-                                    <div>&#x20AB;</div>
+                                    <div>k&#x20AB;</div>
                                 </template>
                             </v-text-field>
                         </v-row>
@@ -126,7 +126,7 @@
                                 :disabled="!enableBuyNow"
                             >
                                 <template v-slot:prepend>
-                                    <div>&#x20AB;</div>
+                                    <div>k&#x20AB;</div>
                                 </template>
                             </v-text-field>
                         </v-row>
@@ -318,7 +318,7 @@ import {
     BulletList,
     OrderedList,
 } from "tiptap-vuetify";
-import { mapActions } from 'vuex';
+import { mapActions, mapState } from "vuex";
 
 export default {
     name: "ProductCreator",
@@ -371,7 +371,16 @@ export default {
             },
         };
     },
+
+    watch: {
+        newProductId(newVal) {
+            this.$router.push(`/p/${newVal}`);
+        },
+    },
+
     computed: {
+        ...mapState("AddProductModule", ["newProductId"]),
+
         isDescriptionEmpty: function () {
             const htmlElement = document.createElement("div");
             htmlElement.innerHTML = this.description;
@@ -404,14 +413,15 @@ export default {
             return conditions.every((each) => each === true);
         },
     },
+
     methods: {
         ...mapActions("AddProductModule", ["addProduct"]),
         getCategories() {
             const fetchedCategories = generateCategories();
             this.availableCategories = fetchedCategories.map((each) => ({ text: each.name, value: each.category_id }));
         },
-        submit() {
-            this.addProduct({
+        async submit() {
+            await this.addProduct({
                 name: this.name,
                 images: this.images,
                 category_id: this.selectedCategories[0],
@@ -422,10 +432,10 @@ export default {
                 buy_price: this.enableBuyNow === true ? this.buyNowPrice : undefined,
                 is_extendable: this.allowAutoExtension,
                 description: this.description,
-            })
-            console.log(`Call API create new product`);
+            });
         },
     },
+
     mounted() {
         this.getCategories();
     },
@@ -434,11 +444,11 @@ export default {
 
 <style scoped>
 .new-product-field >>> input {
-    font-size: 2.125rem;
+    font-size: 1.75rem;
     font-weight: 300;
 }
 .price-field >>> .v-input__prepend-outer,
 .price-field >>> input {
-    font-size: 2em;
+    font-size: 1.75em;
 }
 </style>

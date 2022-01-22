@@ -1,5 +1,5 @@
 <template>
-    <v-dialog max-width="640" v-model="bid.isModalOpen" persistent>
+    <v-dialog max-width="640" v-model="request.isModalOpen" persistent>
         <v-card>
             <!-- Header -->
             <v-row no-gutters class="px-4 py-4">
@@ -20,7 +20,7 @@
             </v-row>
 
             <!-- Confirm button -->
-            <v-row no-gutters class="px-4">
+            <v-row no-gutters class="px-4 py-4">
                 <v-spacer></v-spacer>
                 <v-btn color="orange darken-3 white--text" @click="handleConfirmDialogOK" large> Send Request </v-btn>
                 <v-spacer></v-spacer>
@@ -41,7 +41,7 @@ export default {
         ...mapActions("CurrentProductModule", ["sendBidRequest"]),
         ...mapMutations("CurrentProductModule", ["setBidRequestModalState"]),
 
-        handleConfirmDialogOK() {
+        async handleConfirmDialogOK() {
             await this.sendBidRequest();
             this.setBidRequestModalState(true);
         },

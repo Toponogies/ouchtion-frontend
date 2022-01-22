@@ -1,10 +1,10 @@
 <template>
-    <v-card @click.stop="handleConfirmDialogOpen" :color="cardColor" elevation="4" :disabled="isBlockedFromBidding">
+    <v-card @click.stop="handleConfirmDialogOpen" :color="cardColor" elevation="4" :disabled="btnDisable">
         <!-- Header + decor -->
         <v-row no-gutters class="px-4 pt-4 pb-2">
             <div>BID</div>
             <v-spacer></v-spacer>
-            <v-icon dark v-if="!isBlockedFromBidding">mdi-arrow-right</v-icon>
+            <v-icon dark v-if="btnDisable">mdi-arrow-right</v-icon>
         </v-row>
 
         <!-- Price -->
@@ -68,6 +68,20 @@ export default {
         ...mapState("CurrentUserModule", ["role"]),
         cardColor: function () {
             return this.isBlockedFromBidding ? "grey darken-3 white--text" : "orange darken-3 white--text";
+        },
+
+        btnDisable: function () {
+            if (this.isSold) {
+                return true;
+            } else if (this.isBlockedFromBidding && !this.request.isSent && !this.request.isBlockedFromRequesting) {
+                return false;
+            } else if (this.isBlockedFromBidding && this.request.isSent && !this.request.isBlockedFromRequesting) {
+                return true;
+            } else if (this.isBlockedFromBidding && this.request.isSent && this.request.isBlockedFromRequesting) {
+                return true;
+            } else {
+                return false;
+            }
         },
 
         normalStatusLine: function () {

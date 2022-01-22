@@ -33,15 +33,15 @@ export const turnOnAutoBid = async (product_id, max_price) => {
         .catch(() => false);
 };
 
-// ⚠️ AUTO BID/OFF
+// AUTO BID/OFF
 export const turnOffAutoBid = async (product_id) => {
     const headers = await getAuthHeader();
-    const payload = { product_id:product_id };
+    const payload = { product_id: product_id };
     return await axios
         .delete(`${API_ENDPOINTS.BIDDINGS}/autoBidding`, {
             headers,
-            data:payload,
-          })
+            data: payload,
+        })
         .then(() => true)
         .catch(() => false);
 };
@@ -49,10 +49,10 @@ export const turnOffAutoBid = async (product_id) => {
 /******************************************************************************/
 
 export async function getBiddingPermisson(product_id) {
-    const headers = getAuthHeader();
-    const payload = { product_id };
+    const headers = await getAuthHeader();
+    console.log(product_id);
     return await axios
-        .get(`${API_ENDPOINTS.BIDDINGS}/bidders/biddingPermission`, payload, { headers })
+        .get(`${API_ENDPOINTS.BIDDINGS}/bidders/biddingPermission/products/${product_id}`, { headers })
         .then(() => true)
         .catch(() => false);
 }
@@ -60,10 +60,10 @@ export async function getBiddingPermisson(product_id) {
 // BIDDER/CHECK IF REQEUSTS IS SENT
 // returns [] or [{ request_id, is_processed, type <ACCEPT|DENY> }]
 export const checkBidRequest = async (product_id) => {
-    const headers = getAuthHeader();
-    const payload = { product_id };
+    const headers = await getAuthHeader();
+    console.log(product_id);
     return await axios
-        .get(`${API_ENDPOINTS.BIDDINGS}/bidders/biddingRequests`, payload, { headers })
+        .get(`${API_ENDPOINTS.BIDDINGS}/bidders/biddingRequests/products/${product_id}`, { headers })
         .then((res) => res.data)
         .catch(() => null);
 };
@@ -84,9 +84,9 @@ export const sendBidRequest = async (product_id) => {
 // returns [{ request_id, user_id, product_id }]
 export const getAllBidRequests = async (product_id) => {
     const headers = await getAuthHeader();
-    const payload = { product_id };
+    console.log(product_id);
     return await axios
-        .get(`${API_ENDPOINTS.BIDDINGS}/sellers/biddingRequests`, payload, { headers })
+        .get(`${API_ENDPOINTS.BIDDINGS}/sellers/biddingRequests/products/${product_id}`, { headers })
         .then((res) => res.data)
         .catch(() => null);
 };
@@ -94,13 +94,13 @@ export const getAllBidRequests = async (product_id) => {
 // SELLER/ACCEPT REQUEST
 export const acceptBidRequest = async (request_id, user_id, product_id) => {
     const headers = await getAuthHeader();
-    const payload_biddingRequests = {
-        is_processed: true,
-    };
-    const result_biddingRequests = await axios
-        .put(`${API_ENDPOINTS.BIDDINGS}/sellers/biddingRequests/${request_id}`, payload, { headers })
-        .then(() => true)
-        .catch(() => false);
+    // const payload_biddingRequests = {
+    //     is_processed: 1,
+    // };
+    // const result_biddingRequests = await axios
+    //     .put(`${API_ENDPOINTS.BIDDINGS}/sellers/biddingRequests/${request_id}`, payload_biddingRequests, { headers })
+    //     .then(() => true)
+    //     .catch(() => false);
 
     const payload_biddingPermissions = {
         product_id,
@@ -108,33 +108,36 @@ export const acceptBidRequest = async (request_id, user_id, product_id) => {
         type: "APPROVE",
     };
     const result_biddingPermissions = await axios
-        .post(`${API_ENDPOINTS.BIDDINGS}/sellers/biddingPermissions`, payload_biddingPermissions, { headers })
+        .put(`${API_ENDPOINTS.BIDDINGS}/sellers/biddingPermission`, payload_biddingPermissions, { headers })
         .then(() => true)
         .catch(() => false);
 
-    return result_biddingRequests && result_biddingPermissions;
+    // return result_biddingRequests && result_biddingPermissions;
+    return result_biddingPermissions;
 };
 
 // SELLER/REJECT REQUEST (warning: reject permanently)
 export const rejectBidRequest = async (request_id, user_id, product_id) => {
     const headers = await getAuthHeader();
-    const payload_biddingRequests = {
-        is_processed: false,
-    };
-    const result_biddingRequests = await axios
-        .put(`${API_ENDPOINTS.BIDDINGS}/sellers/biddingRequests/${request_id}`, payload, { headers })
-        .then(() => true)
-        .catch(() => false);
+    // const payload_biddingRequests = {
+    //     is_processed: 0,
+    // };
+    // const result_biddingRequests = await axios
+    //     .put(`${API_ENDPOINTS.BIDDINGS}/sellers/biddingRequests/${request_id}`, payload_biddingRequests, { headers })
+    //     .then(() => true)
+    //     .catch(() => false);
+
     const payload_biddingPermissions = {
         product_id,
         user_id,
         type: "DENY",
     };
     const result_biddingPermissions = await axios
-        .post(`${API_ENDPOINTS.BIDDINGS}/sellers/biddingPermissions`, payload_biddingPermissions, { headers })
+        .put(`${API_ENDPOINTS.BIDDINGS}/sellers/biddingPermission`, payload_biddingPermissions, { headers })
         .then(() => true)
         .catch(() => false);
-    return result_biddingRequests && result_biddingPermissions;
+    // return result_biddingRequests && result_biddingPermissions;
+    return result_biddingPermissions;
 };
 
 // SELLER/REJECT BIDDING (warning: reject permanently)
