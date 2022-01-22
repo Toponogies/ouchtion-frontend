@@ -80,6 +80,13 @@
 
                 <v-divider></v-divider>
 
+                <!-- Bidder requests (only shown to Sellers) -->
+                <v-row no-gutters class="pa-6" v-if="role === utils.ROLES.SELLER">
+                    <v-col>
+                        <bidder-requests></bidder-requests>
+                    </v-col>
+                </v-row>
+
                 <!-- Bidder list -->
                 <v-row no-gutters class="pa-6">
                     <v-col>
@@ -100,6 +107,7 @@ import { ROLES } from "@/utils/constants";
 
 import ProductImageGallery from "@/components/productDetails/ProductImageGallery";
 import UsernameCard from "@/components/productDetails/UsernameCard";
+import BidderRequests from "@/components/productDetails/BidderRequests";
 import BidderList from "@/components/productDetails/BidderList";
 import ProductDescription from "@/components/productDetails/ProductDescription";
 
@@ -117,6 +125,7 @@ export default {
         ProductImageGallery,
         FeaturedProductGroup,
         UsernameCard,
+        BidderRequests,
         BidderList,
         ProductDescription,
         BidActionCard,

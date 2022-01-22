@@ -8,6 +8,7 @@ import {
     updatePasswordCurrentUser,
 } from "@/api/currentUser";
 import { getUserWithPoint } from "@/api/user";
+import { requestSeller } from "@/api/upgradeRequest";
 
 export default {
     async doGetUser({ commit, rootState }) {
@@ -49,6 +50,7 @@ export default {
                 }
                 showSnack("Email send check and update email");
                 delete payload.email;
+                return;
             }
 
             let user = null;
@@ -64,8 +66,10 @@ export default {
                 showSnack("Can't update user");
                 return;
             }
+            showSnack("Update complete");
         } catch (error) {
             console.log(error);
+            showSnack("Can't update user");
         }
 
         // if successful, update the user again in store
@@ -104,4 +108,14 @@ export default {
             }, 250);
         }
     },
+
+    async addRequestSeller(_context,reason){
+        let check = await requestSeller(reason);
+        if (check === true){
+            showSnack("Send request success");
+        }
+        else{
+            showSnack("This request is exist");
+        }
+    }
 };

@@ -11,9 +11,8 @@ export default {
         state.bid.highestPrice = payload.current_price;
         state.bid.priceIncrement = payload.step_price;
         state.buyNow.price = payload.buy_price;
-
-        state.isBlockedFromBidding = payload.is_sold;
         state.seller.id = payload.seller_id;
+        state.isSold = payload.is_sold;
     },
 
     setCategoriesOfProduct(state, categories) {
@@ -65,6 +64,30 @@ export default {
         state.isAppendDescriptionOpen = open;
     },
 
+    setBidRequestModalState(state, open) {
+        state.request.isModalOpen = open;
+    },
+
+    // bid availability
+    setBidAvailability(state, { isBlockedFromBidding, requestSent, isBlockedFromRequesting }) {
+        state.isBlockedFromBidding = isBlockedFromBidding;
+        state.request.requestSent = requestSent;
+        state.request.isBlockedFromRequesting = isBlockedFromRequesting;
+    },
+
+    // bid requests
+    setBidderRequests(state, requests) {
+        state.bidRequests.items = requests;
+    },
+    removeBidderRequest(state, requestId) {
+        const targetIndex = findIndex(state.bidRequests.items, { requestId });
+        state.bidRequests.items.splice(targetIndex, 1);
+    }
+
+    setIsAutoBidState(state, open) {
+        state.bid.isAutoBidEnabled = open;
+    },
+
     clearAll(state) {
         state = {
             id: null,
@@ -77,6 +100,7 @@ export default {
             startTime: null,
             endTime: null,
             categories: [],
+            isSold: false,
             primaryDescription: null,
             secondaryDescriptions: [],
             primaryImage: null,
@@ -98,6 +122,15 @@ export default {
             },
             isBlockedFromBidding: false,
             isOnWatchlist: false,
+            request: {
+                isSent: false,
+                isModalOpen: false,
+                isBlockedFromRequesting: false,
+            },
+            bidRequests: {
+                ...state.bidRequests,
+                items: [],
+            },
             relatedProducts: [],
             isAppendDescriptionOpen: false,
         };
