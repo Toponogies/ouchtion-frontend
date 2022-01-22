@@ -24,7 +24,7 @@
         <v-divider class="my-2"></v-divider>
 
         <!-- Status line (normal) -->
-        <v-row no-gutters class="px-4 pt-2 pb-4" v-if="!isBlockedFromBidding">
+        <v-row no-gutters class="px-4 pt-2 pb-4" v-if="normalStatusLine">
             <v-icon dark small left>mdi-timer-sand-empty</v-icon>
             <div>Ends in {{ formattedEndTime }}</div>
         </v-row>
@@ -32,11 +32,14 @@
         <!-- Status line (blocked from bidding) -->
         <v-row no-gutters class="px-4 pt-2 pb-4" v-else>
             <v-icon dark small left>mdi-close-circle</v-icon>
-            <div>You are not allowed to bid on this product.</div>
+            <div>{{ statusLine }}</div>
         </v-row>
 
         <!-- Bid confirmation modal -->
         <bid-action-modal></bid-action-modal>
+
+        <!-- Bid request modal -->
+        <bid-request-modal></bid-request-modal>
     </v-card>
 </template>
 
@@ -45,12 +48,13 @@ import { mapState, mapActions, mapMutations } from "vuex";
 import { ROLES } from "@/utils/constants";
 import UsernameCard from "@/components/productDetails/UsernameCard";
 import BidActionModal from "@/components/productActions/BidActionModal";
+import BidRequestModal from "@/components/productActions/BidRequestModal";
 import { formatPrice } from "@/utils/priceUtils";
 import { toRelativeTimestamp, isInCountdownThreshold, fromTimestamp } from "@/utils/timeUtils";
 
 export default {
     name: "BidActionCard",
-    components: { UsernameCard, BidActionModal },
+    components: { UsernameCard, BidActionModal, BidRequestModal },
 
     data() {
         return {
@@ -60,10 +64,25 @@ export default {
     },
 
     computed: {
-        ...mapState("CurrentProductModule", ["endTime", "bid", "isBlockedFromBidding"]),
+        ...mapState("CurrentProductModule", ["endTime", "bid", "isBlockedFromBidding", "isSold", "request"]),
         ...mapState("CurrentUserModule", ["role"]),
         cardColor: function () {
             return this.isBlockedFromBidding ? "grey darken-3 white--text" : "orange darken-3 white--text";
+        },
+
+        normalStatusLine: function () {
+            return !this.isSold && !this.isBlockedFromBidding;
+        },
+        statusLine: function () {
+            if (this.isSold) {
+                return "Product is sold.";
+            } else if (this.isBlockedFromBidding && !this.request.isSent && !this.request.isBlockedFromRequesting) {
+                return "You must send a request to the seller.";
+            } else if (this.isBlockedFromBidding && this.request.isSent && !this.request.isBlockedFromRequesting) {
+                return "Please wait for seller's response to your request.";
+            } else if (this.isBlockedFromBidding && this.request.isSent && this.request.isBlockedFromRequesting) {
+                return "You cannot bid on this product.";
+            }
         },
     },
 
@@ -71,7 +90,8 @@ export default {
         ...mapMutations("AuthModule", {
             setLoginModalState: "setModalState",
         }),
-        ...mapMutations("CurrentProductModule", ["setBidModalState"]),
+        ...mapMutations("CurrentProductModule", ["setBidModalState", "setBidRequestModalState"]),
+
         handleConfirmDialogOpen() {
             switch (this.role) {
                 // For not logged-in users: show login modal
@@ -81,8 +101,16 @@ export default {
 
                 // For bidders: show the modal
                 case ROLES.BIDDER:
-                    this.newPrice = this.suggestedBidPrice;
-                    this.setBidModalState(true);
+                    if (!this.isBlockedFromBidding) {
+                        this.newPrice = this.suggestedBidPrice;
+                        this.setBidModalState(true);
+                    } else if (
+                        this.isBlockedFromBidding &&
+                        !this.request.isSent &&
+                        !this.request.isBlockedFromRequesting
+                    ) {
+                        this.setBidRequestModalState(true);
+                    }
                     break;
 
                 // For everyone else: do nothing

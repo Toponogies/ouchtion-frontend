@@ -36,19 +36,6 @@ export async function getProductRelate(category_id) {
         });
 }
 
-export async function getBiddingPermisson(product_id, accessToken) {
-    const headers = {
-        Authorization: "Bearer " + accessToken,
-    };
-    const payload = {
-        product_id,
-    };
-    return await axios
-        .get(`${API_ENDPOINTS.BIDDINGS}/bidders/biddingPermission`, payload, { headers })
-        .then(() => true)
-        .catch(() => false);
-}
-
 export async function sellerOnGoingProduct(accessToken) {
     return await axios
         .get(`${API_ENDPOINTS.PRODUCTS}/sellers/ongoingProducts`, {

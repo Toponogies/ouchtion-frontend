@@ -1,6 +1,14 @@
 import { getUserWithPoint } from "@/api/user";
 import { getProduct, getProductDescription, getProductImage, getProductBidding, getProductRelate } from "@/api/product";
 import { getCategory } from "@/api/category";
+import {
+    getBiddingPermisson,
+    checkBidRequest,
+    sendBidRequest,
+    getAllBidRequests,
+    acceptBidRequest,
+    rejectBidRequest,
+} from "@/api/bid";
 
 import { find } from "lodash-es";
 import { today, toLongTimestamp } from "@/utils/timeUtils";
@@ -135,7 +143,97 @@ export default {
         const isOnWatchlist = find(rootState.WatchlistModule.watchlistItems, { id: state.id }) !== undefined;
         commit("setIsOnWatchlist", isOnWatchlist);
 
-        // Is the current user blocked from bidding on this product?
+        // Can the bidder bid on this product?
+        let canBid = await getBiddingPermisson();
+        // No, because...
+        if (!canBid) {
+            // The bidder cannot bid directly, and...
+            let isBlockedFromBidding = true;
+            let requestSent = false;
+            let isBlockedFromRequesting = false;
+            let existingBidRequest = await checkBidRequest();
+
+            // They haven't sent a request to the seller. They can send one.
+            if (existingBidRequest.length === 0) {
+                // Do something
+            }
+
+            // They have already sent a request, but...
+            else {
+                requestSent = true;
+                existingBidRequest = existingBidRequest[0];
+
+                // It's waiting for seller's decision.
+                if (!existingBidRequest.is_processed) {
+                }
+
+                // It's rejected
+                else if (existingBidRequest.type === "DENY") {
+                    isBlockedFromRequesting = true;
+                }
+            }
+
+            commit("setBiddingAvailability", { isBlockedFromBidding, requestSent, isBlockedFromRequesting });
+        }
+    },
+
+    async sendBidRequest({ commit, state }) {
+        const result = await sendBidRequest(state.id);
+        if (result) {
+            commit("setBiddingAvailability", {
+                isBlockedFromBidding: true,
+                requestSent: true,
+                isBlockedFromRequesting: false,
+            });
+            showSnack("Bid request sent to the seller.");
+        } else {
+            showSnack("Failed to send bid request");
+        }
+    },
+
+    async getBidderRequests({ commit, state }) {
+        const requests = await getAllBidRequests(state.id);
+        if (requests) {
+            let data = [];
+            requests.forEach(async (request) => {
+                const { full_name, point } = await getUserWithPoint(request.user_id);
+                data.push({
+                    requestId: request.request_id,
+                    userId: request.user_id,
+                    username: full_name,
+                    rating: point,
+                });
+            });
+            commit("setBidderRequests", requests);
+        } else {
+            showSnack(`Failed to get bidding requests for this product.`);
+        }
+    },
+
+    async acceptBidderRequests({ commit, state }, requestId) {
+        // find request object corresponding to request_id
+        const targetRequest = find(state.bidRequests.items, { requestId });
+
+        const result = await acceptBidRequest(requestId, targetRequest.userId, state.id);
+        if (result) {
+            showSnack(`Accepted request id = ${requestId}`);
+            commit("removeBidderRequest", requestId);
+        } else {
+            showSnack(`Failed to accept request id = ${requestId}`);
+        }
+    },
+
+    async rejectBidderRequests({ commit, state }, requestId) {
+        // find request object corresponding to request_id
+        const targetRequest = find(state.bidRequests.items, { requestId });
+
+        const result = await rejectBidRequest(requestId, targetRequest.userId, state.id);
+        if (result) {
+            showSnack(`Rejected request id = ${requestId}`);
+            commit("removeBidderRequest", requestId);
+        } else {
+            showSnack(`Failed to reject request id = ${requestId}`);
+        }
     },
 
     async appendProductDescription({ commit }, {product_id,description}) {

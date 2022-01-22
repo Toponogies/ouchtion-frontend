@@ -12,7 +12,7 @@ export default {
         state.bid.priceIncrement = payload.step_price;
         state.buyNow.price = payload.buy_price;
 
-        state.isBlockedFromBidding = payload.is_sold;
+        state.isSold = payload.is_sold;
     },
 
     setCategoriesOfProduct(state, categories) {
@@ -63,6 +63,27 @@ export default {
     setAppendDescriptionModalState(state, open) {
         state.isAppendDescriptionOpen = open;
     },
+
+    setBidRequestModalState(state, open) {
+        state.request.isModalOpen = open;
+    },
+
+    // bid availability
+    setBidAvailability(state, { isBlockedFromBidding, requestSent, isBlockedFromRequesting }) {
+        state.isBlockedFromBidding = isBlockedFromBidding;
+        state.request.requestSent = requestSent;
+        state.request.isBlockedFromRequesting = isBlockedFromRequesting;
+    },
+
+    // bid requests
+    setBidderRequests(state, requests) {
+        state.bidRequests.items = requests;
+    },
+    removeBidderRequest(state, requestId) {
+        const targetIndex = findIndex(state.bidRequests.items, { requestId });
+        state.bidRequests.items.splice(targetIndex, 1);
+    }
+
     setIsAutoBidState(state, open) {
         state.bid.isAutoBidEnabled = open;
     },
@@ -78,6 +99,7 @@ export default {
             startTime: null,
             endTime: null,
             categories: [],
+            isSold: false,
             primaryDescription: null,
             secondaryDescriptions: [],
             primaryImage: null,
@@ -99,6 +121,15 @@ export default {
             },
             isBlockedFromBidding: false,
             isOnWatchlist: false,
+            request: {
+                isSent: false,
+                isModalOpen: false,
+                isBlockedFromRequesting: false,
+            },
+            bidRequests: {
+                ...state.bidRequests,
+                items: [],
+            },
             relatedProducts: [],
             isAppendDescriptionOpen: false,
         };
