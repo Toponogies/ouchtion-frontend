@@ -64,6 +64,16 @@ export default {
         state.isAppendDescriptionOpen = open;
     },
 
+    // bid requests
+    setBidderRequests(state, requests) {
+        state.bidRequests.items = requests;
+    },
+
+    removeBidderRequest(state, requestId) {
+        const targetIndex = findIndex(state.bidRequests.items, { requestId });
+        state.bidRequests.items.splice(targetIndex, 1);
+    },
+
     clearAll(state) {
         state = {
             id: null,
@@ -89,6 +99,10 @@ export default {
                 biddings: [],
                 isModalOpen: false,
                 isAutoBidEnabled: false,
+            },
+            bidRequests: {
+                ...state.bidRequests,
+                items: [],
             },
             buyNow: {
                 price: null,

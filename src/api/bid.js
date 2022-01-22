@@ -87,7 +87,7 @@ export const acceptBidRequest = async (request_id, user_id, product_id) => {
 };
 
 // ⏳ SELLER/REJECT REQUEST (warning: reject permanently)
-export const acceptBidRequest = async (request_id, user_id, product_id) => {
+export const rejectBidRequest = async (request_id, user_id, product_id) => {
     const headers = await getAuthHeader();
     const payload_biddingRequests = {
         is_processed: false,
@@ -109,7 +109,7 @@ export const acceptBidRequest = async (request_id, user_id, product_id) => {
 };
 
 // SELLER/REJECT BIDDING (warning: reject permanently)
-export const acceptBidRequest = async (bid_id) => {
+export const blockBidder = async (bid_id) => {
     const headers = await getAuthHeader();
     return await axios
         .post(`${API_ENDPOINTS.BIDDINGS}/sellers/biddingRequests/${bid_id}`, { headers })

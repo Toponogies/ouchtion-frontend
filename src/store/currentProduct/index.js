@@ -35,8 +35,18 @@ export const CurrentProductModule = {
             },
             priceIncrement: null,
             biddings: [],
+            bidderRequests: [],
             isModalOpen: false,
             isAutoBidEnabled: false,
+        },
+        bidRequests: {
+            headers: [
+                { text: "Request #", value: "requestId", sortable: false },
+                { text: "Username", value: "username" },
+                { text: "User rating", value: "rating" },
+                { value: "actions", align: "end" },
+            ],
+            items: [],
         },
         buyNow: {
             price: null,

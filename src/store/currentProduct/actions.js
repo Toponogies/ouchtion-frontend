@@ -1,6 +1,7 @@
 import { getUserWithPoint } from "@/api/user";
 import { getProduct, getProductDescription, getProductImage, getProductBidding, getProductRelate } from "@/api/product";
 import { getCategory } from "@/api/category";
+import { getAllBidRequests, acceptBidRequest, rejectBidRequest } from "@/api/bid";
 
 import { find } from "lodash-es";
 import { today, toLongTimestamp } from "@/utils/timeUtils";
@@ -125,6 +126,51 @@ export default {
         commit("setIsOnWatchlist", isOnWatchlist);
 
         // Is the current user blocked from bidding on this product?
+    },
+
+    async getBidderRequests({ commit, state }) {
+        const requests = await getAllBidRequests(state.id);
+        if (requests) {
+            let data = [];
+            requests.forEach(async (request) => {
+                const { full_name, point } = await getUserWithPoint(request.user_id);
+                data.push({
+                    requestId: request.request_id,
+                    userId: request.user_id,
+                    username: full_name,
+                    rating: point,
+                });
+            });
+            commit("setBidderRequests", requests);
+        } else {
+            showSnack(`Failed to get bidding requests for this product.`);
+        }
+    },
+
+    async acceptBidderRequests({ commit, state }, requestId) {
+        // find request object corresponding to request_id
+        const targetRequest = find(state.bidRequests.items, { requestId });
+
+        const result = await acceptBidRequest(requestId, targetRequest.userId, state.id);
+        if (result) {
+            showSnack(`Accepted request id = ${requestId}`);
+            commit("removeBidderRequest", requestId);
+        } else {
+            showSnack(`Failed to accept request id = ${requestId}`);
+        }
+    },
+
+    async rejectBidderRequests({ commit, state }, requestId) {
+        // find request object corresponding to request_id
+        const targetRequest = find(state.bidRequests.items, { requestId });
+
+        const result = await rejectBidRequest(requestId, targetRequest.userId, state.id);
+        if (result) {
+            showSnack(`Rejected request id = ${requestId}`);
+            commit("removeBidderRequest", requestId);
+        } else {
+            showSnack(`Failed to reject request id = ${requestId}`);
+        }
     },
 
     appendProductDescription({ commit }, description) {
