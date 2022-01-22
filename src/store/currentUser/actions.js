@@ -8,6 +8,7 @@ import {
     updatePasswordCurrentUser,
 } from "@/api/currentUser";
 import { getUserWithPoint } from "@/api/user";
+import { requestSeller } from "@/api/upgradeRequest";
 
 export default {
     async doGetUser({ commit, rootState }) {
@@ -104,4 +105,14 @@ export default {
             }, 250);
         }
     },
+
+    async addRequestSeller(_context,reason){
+        let check = await requestSeller(reason);
+        if (check === true){
+            showSnack("Send request success");
+        }
+        else{
+            showSnack("This request is exist");
+        }
+    }
 };
