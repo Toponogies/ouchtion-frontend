@@ -63,6 +63,9 @@ export default {
     setAppendDescriptionModalState(state, open) {
         state.isAppendDescriptionOpen = open;
     },
+    setIsAutoBidState(state, open) {
+        state.bid.isAutoBidEnabled = open;
+    },
 
     clearAll(state) {
         state = {

@@ -1,7 +1,8 @@
 import { sellerFinishedProduct, sellerOnGoingProduct } from "@/api/product";
 import { getRates, getRatesProduct } from "@/api/rate";
-import { IMAGE_API_ENDPOINT } from "@/utils/constants";
+import { API_ENDPOINTS, IMAGE_API_ENDPOINT } from "@/utils/constants";
 import { showSnack } from "@/utils/showSnack";
+import axios from "axios";
 
 export default {
     async fetchOngoing({ commit, rootState }) {

@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapMutations } from "vuex";
+import { mapState, mapMutations } from "vuex";
 import { ROLES } from "@/utils/constants";
 import UsernameCard from "@/components/productDetails/UsernameCard";
 import BuyNowActionModal from "@/components/productActions/BuyNowActionModal";
@@ -69,7 +69,7 @@ export default {
             return this.isBuyNowOptionAvailable ? "red darken-3 white--text" : "grey darken-3 white--text";
         },
         formattedPrice: function () {
-            return this.isBuyNowOptionAvailable ? this.utils.formatPrice(this.price) : "Not applicable";
+            return this.isBuyNowOptionAvailable ? this.utils.formatPrice(this.buyNow.price) : "Not applicable";
         },
     },
 
