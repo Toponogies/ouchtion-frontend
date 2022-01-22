@@ -125,3 +125,18 @@ export async function addProductImageData(product_id,formDataImage) {
             return res.data;
         })
 }
+
+export async function removeProduct(id) {
+    let headers = await getAuthHeader();
+
+    return await axios
+        .delete(`${API_ENDPOINTS.PRODUCTS}/${id}`, {
+            headers,
+        })
+        .then(() => {
+            return true;
+        })
+        .catch(() =>{
+            return false
+        })
+}
