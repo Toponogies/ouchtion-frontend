@@ -24,9 +24,12 @@ export const turnOnAutoBid = async (product_id, max_price) => {
 // ⚠️ AUTO BID/OFF
 export const turnOffAutoBid = async (product_id) => {
     const headers = await getAuthHeader();
-    const payload = { product_id };
+    const payload = { product_id:product_id };
     return await axios
-        .post(``, payload, { headers })
+        .delete(`${API_ENDPOINTS.BIDDINGS}/autoBidding`, {
+            headers,
+            data:payload,
+          })
         .then(() => true)
         .catch(() => false);
 };
@@ -36,7 +39,7 @@ export const buyProductNow = async (product_id) => {
     const headers = await getAuthHeader();
     const payload = { product_id };
     return await axios
-        .post(`${API_ENDPOINTS.BIDDINGS}/buyProducts`, payload, { headers })
+        .post(`${API_ENDPOINTS.BIDDINGS}/buyProduct`, payload, { headers })
         .then(() => true)
         .catch(() => false);
 };
@@ -87,7 +90,7 @@ export const acceptBidRequest = async (request_id, user_id, product_id) => {
 };
 
 // ⏳ SELLER/REJECT REQUEST (warning: reject permanently)
-export const acceptBidRequest = async (request_id, user_id, product_id) => {
+export const rejectBidRequest = async (request_id, user_id, product_id) => {
     const headers = await getAuthHeader();
     const payload_biddingRequests = {
         is_processed: false,
@@ -109,7 +112,7 @@ export const acceptBidRequest = async (request_id, user_id, product_id) => {
 };
 
 // SELLER/REJECT BIDDING (warning: reject permanently)
-export const acceptBidRequest = async (bid_id) => {
+export const rejectBid = async (bid_id) => {
     const headers = await getAuthHeader();
     return await axios
         .post(`${API_ENDPOINTS.BIDDINGS}/sellers/biddingRequests/${bid_id}`, { headers })

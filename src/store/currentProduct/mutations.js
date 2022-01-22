@@ -41,8 +41,9 @@ export default {
         state.secondaryImages = payload.secondaryImages;
     },
 
-    setProductBiddings(state, biddings) {
-        state.bid.biddings = biddings;
+    setProductBiddings(state, payload) {
+        state.bid.biddings = payload.biddings;
+        state.bid.isAutoBidEnabled = payload.isAutoBidEnabled;
     },
 
     setRelatedProducts(state, products) {

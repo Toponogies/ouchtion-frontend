@@ -4,7 +4,7 @@ import axios from "axios";
 import { getAllProducts } from "@/api/productsAdmin";
 
 export default {
-    async fetchAll({ commit, dispatch }) {
+    async fetchAll({ commit}) {
         commit("setLoadingState", true);
 
         const data = [];

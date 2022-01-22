@@ -1,7 +1,8 @@
 import { sellerFinishedProduct, sellerOnGoingProduct } from "@/api/product";
 import { getRates } from "@/api/rate";
-import { IMAGE_API_ENDPOINT } from "@/utils/constants";
+import { API_ENDPOINTS, IMAGE_API_ENDPOINT } from "@/utils/constants";
 import { showSnack } from "@/utils/showSnack";
+import axios from "axios";
 
 export default {
     async fetchOngoing({ commit, rootState }) {
@@ -34,7 +35,6 @@ export default {
         commit("setCompletedProductsLoadingState", true);
         const data = [];
         let products = [];
-        let rates = [];
         try {
             products = await sellerFinishedProduct(rootState.AuthModule.accessToken);
             rates = await getRates(rootState.AuthModule.accessToken);

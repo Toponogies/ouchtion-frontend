@@ -7,6 +7,7 @@ import { today, toLongTimestamp } from "@/utils/timeUtils";
 import { hiddenName } from "@/utils/hiddenName";
 import { IMAGE_API_ENDPOINT } from "@/utils/constants";
 import { showSnack } from "@/utils/showSnack";
+import { buyProductNow, placeBids, turnOffAutoBid, turnOnAutoBid } from "@/api/bid";
 
 export default {
     setProductId({ commit }, id) {
@@ -85,7 +86,17 @@ export default {
                 time: toLongTimestamp(each.time),
                 full_name: hiddenName(each.full_name),
             }));
-            commit("setProductBiddings", productBiddings);
+
+            let isAutoBidEnabled = false;
+
+            productBiddings.forEach(bidding => {
+                if (bidding.user_id === rootState.CurrentUserModule.id && bidding.max_price !== null && bidding.is_auto_process === 1)
+                    isAutoBidEnabled = true;
+            });
+            commit("setProductBiddings", {
+                biddings:productBiddings,
+                isAutoBidEnabled: isAutoBidEnabled,
+            });
         } catch (error) {
             console.log(`Fetching product biddings failed: ${error}`);
         }
@@ -136,4 +147,36 @@ export default {
         });
         showSnack("Description appended.");
     },
+
+    async addManualBid({commit}, {product_id,bid_price}){
+        let check = await placeBids(product_id,bid_price);
+        if (check === true)
+            showSnack("Add new bid");
+        else
+            showSnack("Can't add new bidding");
+    },
+
+    async buyProduct({commit}, {product_id}){
+        let check = await buyProductNow(product_id);
+        if (check === true)
+            showSnack("Buy product success");
+        else
+            showSnack("Can't buy this product");
+    },
+
+    async addAutoBidding({commit}, {product_id,max_price}){
+        let check = await turnOnAutoBid(product_id,max_price);
+        if (check === true)
+            showSnack("Turn on auto bidding success");
+        else
+            showSnack("Can't turn on auto bidding");
+    },
+
+    async turnOffAutoBidding({commit}, {product_id}){
+        let check = await turnOffAutoBid(product_id);
+        if (check === true)
+            showSnack("Turn off auto bidding success");
+        else
+            showSnack("Can't turn off auto bidding");
+    }
 };
