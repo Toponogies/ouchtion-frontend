@@ -1,14 +1,22 @@
 import actions from "./actions";
 import mutations from "./mutations";
 
+const defaultState = () => ({
+    isLoading: false,
+    images: [],
+});
+
 export const CurrentProductImagesModule = {
     namespaced: true,
 
-    state: {
-        isLoading: false,
-        images: [],
-    },
+    state: defaultState(),
 
     actions,
-    mutations,
+
+    mutations: {
+        ...mutations,
+        clearAll(state) {
+            Object.assign(state, defaultState());
+        },
+    },
 };

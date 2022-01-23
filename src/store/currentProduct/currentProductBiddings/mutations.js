@@ -10,11 +10,4 @@ export default {
     addItem(state, bidding) {
         state.biddings.push(bidding);
     },
-
-    // eslint-disable-next-line no-unused-vars
-    clearAll(state) {
-        state = {
-            biddings: [],
-        };
-    },
 };

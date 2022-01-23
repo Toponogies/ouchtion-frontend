@@ -38,13 +38,4 @@ export default {
         };
         state.items.splice(targetIndex, 1, targetItem);
     },
-
-    // eslint-disable-next-line no-unused-vars
-    clearAll(state) {
-        state = {
-            ...state,
-            isLoading: false,
-            users: [],
-        };
-    },
 };

@@ -13,13 +13,4 @@ export default {
         const targetIndex = findIndex(state.items, { id });
         state.items.splice(targetIndex, 1);
     },
-
-    // eslint-disable-next-line no-unused-vars
-    clearAll(state) {
-        state = {
-            ...state,
-            isLoading: false,
-            items: [],
-        };
-    },
 };

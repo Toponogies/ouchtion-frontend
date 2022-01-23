@@ -22,22 +22,4 @@ export default {
     setAutoBidState(state, open) {
         state.bid.isAutoBidEnabled = open;
     },
-
-    // eslint-disable-next-line no-unused-vars
-    clearAll(state) {
-        state = {
-            bid: {
-                isModalOpen: false,
-                isAutoBidEnabled: false,
-            },
-            buyNow: {
-                isModalOpen: false,
-            },
-            bidAvailability: null,
-            isOnWatchlist: false,
-            request: {
-                isModalOpen: false,
-            },
-        };
-    },
 };

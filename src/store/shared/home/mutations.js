@@ -22,16 +22,4 @@ export default {
     updateProductsHighestPrice(state, newProducts) {
         state.productsHighestPrice = newProducts;
     },
-
-    // eslint-disable-next-line no-unused-vars
-    clearAll(state) {
-        state = {
-            productsEndingSoonLoading: false,
-            productsMostBiddersLoading: false,
-            productsHighestPriceLoading: false,
-            productsEndingSoon: [],
-            productsMostBidders: [],
-            productsHighestPrice: [],
-        };
-    },
 };

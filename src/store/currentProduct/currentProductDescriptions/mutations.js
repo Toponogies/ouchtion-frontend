@@ -14,12 +14,4 @@ export default {
     addSecondary(state, description) {
         state.secondaryDescriptions.push(description);
     },
-
-    // eslint-disable-next-line no-unused-vars
-    clearAll(state) {
-        state = {
-            primaryDescription: null,
-            secondaryDescriptions: [],
-        };
-    },
 };

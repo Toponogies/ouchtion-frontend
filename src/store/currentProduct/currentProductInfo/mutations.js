@@ -41,41 +41,4 @@ export default {
     setProductAsSold(state) {
         state.isSold = true;
     },
-
-    // eslint-disable-next-line no-unused-vars
-    clearAll(state) {
-        state = {
-            id: null,
-            isLoading: false,
-            title: null,
-            seller: {
-                id: null,
-                username: null,
-                rating: 0.0,
-            },
-            startTime: null,
-            endTime: null,
-            categoryId: null,
-            categories: [],
-            isSold: false,
-            primaryDescription: null,
-            secondaryDescriptions: [],
-            primaryImage: null,
-            secondaryImages: [],
-            bid: {
-                highestPrice: null,
-                highestUser: {
-                    id: null,
-                    username: null,
-                    rating: 0.0,
-                },
-                priceIncrement: null,
-                biddings: [],
-            },
-            buyNow: {
-                price: null,
-            },
-            relatedProducts: [],
-        };
-    },
 };
