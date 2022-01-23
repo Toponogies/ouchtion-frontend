@@ -35,7 +35,7 @@ export default {
         commit("setUser", user);
     },
 
-    async editInfo({ dispatch, state }, payload) {
+    async editUser({ dispatch, state }, payload) {
         if (state.accessToken === null) return;
 
         try {
@@ -91,7 +91,7 @@ export default {
         showSnack("User password updated");
     },
 
-    async sendUpgradeRequest(_, reason) {
+    async addRequestSeller(_, reason) {
         let check = await requestSeller(reason);
         if (check === true) {
             showSnack("Send request success");

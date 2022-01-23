@@ -7,16 +7,23 @@ export default {
     async getItems({ commit }) {
         commit("setLoading", true);
 
-        let products = await getWatchList();
+        let productIds = await getWatchList();
 
-        if (products) {
-            products = products.map((product) => ({
-                primaryImage: `${IMAGE_API_ENDPOINT}/${product.avatar}`,
-                id: product.product_id,
-                name: product.name,
-                endTime: product.end_at,
-                highestBidPrice: product.current_price,
-            }));
+        if (productIds) {
+            productIds = productIds.map((each) => each.product_id);
+
+            let products = [];
+            productIds.forEach(async (id) => {
+                let product = await getProduct(id);
+                console.log(product);
+                products.push({
+                    id,
+                    primaryImage: `${IMAGE_API_ENDPOINT}/${product.avatar}`,
+                    name: product.name,
+                    endTime: product.end_at,
+                    highestBidPrice: product.current_price,
+                });
+            });
             commit("setItems", products);
         } else {
             showSnack(`Failed to get watchlist`);

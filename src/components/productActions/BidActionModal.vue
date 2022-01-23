@@ -153,9 +153,9 @@ export default {
         };
     },
     computed: {
-        ...mapState("CurrentProductInfoModule", ["bid"]),
+        ...mapState("CurrentProductInfoModule", ["id", "bid"]),
         ...mapState("CurrentProductDetailsBidderModule", { bidBidder: "bid" }),
-        ...mapGetters("CurrentProductInfoModule", ["id", "suggestedBidPrice"]),
+        ...mapGetters("CurrentProductInfoModule", ["suggestedBidPrice"]),
         ...mapState("CurrentUserModule", {
             currentUsername: "username",
             currentRating: "rating",

@@ -14,8 +14,8 @@ export async function deleteUpgradeRequests(id) {
     const headers = await getAuthHeader();
     return await axios
         .delete(`${API_ENDPOINTS.USERS}` + `/admin/request/${id}`, { headers })
-        .then((res) => res.data)
-        .catch(() => null);
+        .then(() => true)
+        .catch(() => false);
 }
 
 export async function requestSeller(reason) {

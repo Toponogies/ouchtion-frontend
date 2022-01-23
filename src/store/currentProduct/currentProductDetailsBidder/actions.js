@@ -6,17 +6,18 @@ import { checkBidRequest } from "@/api/bid";
 import { today } from "@/utils/timeUtils";
 
 export default {
-    getAllInfo({ dispatch }) {
-        dispatch("getWatchlistStatus");
-        dispatch("getBidAvailability");
+    async getAllInfo({ dispatch }) {
+        await dispatch("getWatchlistStatus");
+        await dispatch("getBidAvailability");
     },
 
-    async getWatchlistStatus({ commit, rootState }) {
+    async getWatchlistStatus({ commit, dispatch, rootState }) {
         // Dispatch a getWatchlist call (just in case)
-        // dispatch("BidderWatchlistModule/getItems", null, { root: true });
+        dispatch("BidderWatchlistModule/getItems", null, { root: true });
         // Filter from watchlistItems
         const isOnWatchlist =
-            find(rootState.BidderWatchlistModule.items, { id: rootState.CurrentProductInfoModule.id }) !== undefined;
+            find(rootState.BidderWatchlistModule.items, { product_id: rootState.CurrentProductInfoModule.id }) !==
+            undefined;
         commit("setIsOnWatchlist", isOnWatchlist);
     },
 
@@ -59,15 +60,17 @@ export default {
 
     async addManualBid({ commit, rootState }, { product_id, bid_price }) {
         let result = await placeBids(product_id, bid_price);
+        console.log(result);
         if (result) {
             let bid = {
                 time: today(),
                 full_name: rootState.CurrentUserModule.username,
                 bid_price,
             };
+            console.log(bid);
             commit("CurrentProductBiddingsModule/addItem", bid, { root: true });
 
-            showSnack("You have place your bidding");
+            showSnack("You have placed your bidding");
         } else {
             showSnack(`Failed to place bidding on product id = ${product_id}`);
         }

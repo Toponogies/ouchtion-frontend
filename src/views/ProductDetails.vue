@@ -149,14 +149,19 @@ export default {
             "categories",
             "bid",
             "buyNow",
-            "isOnWatchlist",
             "relatedProducts",
         ]),
+        ...mapState("CurrentProductDetailsBidderModule", ["isOnWatchlist"]),
         ...mapState("CurrentUserModule", ["role"]),
+        ...mapState("CurrentUserModule", {
+            currentUserId: "id",
+        }),
     },
 
     methods: {
         ...mapActions("CurrentProductInfoModule", ["setProductId", "getAllInfo"]),
+        ...mapActions("CurrentProductDetailsBidderModule", { getInfoForBidders: "getAllInfo" }),
+        ...mapActions("CurrentProductDetailsSellerModule", { getInfoForSellers: "getAllInfo" }),
         ...mapMutations("CurrentProductInfoModule", ["clearAll"]),
         ...mapActions("BidderWatchlistModule", ["add", "remove"]),
 
@@ -183,10 +188,17 @@ export default {
     beforeMount() {
         this.clearAll();
         this.setProductId(this.$route.params.id);
-        this.getAllInfo();
     },
 
     mounted() {
+        this.getAllInfo();
+        if (this.role === ROLES.BIDDER) {
+            this.getInfoForBidders();
+        }
+        if (this.currentUserId === this.seller.id) {
+            this.getInfoForSellers();
+        }
+
         scrollToTop(this);
     },
 

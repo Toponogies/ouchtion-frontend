@@ -62,6 +62,7 @@ export default {
 
     async appendProductDescription({ commit }, { product_id, description }) {
         let result = await appendDescription(product_id, description);
+        console.log(today());
         if (result) {
             let payload_description = {
                 description,

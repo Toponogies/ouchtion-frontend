@@ -29,7 +29,7 @@ export const toTimestamp = (date, time) => {
 };
 
 export const today = () => {
-    return DayJS.format(_FORMAT);
+    return DayJS().format(_FORMAT);
 };
 
 // delta in seconds

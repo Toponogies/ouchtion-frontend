@@ -55,7 +55,7 @@ export default {
                     image: `${IMAGE_API_ENDPOINT}/${product.avatar}`,
                     bidderCount: product.bidding_count,
                     bidHighestPrice: product.current_price,
-                    bidHighestUser: user.full_name,
+                    bidHighestUser: user?.full_name,
                     buyNowPrice: product.buy_price,
                     startTime: product.start_at,
                     endTime: product.end_at,

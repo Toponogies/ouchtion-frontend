@@ -64,7 +64,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 /* Blockquote for description */
 blockquote {
     border-left: 0.25em solid #dfe2e5;
