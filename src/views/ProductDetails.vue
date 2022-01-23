@@ -108,6 +108,7 @@ import {
     BIDDING_ADD_AUTO,
     BIDDING_PERMISSION_UPDATE,
     BIDDING_REJECT,
+    BIDDING_REQUEST_ADD,
     PRODUCT_APPEND_DESCRIPTION,
     PRODUCT_DELETE,
     PRODUCT_WON,
@@ -247,6 +248,11 @@ export default {
         });
 
         socket.on(BIDDING_ADD_AUTO, (data) => {
+            console.log(data.product_id);
+            // Notify and update the view to disable buttons
+        });
+
+        socket.on(BIDDING_REQUEST_ADD, (data) => {
             console.log(data.product_id);
             // Notify and update the view to disable buttons
         });
