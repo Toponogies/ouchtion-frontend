@@ -8,7 +8,13 @@
             </template>
         </v-img>
         <v-card-title>
-            <div class="text-subtitle-1 font-weight-medium" v-line-clamp="2">{{ title }}</div>
+            <div
+                class="text-subtitle-1 font-weight-medium"
+                v-line-clamp="2"
+                style="height: 56px; word-break: break-word !important"
+            >
+                {{ title }}
+            </div>
         </v-card-title>
         <v-card-text>
             <v-row class="my-n5">
