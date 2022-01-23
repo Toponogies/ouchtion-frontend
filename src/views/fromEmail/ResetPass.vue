@@ -20,11 +20,11 @@ export default {
         };
     },
     methods: {
-        ...mapActions("AuthModule", ["doReset"]),
+        ...mapActions("CurrentUserModule", ["doReset"]),
         reset() {
             this.doReset({
-                token:this.$route.query.token,
-                password:this.password
+                token: this.$route.query.token,
+                password: this.password,
             });
         },
     },

@@ -101,7 +101,7 @@ export default {
     },
 
     methods: {
-        ...mapMutations("AuthModule", {
+        ...mapMutations("CurrentUserModule", {
             setLoginModalState: "setModalState",
         }),
         ...mapMutations("CurrentProductModule", ["setBidModalState", "setBidRequestModalState"]),

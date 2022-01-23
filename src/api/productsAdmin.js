@@ -1,6 +1,6 @@
 import axios from "axios";
 import { API_ENDPOINTS } from "@/utils/constants";
-import { getAuthHeader } from "./utils/getAuthHeader";
+import { getAuthHeader } from "@/utils/getAuthHeader";
 
 export const getAllProducts = async () => {
     const headers = await getAuthHeader();

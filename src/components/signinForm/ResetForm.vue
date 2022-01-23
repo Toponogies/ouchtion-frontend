@@ -22,8 +22,8 @@ export default {
     },
 
     computed: {
-        ...mapState("AuthModule", ["isModalOpened"]),
-        ...mapState("AuthModule", ["resetError"]),
+        ...mapState("CurrentUserModule", ["isModalOpened"]),
+        ...mapState("CurrentUserModule", ["resetError"]),
     },
 
     watch: {
@@ -33,8 +33,8 @@ export default {
     },
 
     methods: {
-        ...mapActions("AuthModule", ["doSendReset"]),
-        ...mapMutations("AuthModule", ["setModalState"]),
+        ...mapActions("CurrentUserModule", ["doSendReset"]),
+        ...mapMutations("CurrentUserModule", ["setModalState"]),
         register() {
             this.doSendReset(this.email);
         },

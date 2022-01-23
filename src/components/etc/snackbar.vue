@@ -1,7 +1,7 @@
 <!-- Stolen from https://stackoverflow.com/a/62809325; thanks @kalana-mihiranga -->
 
 <template>
-    <v-snackbar v-model="show" :timeout="2000"
+    <v-snackbar v-model="show" :timeout="3000"
         >{{ text }}
         <template v-slot:action="{ attrs }">
             <v-btn icon v-bind="attrs" @click="handleSnackbarActionClick">

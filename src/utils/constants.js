@@ -29,6 +29,11 @@ export const SEARCH_TYPES = {
     KEYWORD: "keyword",
     CATEGORY: "category",
 };
+export const SEARCH_ORDER = {
+    TIME_ASC: "time_asc",
+    BIDDING_DESC: "bidding_desc",
+    PRICE_DESC: "price_desc",
+};
 export const SEARCH_BOX_FEATURED_CATEGORIES_LIMIT = 6;
 export const SEARCH_RESULTS_PER_PAGE = 10;
 export const SEARCH_PAGINATION_VISIBLE_PAGES = 7;
@@ -42,3 +47,12 @@ export const DELTA_THRESHOLD_END_SHOW_TIME = 86400; // 1 day
 
 /* Comment string for "Bidder did not pay" button */
 export const BIDDER_NOT_PAY_COMMENT = "Người thắng không thanh toán";
+
+/* Bid availability for a product (meant to be used by bidders) */
+export const BID_AVAILABILITY = {
+    IS_SOLD: "is_sold", // This product is already sold.
+    CAN_BID: "can_bid", // Bidder can bid normally on this product.
+    REQUEST_REQUIRED: "request_required", // Bidder must send a request to the seller.
+    REQUEST_PENDING: "request_pending", // The request is waiting for seller's approval
+    REQUEST_FAILED: "request_failed", // The request is rejected
+};

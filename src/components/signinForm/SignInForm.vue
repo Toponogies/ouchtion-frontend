@@ -26,7 +26,7 @@ export default {
     },
 
     computed: {
-        ...mapState("AuthModule", ["isModalOpened"]),
+        ...mapState("CurrentUserModule", ["isModalOpened"]),
         isValid() {
             const regexPatternEmail = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
             if (regexPatternEmail.test(this.email) && this.password !== "") return false;
@@ -46,7 +46,7 @@ export default {
     },
 
     methods: {
-        ...mapActions("AuthModule", ["doLogin"]),
+        ...mapActions("CurrentUserModule", ["doLogin"]),
         async login() {
             await this.doLogin({
                 email: this.email,

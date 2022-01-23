@@ -41,10 +41,10 @@ export default {
     name: "SignInUpModal",
     components: { SignInForm, SignUpForm, ResetForm },
     computed: {
-        ...mapState("AuthModule", ["isModalOpened"]),
+        ...mapState("CurrentUserModule", ["isModalOpened"]),
     },
     methods: {
-        ...mapMutations("AuthModule", ["setModalState"]),
+        ...mapMutations("CurrentUserModule", ["setModalState"]),
         handleDialogClose() {
             this.setModalState(false);
         },

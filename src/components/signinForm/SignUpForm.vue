@@ -39,7 +39,7 @@ export default {
     },
 
     computed: {
-        ...mapState("AuthModule", ["isModalOpened"]),
+        ...mapState("CurrentUserModule", ["isModalOpened"]),
         isValid() {
             const regexPatternEmail = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
             const regexPatternFullName = /[a-zA-Z] [a-zA-Z]/;
@@ -74,8 +74,8 @@ export default {
     },
 
     methods: {
-        ...mapActions("AuthModule", ["doRegister"]),
-        ...mapMutations("AuthModule", ["setModalState"]),
+        ...mapActions("CurrentUserModule", ["doRegister"]),
+        ...mapMutations("CurrentUserModule", ["setModalState"]),
         captchaOk() {
             this.checkCaptcha = true;
         },

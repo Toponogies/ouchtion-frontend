@@ -1,6 +1,6 @@
 import axios from "axios";
 import { API_ENDPOINTS } from "@/utils/constants";
-import { getAuthHeader } from "./utils/getAuthHeader";
+import { getAuthHeader } from "@/utils/getAuthHeader";
 
 export const placeBids = async (product_id, bid_price) => {
     const headers = await getAuthHeader();

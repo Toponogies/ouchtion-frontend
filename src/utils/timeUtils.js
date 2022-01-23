@@ -8,33 +8,31 @@ import {
 
 DayJS.extend(RelativeTime);
 const _FORMAT_DATE = "YYYY-MM-DD";
-const _FORMAT_TIME = "HH:mm:ss.SSSZ";
+const _FORMAT_TIME = "HH:mm:ss.SSS";
 const _FORMAT_DELIMITER = "T";
-const _FORMAT = `${_FORMAT_DATE}${_FORMAT_DELIMITER}${_FORMAT_TIME}`;
+const _FORMAT = `${_FORMAT_DATE}${_FORMAT_DELIMITER}${_FORMAT_TIME}Z`;
 
 const _FORMAT_LONG = "DD/MM/YYYY hh:mm:ss a";
 const _FORMAT_SHORT = "DD/MM/YYYY";
-// const _FORMAT_COUNTDOWN_TIME = "HH:mm:ss";
 
-// "2000-12-31-01 23:59:59" -> ("2000-12-31", "23:59:59")
 export const fromTimestamp = (timestamp) => {
-    const [date, time] = timestamp.split(_FORMAT_DELIMITER);
+    // split by middle T
+    let [date, time] = timestamp.split(_FORMAT_DELIMITER);
+    // remove miliseconds + "Z" at the end of time
+    time = time.substring(0, 8);
     return { date, time };
 };
 
-// "2000-12-31-01 23:59:59" <- ("2000-12-31", "23:59:59")
 export const toTimestamp = (date, time) => {
-    return `${date}${_FORMAT_DELIMITER}${time}`;
+    return `${date}${_FORMAT_DELIMITER}${time}.000Z`;
 };
 
-// "2000-12-31-01 23:59:59"
 export const today = () => {
     return DayJS.format(_FORMAT);
 };
 
 // delta in seconds
 export const deltaFromToday = (timestamp) => {
-    // const today = DayJS(DayJS().format(_FORMAT_DATE), _FORMAT_DATE);
     const today = DayJS();
     const targetDay = DayJS(timestamp, _FORMAT);
     return targetDay.diff(today, "second");

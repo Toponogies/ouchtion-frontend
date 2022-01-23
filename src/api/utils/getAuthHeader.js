@@ -1,16 +1,16 @@
 import store from "@/store";
-import { jwtVerify } from "jose";
-import { JWT_SECRET } from "@/utils/constants";
+import { API_ENDPOINTS } from "@/utils/constants";
+import { jwtGetPayload } from "@/api/utils/jwtGetPayload";
+import axios from "axios";
 
 export const getAuthHeader = async () => {
     // Get access token from store
-    let accessToken = store.state.AuthModule.accessToken;
-    let refreshToken = store.state.AuthModule.refreshToken;
+    let accessToken = store.state.CurrentUserModule.accessToken;
+    let refreshToken = store.state.CurrentUserModule.refreshToken;
 
-    try {
-        // Attempt to verify the token
-        await jwtVerify(accessToken, new TextEncoder().encode(JWT_SECRET));
-    } catch (error) {
+    // Attempt to verify the token
+    let payload = await jwtGetPayload(accessToken);
+    if (!payload) {
         // If the token expired (an exception will be thrown), a new token will be requested
         // If the refresh token itself is expired, return null (to indicate a warning)
         const payload = {
@@ -20,6 +20,7 @@ export const getAuthHeader = async () => {
             .post(`${API_ENDPOINTS.AUTH}/refresh`, payload)
             .then((res) => {
                 accessToken = res.data.accessToken;
+                localStorage.setItem("accessToken_ouchtion", accessToken);
             })
             .catch(() => {
                 refreshToken = null;
