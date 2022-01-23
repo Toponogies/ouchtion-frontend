@@ -352,7 +352,7 @@ export default {
         },
     },
     methods: {
-        ...mapActions("CategoryModule", ["fetchAll", "addParent", "addChild", "edit", "remove"]),
+        ...mapActions("CategoryModule", ["getItems", "addParent", "addChild", "edit", "remove"]),
 
         // add parent
         handleAddParentDialogOpen() {
@@ -426,7 +426,7 @@ export default {
         },
     },
     mounted() {
-        this.fetchAll();
+        this.getItems();
     },
 };
 </script>

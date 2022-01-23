@@ -10,7 +10,7 @@
         </v-card>
 
         <!-- Table -->
-        <v-card class="mt-3" flat outlined v-else>
+        <v-card class="mt-3" flat outlined v-else :loading="bidRequests.isLoading">
             <v-data-table :headers="bidRequests.headers" :items="bidRequests.items" :items-per-page="5">
                 <!-- Actions -->
                 <template v-slot:[`item.actions`]="{ item }">
@@ -41,7 +41,7 @@ export default {
     },
 
     computed: {
-        ...mapState("CurrentProductModule", ["bidRequests"]),
+        ...mapState("CurrentProductDetailsSellerModule", ["bidRequests"]),
         ...mapState("CurrentUserModule", ["role"]),
         bidderRequestCount: function () {
             return this.bidRequests.items.length;
@@ -49,7 +49,11 @@ export default {
     },
 
     methods: {
-        ...mapActions("CurrentProductModule", ["getBidderRequests", "acceptBidderRequest", "rejectBidderRequest"]),
+        ...mapActions("CurrentProductDetailsSellerModule", [
+            "getBidderRequests",
+            "acceptBidderRequest",
+            "rejectBidderRequest",
+        ]),
         async acceptRequest(item) {
             await this.acceptBidderRequest(item.requestId);
         },

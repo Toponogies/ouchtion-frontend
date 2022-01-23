@@ -5,8 +5,8 @@
             <v-data-table
                 :loading="isLoading"
                 loading-text="Loading data"
-                :headers="usersHeaders"
-                :items="users"
+                :headers="headers"
+                :items="items"
                 :items-per-page="-1"
             >
                 <!-- Table top toolbar -->
@@ -254,18 +254,17 @@ export default {
         };
     },
     computed: {
-        ...mapState("UsersModule", ["isLoading", "usersHeaders", "users"]),
+        ...mapState("AdminUsersDashboardModule", ["isLoading", "headers", "items"]),
     },
     methods: {
-        ...mapActions("UsersModule", [
-            "fetchAll",
+        ...mapActions("AdminUsersDashboardModule", [
+            "getItems",
             "create",
-            "update",
+            "updateInfo",
             "updateEmail",
             "updatePassword",
             "delete",
             "setAsBidder",
-            "setAsSeller",
         ]),
 
         handleCreateUserOpen() {
@@ -313,7 +312,7 @@ export default {
                 });
             }
 
-            this.update({
+            this.updateInfo({
                 id: this.currentUserId,
                 full_name: this.currentFullName,
                 address: this.currentAddress,
@@ -343,7 +342,7 @@ export default {
         },
     },
     mounted() {
-        this.fetchAll();
+        this.getItems();
     },
 };
 </script>

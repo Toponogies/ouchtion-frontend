@@ -1,5 +1,5 @@
 <template>
-    <v-dialog max-width="640" v-model="bid.isModalOpen" persistent>
+    <v-dialog max-width="640" v-model="bidBidder.isModalOpen" persistent>
         <v-card>
             <!-- Header (Manual) -->
             <v-row no-gutters class="px-4 py-4">
@@ -153,39 +153,36 @@ export default {
         };
     },
     computed: {
-        ...mapState("CurrentProductModule", ["bid"]),
-        ...mapGetters("CurrentProductModule", ["suggestedBidPrice"]),
+        ...mapState("CurrentProductInfoModule", ["bid"]),
+        ...mapState("CurrentProductDetailsBidderModule", { bidBidder: "bid" }),
+        ...mapGetters("CurrentProductInfoModule", ["id", "suggestedBidPrice"]),
         ...mapState("CurrentUserModule", {
             currentUsername: "username",
             currentRating: "rating",
         }),
     },
     methods: {
-        ...mapMutations("CurrentProductModule", ["setBidModalState"]),
-        ...mapActions("CurrentProductModule", ["addManualBid", "addAutoBidding", "turnOffAutoBidding"]),
+        ...mapMutations("CurrentProductDetailsBidderModule", ["setBidModalState"]),
+        ...mapActions("CurrentProductDetailsBidderModule", ["addManualBid", "turnOnAutoBidding", "turnOffAutoBidding"]),
         handleConfirmDialogOK() {
             this.addManualBid({
-                product_id: this.$route.params.id,
+                product_id: this.id,
                 bid_price: this.newPrice,
             });
             this.setBidModalState(false);
         },
         handleConfirmDialogAutobidOK() {
-            this.setBidModalState(false);
-            this.addAutoBidding({
-                product_id: this.$route.params.id,
+            this.turnOnAutoBidding({
+                product_id: this.id,
                 max_price: this.autoBidMaximumPrice,
             });
-            // TRIGGER: ENABLE AUTO BID
-            this.autoBidEnabled = true;
+            this.setBidModalState(false);
         },
         handleConfirmDialogAutobidOff() {
-            this.setBidModalState(false);
             this.turnOffAutoBidding({
-                product_id: this.$route.params.id,
+                product_id: this.id,
             });
-            // TRIGGER: DISABLE AUTO BID
-            this.autoBidEnabled = false;
+            this.setBidModalState(false);
         },
         handleConfirmDialogCancel() {
             this.setBidModalState(false);

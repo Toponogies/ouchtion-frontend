@@ -32,7 +32,7 @@
         <!-- Status line (disabled) -->
         <v-row no-gutters class="px-4 pt-2 pb-4" v-else>
             <v-icon dark left small>mdi-close-circle</v-icon>
-            <div>The seller does not allow buying this product immediately.</div>
+            <div>{{ statusLine }}</div>
         </v-row>
 
         <!-- Buy now confirmation modal -->
@@ -61,9 +61,9 @@ export default {
 
     computed: {
         ...mapState("CurrentUserModule", ["role"]),
-        ...mapState("CurrentProductModule", ["buyNow"]),
+        ...mapState("CurrentProductInfoModule", ["buyNow", "isSold"]),
         isBuyNowOptionAvailable: function () {
-            return this.buyNow.price !== null;
+            return !this.isSold && this.buyNow.price !== null;
         },
         cardColor: function () {
             return this.isBuyNowOptionAvailable ? "red darken-3 white--text" : "grey darken-3 white--text";
@@ -71,13 +71,20 @@ export default {
         formattedPrice: function () {
             return this.isBuyNowOptionAvailable ? this.utils.formatPrice(this.buyNow.price) : "Not applicable";
         },
+        statusLine: function () {
+            if (this.isSold) {
+                return "Product is sold.";
+            } else {
+                return "The seller does not allow buying this product immediately.";
+            }
+        },
     },
 
     methods: {
         ...mapMutations("CurrentUserModule", {
             setLoginModalState: "setModalState",
         }),
-        ...mapMutations("CurrentProductModule", ["setBuyNowModalState"]),
+        ...mapMutations("CurrentProductDetailsBidderModule", ["setBuyNowModalState"]),
         handleConfirmDialogOpen() {
             switch (this.role) {
                 // For not logged-in users: show login modal

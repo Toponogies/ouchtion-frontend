@@ -4,7 +4,7 @@ import { IMAGE_API_ENDPOINT } from "@/utils/constants";
 import { showSnack } from "@/utils/showSnack";
 
 export default {
-    async fetchOngoing({ commit }) {
+    async getOngoing({ commit }) {
         commit("setOngoingProductsLoadingState", true);
 
         let products = await sellerOnGoingProduct();
@@ -25,7 +25,7 @@ export default {
         commit("setOngoingProductsLoadingState", false);
     },
 
-    async fetchCompleted({ commit }) {
+    async getCompleted({ commit }) {
         commit("setCompletedProductsLoadingState", true);
 
         let products = await sellerFinishedProduct();

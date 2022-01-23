@@ -2,8 +2,8 @@
     <v-data-table
         :loading="isLoading"
         loading-text="Loading data"
-        :headers="watchlistHeaders"
-        :items="watchlistItems"
+        :headers="headers"
+        :items="items"
         :items-per-page="15"
     >
         <!-- Column: Image -->
@@ -59,10 +59,10 @@ export default {
         };
     },
     computed: {
-        ...mapState("WatchlistModule", ["isLoading", "watchlistHeaders", "watchlistItems"]),
+        ...mapState("BidderWatchlistModule", ["isLoading", "headers", "items"]),
     },
     methods: {
-        ...mapActions("WatchlistModule", ["fetchAll", "removeItem"]),
+        ...mapActions("BidderWatchlistModule", ["getItems", "remove"]),
         goToItem(item) {
             const nextPath = `/p/${item.id}`;
             if (this.$router.currentRoute.fullPath !== nextPath) {
@@ -70,11 +70,11 @@ export default {
             }
         },
         removeFromWatchlist(item) {
-            this.removeItem(item.id);
+            this.remove(item.id);
         },
     },
     mounted() {
-        this.fetchAll();
+        this.getItems();
     },
 };
 </script>

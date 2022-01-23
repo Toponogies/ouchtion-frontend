@@ -13,7 +13,7 @@
         <!-- Details (product *do* exists) -->
         <div v-else>
             <!-- Image gallery -->
-            <v-card class="pa-4 mb-4">
+            <v-card class="pa-4 mb-4" :loading="isLoading">
                 <product-image-gallery></product-image-gallery>
             </v-card>
 
@@ -140,7 +140,8 @@ export default {
     },
 
     computed: {
-        ...mapState("CurrentProductModule", [
+        ...mapState("CurrentProductInfoModule", [
+            "isLoading",
             "title",
             "seller",
             "startTime",
@@ -155,9 +156,9 @@ export default {
     },
 
     methods: {
-        ...mapActions("CurrentProductModule", ["setProductId", "fetchAllDetails"]),
-        ...mapMutations("CurrentProductModule", ["clearAll"]),
-        ...mapActions("WatchlistModule", ["addItem", "removeItem"]),
+        ...mapActions("CurrentProductInfoModule", ["setProductId", "fetchAllDetails"]),
+        ...mapMutations("CurrentProductInfoModule", ["clearAll"]),
+        ...mapActions("BidderWatchlistModule", ["add", "remove"]),
 
         handleCategoryClick(id) {
             const nextPath = `/search?cat=${id}`;
@@ -169,12 +170,12 @@ export default {
         toggleWatchState() {
             // add
             if (!this.isOnWatchlist) {
-                this.addItem(this.id);
+                this.add(this.id);
             }
 
             // remove
             else {
-                this.removeItem(this.id);
+                this.remove(this.id);
             }
         },
     },

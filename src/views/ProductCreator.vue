@@ -379,7 +379,7 @@ export default {
     },
 
     computed: {
-        ...mapState("AddProductModule", ["newProductId"]),
+        ...mapState("SellerProductCreatorModule", ["newProductId"]),
 
         isDescriptionEmpty: function () {
             const htmlElement = document.createElement("div");
@@ -415,7 +415,7 @@ export default {
     },
 
     methods: {
-        ...mapActions("AddProductModule", ["addProduct"]),
+        ...mapActions("SellerProductCreatorModule", ["addProduct"]),
         getCategories() {
             const fetchedCategories = generateCategories();
             this.availableCategories = fetchedCategories.map((each) => ({ text: each.name, value: each.category_id }));

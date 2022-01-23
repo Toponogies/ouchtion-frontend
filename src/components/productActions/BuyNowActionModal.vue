@@ -1,5 +1,5 @@
 <template>
-    <v-dialog max-width="640" v-model="buyNow.isModalOpen" persistent>
+    <v-dialog max-width="640" v-model="buyNowBidder.isModalOpen" persistent>
         <v-card>
             <v-row no-gutters class="px-4 py-4">
                 <div class="text-h6 font-weight-bold">Confirm Your Purchase</div>
@@ -53,16 +53,17 @@ export default {
         };
     },
     computed: {
-        ...mapState("CurrentProductModule", ["buyNow"]),
+        ...mapState("CurrentProductInfoModule", ["buyNow"]),
+        ...mapState("CurrentProductDetailsBidderModule", { buyNowBidder: "buyNow" }),
         ...mapState("CurrentUserModule", ["username", "rating"]),
     },
     methods: {
-        ...mapMutations("CurrentProductModule", ["setBuyNowModalState"]),
-        ...mapActions("CurrentProductModule", ["buyProduct"]),
+        ...mapMutations("CurrentProductDetailsBidderModule", ["setBuyNowModalState"]),
+        ...mapActions("CurrentProductDetailsBidderModule", ["buyProduct"]),
         handleConfirmDialogOK() {
             this.buyProduct({
                 product_id: this.$route.params.id,
-            })
+            });
             // TRIGGER: BUY THIS PRODUCT
             this.setBuyNowModalState(false);
         },

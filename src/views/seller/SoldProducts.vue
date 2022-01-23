@@ -202,13 +202,13 @@ export default {
         };
     },
     computed: {
-        ...mapState("ProductModule", ["completedProducts"]),
+        ...mapState("SellerDashboardModule", ["completedProducts"]),
         isCurrentReviewToBidderValid() {
             return this.currentReviewToBidder.rating !== null || ~this.currentReviewToBidder.comment.length > 0;
         },
     },
     methods: {
-        ...mapActions("ProductModule", ["fetchCompleted", "leaveReviewCompleted"]),
+        ...mapActions("SellerDashboardModule", ["getCompleted", "leaveReviewCompleted"]),
         goToItem(item) {
             const nextPath = `/p/${item.id}`;
             if (this.$router.currentRoute.fullPath !== nextPath) {
@@ -242,7 +242,7 @@ export default {
         },
     },
     mounted() {
-        this.fetchCompleted();
+        this.getCompleted();
     },
 };
 </script>

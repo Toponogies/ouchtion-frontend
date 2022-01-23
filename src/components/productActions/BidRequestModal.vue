@@ -35,11 +35,11 @@ import { mapState, mapActions, mapMutations } from "vuex";
 export default {
     name: "BidRequestModal",
     computed: {
-        ...mapState("CurrentProductModule", ["request"]),
+        ...mapState("CurrentProductDetailsBidderModule", ["request"]),
     },
     methods: {
-        ...mapActions("CurrentProductModule", ["sendBidRequest"]),
-        ...mapMutations("CurrentProductModule", ["setBidRequestModalState"]),
+        ...mapActions("CurrentProductDetailsBidderModule", ["sendBidRequest"]),
+        ...mapMutations("CurrentProductDetailsBidderModule", ["setBidRequestModalState"]),
 
         async handleConfirmDialogOK() {
             await this.sendBidRequest();

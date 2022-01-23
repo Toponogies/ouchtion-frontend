@@ -49,10 +49,10 @@ export default {
         };
     },
     computed: {
-        ...mapState("ProductModule", ["ongoingProducts"]),
+        ...mapState("SellerDashboardModule", ["ongoingProducts"]),
     },
     methods: {
-        ...mapActions("ProductModule", ["fetchOngoing"]),
+        ...mapActions("SellerDashboardModule", ["getOngoing"]),
         goToItem(item) {
             const nextPath = `/p/${item.id}`;
             if (this.$router.currentRoute.fullPath !== nextPath) {
@@ -61,7 +61,7 @@ export default {
         },
     },
     mounted() {
-        this.fetchOngoing();
+        this.getOngoing();
     },
 };
 </script>

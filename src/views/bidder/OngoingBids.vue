@@ -49,10 +49,10 @@ export default {
         };
     },
     computed: {
-        ...mapState("BiddingModule", ["ongoingBids"]),
+        ...mapState("BidderDashboardModule", ["ongoingBids"]),
     },
     methods: {
-        ...mapActions("BiddingModule", ["fetchOngoing"]),
+        ...mapActions("BidderDashboardModule", ["getOngoing"]),
         goToItem(item) {
             const nextPath = `/p/${item.id}`;
             if (this.$router.currentRoute.fullPath !== nextPath) {
@@ -61,7 +61,7 @@ export default {
         },
     },
     mounted() {
-        this.fetchOngoing();
+        this.getOngoing();
     },
 };
 </script>

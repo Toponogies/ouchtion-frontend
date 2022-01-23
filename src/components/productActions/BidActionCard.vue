@@ -44,13 +44,13 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapMutations } from "vuex";
-import { ROLES } from "@/utils/constants";
+import { mapState, mapMutations } from "vuex";
+import { BID_AVAILABILITY, ROLES } from "@/utils/constants";
 import UsernameCard from "@/components/productDetails/UsernameCard";
 import BidActionModal from "@/components/productActions/BidActionModal";
 import BidRequestModal from "@/components/productActions/BidRequestModal";
 import { formatPrice } from "@/utils/priceUtils";
-import { toRelativeTimestamp, isInCountdownThreshold, fromTimestamp } from "@/utils/timeUtils";
+import { toRelativeTimestamp, isInCountdownThreshold } from "@/utils/timeUtils";
 
 export default {
     name: "BidActionCard",
@@ -64,38 +64,52 @@ export default {
     },
 
     computed: {
-        ...mapState("CurrentProductModule", ["endTime", "bid", "isBlockedFromBidding", "isSold", "request"]),
+        ...mapState("CurrentProductInfoModule", ["endTime", "bid"]),
+        ...mapState("CurrentProductDetailsBidderModule", ["bidAvailability"]),
         ...mapState("CurrentUserModule", ["role"]),
+
         cardColor: function () {
-            return this.isBlockedFromBidding ? "grey darken-3 white--text" : "orange darken-3 white--text";
+            switch (this.bidAvailability) {
+                case BID_AVAILABILITY.CAN_BID:
+                    return "orange darken-3 white--text";
+                case BID_AVAILABILITY.REQUEST_REQUIRED:
+                    return "orange darken-5 white--text";
+                default:
+                    return "grey darken-3 white--text";
+            }
         },
 
         btnDisable: function () {
-            if (this.isSold) {
-                return true;
-            } else if (this.isBlockedFromBidding && !this.request.isSent && !this.request.isBlockedFromRequesting) {
-                return false;
-            } else if (this.isBlockedFromBidding && this.request.isSent && !this.request.isBlockedFromRequesting) {
-                return true;
-            } else if (this.isBlockedFromBidding && this.request.isSent && this.request.isBlockedFromRequesting) {
-                return true;
-            } else {
-                return false;
+            switch (this.bidAvailability) {
+                case BID_AVAILABILITY.CAN_BID:
+                case BID_AVAILABILITY.REQUEST_REQUIRED:
+                    return true;
+                default:
+                    return false;
             }
         },
 
         normalStatusLine: function () {
-            return !this.isSold && !this.isBlockedFromBidding;
+            switch (this.bidAvailability) {
+                case BID_AVAILABILITY.CAN_BID:
+                    return true;
+                default:
+                    return false;
+            }
         },
+
         statusLine: function () {
-            if (this.isSold) {
-                return "Product is sold.";
-            } else if (this.isBlockedFromBidding && !this.request.isSent && !this.request.isBlockedFromRequesting) {
-                return "You must send a request to the seller.";
-            } else if (this.isBlockedFromBidding && this.request.isSent && !this.request.isBlockedFromRequesting) {
-                return "Please wait for seller's response to your request.";
-            } else if (this.isBlockedFromBidding && this.request.isSent && this.request.isBlockedFromRequesting) {
-                return "You cannot bid on this product.";
+            switch (this.bidAvailability) {
+                case BID_AVAILABILITY.IS_SOLD:
+                    return "Product is sold.";
+                case BID_AVAILABILITY.REQUEST_REQUIRED:
+                    return "You must send a request to the seller.";
+                case BID_AVAILABILITY.REQUEST_PENDING:
+                    return "Please wait for seller's response to your request.";
+                case BID_AVAILABILITY.REQUEST_FAILED:
+                    return "You cannot bid on this product.";
+                default:
+                    return "Unknown state";
             }
         },
     },
@@ -104,7 +118,7 @@ export default {
         ...mapMutations("CurrentUserModule", {
             setLoginModalState: "setModalState",
         }),
-        ...mapMutations("CurrentProductModule", ["setBidModalState", "setBidRequestModalState"]),
+        ...mapMutations("CurrentProductDetailsBidderModule", ["setBidModalState", "setBidRequestModalState"]),
 
         handleConfirmDialogOpen() {
             switch (this.role) {
@@ -115,15 +129,16 @@ export default {
 
                 // For bidders: show the modal
                 case ROLES.BIDDER:
-                    if (!this.isBlockedFromBidding) {
-                        this.newPrice = this.suggestedBidPrice;
-                        this.setBidModalState(true);
-                    } else if (
-                        this.isBlockedFromBidding &&
-                        !this.request.isSent &&
-                        !this.request.isBlockedFromRequesting
-                    ) {
-                        this.setBidRequestModalState(true);
+                    switch (this.bidAvailability) {
+                        case BID_AVAILABILITY.CAN_BID:
+                            this.setBidModalState(true);
+                            break;
+                        case BID_AVAILABILITY.REQUEST_REQUIRED:
+                            this.setBidRequestModalState(true);
+                            break;
+                        default:
+                            // do nothing
+                            break;
                     }
                     break;
 

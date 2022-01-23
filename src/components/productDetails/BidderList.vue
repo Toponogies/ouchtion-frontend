@@ -2,7 +2,7 @@
     <v-container class="ma-0 pa-0">
         <div class="text-h6 font-weight-bold">{{ bidderListCount }} biddings</div>
         <v-card class="mt-3" flat outlined>
-            <v-data-table :headers="tableHeaders" :items="bid.biddings" :items-per-page="5">
+            <v-data-table :headers="tableHeaders" :items="biddings" :items-per-page="5">
                 <!-- Price -->
                 <template v-slot:[`item.bid_price`]="{ item }">
                     <span>&#x20AB; {{ utils.formatPrice(item.bid_price) }}</span>
@@ -47,9 +47,9 @@ export default {
         };
     },
     computed: {
-        ...mapState("CurrentProductModule", ["bid"]),
+        ...mapState("CurrentProductBiddingsModule", ["biddings"]),
         bidderListCount: function () {
-            return this.bid.biddings.length;
+            return this.biddings.length;
         },
         tableHeaders: function () {
             if (this.userCurrentRole === ROLES.SELLER) {

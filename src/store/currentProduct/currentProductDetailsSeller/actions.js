@@ -6,6 +6,8 @@ import { today } from "@/utils/timeUtils";
 
 export default {
     async getBidderRequests({ commit, rootState }) {
+        commit("setBidderRequestsLoading", true);
+
         let requests = await getAllBidRequests(rootState.CurrentProductInfoModule.id);
         if (requests) {
             let data = [];
@@ -22,9 +24,13 @@ export default {
         } else {
             showSnack(`Failed to get bidding requests for product id = ${rootState.CurrentProductInfoModule.id}`);
         }
+
+        commit("setBidderRequestsLoading", false);
     },
 
     async acceptBidderRequest({ commit, state, rootState }, requestId) {
+        commit("setBidderRequestsLoading", true);
+
         // find request object corresponding to request_id
         const targetRequest = find(state.bidRequests.items, { requestId });
         let result = await acceptBidRequest(requestId, targetRequest.userId, rootState.CurrentProductInfoModule.id);
@@ -34,9 +40,13 @@ export default {
         } else {
             showSnack(`Failed to accept request id = ${requestId}`);
         }
+
+        commit("setBidderRequestsLoading", false);
     },
 
     async rejectBidderRequest({ commit, state, rootState }, requestId) {
+        commit("setBidderRequestsLoading", true);
+
         // find request object corresponding to request_id
         const targetRequest = find(state.bidRequests.items, { requestId });
         let result = await rejectBidRequest(requestId, targetRequest.userId, rootState.CurrentProductInfoModule.id);
@@ -46,6 +56,8 @@ export default {
         } else {
             showSnack(`Failed to reject request id = ${requestId}`);
         }
+
+        commit("setBidderRequestsLoading", false);
     },
 
     async appendProductDescription({ commit }, { product_id, description }) {

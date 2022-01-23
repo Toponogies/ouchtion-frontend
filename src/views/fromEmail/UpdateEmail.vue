@@ -1,7 +1,5 @@
 <template>
-    <div>
-
-    </div>
+    <div></div>
 </template>
 
 <script>
@@ -15,8 +13,8 @@ export default {
             this.doUpdateEmail(this.$route.query.token);
         },
     },
-    mounted(){
-        this.updateEmail()
-    }
+    mounted() {
+        this.updateEmail();
+    },
 };
 </script>

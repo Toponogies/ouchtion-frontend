@@ -280,13 +280,12 @@ export default {
         },
     },
     methods: {
-        ...mapActions("CurrentUserModule", ["editUser","editPassword","addRequestSeller"]),
+        ...mapActions("CurrentUserModule", ["editUser", "editPassword", "addRequestSeller"]),
 
         //need password
         checkOldPass() {
-            if(this.oldPass.length > 0)
-                return true;
-            showSnack("Need old password")
+            if (this.oldPass.length > 0) return true;
+            showSnack("Need old password");
             return false;
         },
 
@@ -365,7 +364,7 @@ export default {
 
         // upgrade
         requestUpgradeToSeller() {
-            let reason = "I want to be a seller"
+            let reason = "I want to be a seller";
             this.addRequestSeller(reason);
             // send update
             this.upgradeRequestSent = true;

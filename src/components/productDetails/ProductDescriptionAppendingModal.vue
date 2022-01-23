@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="isAppendDescriptionOpen" persistent max-width="640">
+    <v-dialog v-model="isAppendDescriptionOpen" persistent max-width="960">
         <v-card>
             <!-- Header -->
             <v-row no-gutters class="px-4 py-4">
@@ -85,7 +85,7 @@ export default {
         };
     },
     computed: {
-        ...mapState("CurrentProductModule", ["isAppendDescriptionOpen"]),
+        ...mapState("CurrentProductDetailsSellerModule", ["isAppendDescriptionOpen"]),
         isDescriptionEmpty: function () {
             const htmlElement = document.createElement("div");
             htmlElement.innerHTML = this.description;
@@ -93,12 +93,12 @@ export default {
         },
     },
     methods: {
-        ...mapActions("CurrentProductModule", ["appendProductDescription"]),
-        ...mapMutations("CurrentProductModule", ["setAppendDescriptionModalState"]),
+        ...mapActions("CurrentProductDetailsSellerModule", ["appendProductDescription"]),
+        ...mapMutations("CurrentProductDetailsSellerModule", ["setAppendDescriptionModalState"]),
         handleSubmit() {
             this.appendProductDescription({
-                description:this.description,
-                product_id:this.$route.params.id,
+                description: this.description,
+                product_id: this.$route.params.id,
             });
             this.clearDescription();
             this.setAppendDescriptionModalState(false);

@@ -48,15 +48,15 @@ export default {
     data() {
         return {
             utils: { toLongTimestamp, ROLES },
-            descriptions: [],
         };
     },
     computed: {
-        ...mapState("CurrentProductModule", ["seller", "primaryDescription", "secondaryDescriptions"]),
+        ...mapState("CurrentProductDescriptionsModule", ["primaryDescription", "secondaryDescriptions"]),
+        ...mapState("CurrentProductInfoModule", ["seller"]),
         ...mapState("CurrentUserModule", ["id", "role"]),
     },
     methods: {
-        ...mapMutations("CurrentProductModule", ["setAppendDescriptionModalState"]),
+        ...mapMutations("CurrentProductDetailsSellerModule", ["setAppendDescriptionModalState"]),
         handleAppendDescriptionBtnClick() {
             this.setAppendDescriptionModalState(true);
         },

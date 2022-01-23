@@ -78,7 +78,7 @@ export default {
         },
     },
     methods: {
-        ...mapActions("CategoryModule", ["fetchAll"]),
+        ...mapActions("CategoryModule", ["getItems"]),
         getParentCategories() {
             return this.categories
                 .filter((each) => each.parent_category_id === null)
@@ -98,7 +98,7 @@ export default {
         },
     },
     mounted() {
-        this.fetchAll();
+        this.getItems();
     },
 };
 </script>

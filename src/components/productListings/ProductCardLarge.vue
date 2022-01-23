@@ -95,9 +95,9 @@ export default {
     watch: {
         local_isOnWatchlist(newVal) {
             // add to watchlist
-            if (newVal) this.addItem(this.id);
+            if (newVal) this.add(this.id);
             // remove from watchlist
-            else this.removeItem(this.id);
+            else this.remove(this.id);
         },
     },
 
@@ -121,7 +121,7 @@ export default {
     },
 
     methods: {
-        ...mapActions("WatchlistModule", ["addItem", "removeItem"]),
+        ...mapActions("BidderWatchlistModule", ["add", "remove"]),
         toggleWatchState() {
             this.local_isOnWatchlist = !this.local_isOnWatchlist;
         },

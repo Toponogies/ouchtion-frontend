@@ -2,8 +2,8 @@
     <v-data-table
         :loading="isLoading"
         loading-text="Loading data"
-        :headers="productsHeaders"
-        :items="products"
+        :headers="headers"
+        :items="items"
         :items-per-page="15"
     >
         <!-- Column: Image -->
@@ -57,17 +57,17 @@ import { toLongTimestamp } from "@/utils/timeUtils";
 import { formatPrice } from "@/utils/priceUtils";
 
 export default {
-    name: "Products",
+    name: "items",
     data() {
         return {
             utils: { toLongTimestamp, formatPrice },
         };
     },
     computed: {
-        ...mapState("ProductsAdminModule", ["isLoading", "productsHeaders", "products"]),
+        ...mapState("AdminProductDashboardModule", ["isLoading", "headers", "items"]),
     },
     methods: {
-        ...mapActions("ProductsAdminModule", ["fetchAll", "removeItem"]),
+        ...mapActions("AdminProductDashboardModule", ["getItems", "remove"]),
         goToItem(item) {
             const nextPath = `/p/${item.id}`;
             if (this.$router.currentRoute.fullPath !== nextPath) {
@@ -75,11 +75,11 @@ export default {
             }
         },
         removeFromWatchlist(item) {
-            this.removeItem(item.id);
+            this.remove(item.id);
         },
     },
     mounted() {
-        this.fetchAll();
+        this.getItems();
     },
 };
 </script>

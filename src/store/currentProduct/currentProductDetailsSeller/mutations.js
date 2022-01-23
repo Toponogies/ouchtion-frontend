@@ -9,6 +9,10 @@ export default {
         state.isAppendDescriptionOpen = open;
     },
 
+    setBidderRequestsLoading(state, loading) {
+        state.bidRequests.isLoading = loading;
+    },
+
     setBidderRequests(state, requests) {
         state.bidRequests.items = requests;
     },

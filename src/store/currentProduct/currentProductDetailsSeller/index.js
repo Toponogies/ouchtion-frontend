@@ -6,6 +6,7 @@ export const CurrentProductDetailsSellerModule = {
 
     state: {
         bidRequests: {
+            isLoading: false,
             headers: [
                 { text: "Request #", value: "requestId", sortable: false },
                 { text: "Username", value: "username" },

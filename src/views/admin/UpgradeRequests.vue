@@ -2,8 +2,8 @@
     <v-data-table
         :loading="isLoading"
         loading-text="Loading data"
-        :headers="upgradeRequestsHeaders"
-        :items="upgradeRequests"
+        :headers="headers"
+        :items="items"
         :items-per-page="-1"
         :item-key="'userId'"
         show-expand
@@ -66,19 +66,19 @@ export default {
         };
     },
     computed: {
-        ...mapState("UsersModule", ["isLoading", "upgradeRequestsHeaders", "upgradeRequests"]),
+        ...mapState("AdminUsersDashboardModule", ["isLoading", "headers", "items"]),
     },
     methods: {
-        ...mapActions("UsersModule", ["fetchUpgradeRequests", "acceptRequest", "rejectRequest"]),
+        ...mapActions("AdminUsersDashboardModule", ["getItems", "accept", "reject"]),
         acceptUserRequest(item) {
-            this.acceptRequest(item.userId);
+            this.accept(item.userId);
         },
         rejectUserRequest(item) {
-            this.rejectRequest(item.userId);
+            this.reject(item.userId);
         },
     },
     mounted() {
-        this.fetchUpgradeRequests();
+        this.getItems();
     },
 };
 </script>
