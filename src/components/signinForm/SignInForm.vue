@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapState, mapActions } from "vuex";
 
 export default {
     name: "SignInForm",
@@ -24,7 +24,9 @@ export default {
             password: "",
         };
     },
+
     computed: {
+        ...mapState("AuthModule", ["isModalOpened"]),
         isValid() {
             const regexPatternEmail = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
             if (regexPatternEmail.test(this.email) && this.password !== "") return false;
@@ -35,6 +37,14 @@ export default {
             return regexPatternEmail.test(this.email) ? null : "Must be email";
         },
     },
+
+    watch: {
+        isModalOpened() {
+            this.email = "";
+            this.password = "";
+        },
+    },
+
     methods: {
         ...mapActions("AuthModule", ["doLogin"]),
         async login() {

@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { mapActions, mapMutations } from "vuex";
+import { mapState, mapActions, mapMutations } from "vuex";
 import VueHcaptcha from "@hcaptcha/vue-hcaptcha";
 
 export default {
@@ -37,7 +37,9 @@ export default {
             checkCaptcha: false,
         };
     },
+
     computed: {
+        ...mapState("AuthModule", ["isModalOpened"]),
         isValid() {
             const regexPatternEmail = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
             const regexPatternFullName = /[a-zA-Z] [a-zA-Z]/;
@@ -60,6 +62,17 @@ export default {
             return regexPatternFullName.test(this.full_name) ? null : "Must be full name";
         },
     },
+
+    watch: {
+        isModalOpened() {
+            this.email = "";
+            this.password = "";
+            this.address = "";
+            this.full_name = "";
+            this.checkCaptcha = false;
+        },
+    },
+
     methods: {
         ...mapActions("AuthModule", ["doRegister"]),
         ...mapMutations("AuthModule", ["setModalState"]),
@@ -74,6 +87,14 @@ export default {
                 address: this.address,
             });
         },
+    },
+
+    mounted() {
+        this.email = "";
+        this.password = "";
+        this.address = "";
+        this.full_name = "";
+        this.checkCaptcha = false;
     },
 };
 </script>

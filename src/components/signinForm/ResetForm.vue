@@ -18,15 +18,20 @@ export default {
     data() {
         return {
             email: "",
-            password: "",
-            address: "",
-            full_name: "",
-            checkCaptcha: false,
         };
     },
+
     computed: {
+        ...mapState("AuthModule", ["isModalOpened"]),
         ...mapState("AuthModule", ["resetError"]),
     },
+
+    watch: {
+        isModalOpened() {
+            this.email = "";
+        },
+    },
+
     methods: {
         ...mapActions("AuthModule", ["doSendReset"]),
         ...mapMutations("AuthModule", ["setModalState"]),
