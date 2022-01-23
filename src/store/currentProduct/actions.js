@@ -201,8 +201,8 @@ export default {
         }
     },
 
-    async getBidderRequests({ commit, state }) {
-        if (rootState.CurrentUserModule.role === ROLES.BIDDER)
+    async getBidderRequests({ commit, state, rootState }) {
+        if (rootState.CurrentUserModule.id === state.seller.id)
         {
             const requests = await getAllBidRequests(state.id);
             if (requests) {
@@ -217,9 +217,10 @@ export default {
                     });
                 });
                 commit("setBidderRequests", data);
-            } else {
-                showSnack(`Failed to get bidding requests for this product.`);
-            }
+            } 
+            // else {
+            //     showSnack(`Failed to get bidding requests for this product.`);
+            // }
         }
     },
 
