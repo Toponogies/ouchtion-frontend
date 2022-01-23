@@ -56,7 +56,8 @@ import ProductCardLarge from "@/components/productListings/ProductCardLarge";
 import { mapState, mapGetters, mapActions } from "vuex";
 import { scrollToTop } from "@/utils/scrollToTop";
 import { getCategoryName } from "@/utils/categoryUtils";
-import { SEARCH_TYPES } from "@/utils/constants";
+import { BIDDING_BUY, PRODUCT_ADD, PRODUCT_DELETE, PRODUCT_WON, SEARCH_TYPES } from "@/utils/constants";
+import { socket } from "@/socket/connect";
 
 export default {
     name: "Home",
@@ -124,6 +125,24 @@ export default {
         });
         this.populateSearch();
         next();
+    },
+
+    created() {
+        socket.on(PRODUCT_ADD, () => {
+            // Update the search result
+        });
+
+        socket.on(PRODUCT_DELETE, () => {
+            // Update the search result
+        });
+
+        socket.on(BIDDING_BUY, () => {
+            // Update the search result
+        });
+
+        socket.on(PRODUCT_WON, () => {
+            // Update the search result
+        });
     },
 };
 </script>

@@ -103,7 +103,16 @@
 
 <script>
 import { mapState, mapActions, mapMutations } from "vuex";
-import { ROLES } from "@/utils/constants";
+import {
+    BIDDING_ADD,
+    BIDDING_ADD_AUTO,
+    BIDDING_PERMISSION_UPDATE,
+    BIDDING_REJECT,
+    PRODUCT_APPEND_DESCRIPTION,
+    PRODUCT_DELETE,
+    PRODUCT_WON,
+    ROLES,
+} from "@/utils/constants";
 
 import ProductImageGallery from "@/components/productDetails/ProductImageGallery";
 import UsernameCard from "@/components/productDetails/UsernameCard";
@@ -118,6 +127,7 @@ import FeaturedProductGroup from "@/components/productListings/FeaturedProductGr
 
 import { toLongTimestamp } from "@/utils/timeUtils";
 import { scrollToTop } from "@/utils/scrollToTop";
+import { socket } from "@/socket/connect";
 
 export default {
     name: "ProductDetails",
@@ -201,6 +211,45 @@ export default {
         this.clearAll();
         this.fetchAllDetails();
         next();
+    },
+
+    created() {
+        socket.on(PRODUCT_DELETE, (data) => {
+            console.log(data.product_id);
+            // Notify user and redirect to home
+        });
+
+        socket.on(PRODUCT_APPEND_DESCRIPTION, (data) => {
+            console.log(data.product_id);
+            // Update description
+        });
+
+        socket.on(PRODUCT_WON, (data) => {
+            console.log(data.product_id);
+            // Notify user and redirect to home
+        });
+
+        socket.on(BIDDING_REJECT, (data) => {
+            console.log(data.product_id);
+            console.log(data.user_id);
+            // Notify and update the view to disable buttons
+        });
+
+        socket.on(BIDDING_PERMISSION_UPDATE, (data) => {
+            console.log(data.product_id);
+            console.log(data.user_id);
+            // Notify and update the view to disable buttons
+        });
+
+        socket.on(BIDDING_ADD, (data) => {
+            console.log(data.product_id);
+            // Notify and update the view to disable buttons
+        });
+
+        socket.on(BIDDING_ADD_AUTO, (data) => {
+            console.log(data.product_id);
+            // Notify and update the view to disable buttons
+        });
     },
 };
 </script>
