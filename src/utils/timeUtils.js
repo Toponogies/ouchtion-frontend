@@ -17,9 +17,10 @@ const _FORMAT_SHORT = "DD/MM/YYYY";
 
 export const fromTimestamp = (timestamp) => {
     // split by middle T
-    let [date, time] = timestamp.split(_FORMAT_DELIMITER);
+    let split = timestamp.split(_FORMAT_DELIMITER);
     // remove miliseconds + "Z" at the end of time
-    time = time.substring(0, 8);
+    let date = split[0];
+    let time = split[1].substring(0, 8);
     return { date, time };
 };
 

@@ -26,7 +26,7 @@ export default {
     },
 
     computed: {
-        ...mapState("CurrentUserModule", ["isModalOpened"]),
+        ...mapState("CurrentUserModule", ["isModalOpen"]),
         isValid() {
             const regexPatternEmail = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
             if (regexPatternEmail.test(this.email) && this.password !== "") return false;
@@ -39,7 +39,7 @@ export default {
     },
 
     watch: {
-        isModalOpened() {
+        isModalOpen() {
             this.email = "";
             this.password = "";
         },

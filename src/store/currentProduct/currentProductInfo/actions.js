@@ -8,10 +8,10 @@ export default {
         commit("setProductId", parseInt(id));
     },
 
-    getAllInfo({ commit, dispatch }) {
+    async getAllInfo({ commit, dispatch }) {
         // dispatch in this module
         commit("setLoading", true);
-        dispatch("getProductInfo");
+        await dispatch("getProductInfo");
         dispatch("getSellerInfo");
         dispatch("getHighestBidderInfo");
         dispatch("getRelatedProducts");
@@ -25,7 +25,7 @@ export default {
 
     async getProductInfo({ commit, state }) {
         let productInfo = await getProduct(state.id);
-        let category = getSingleCategory(state.categoryId);
+        let category = getSingleCategory(productInfo.category_id);
 
         if (productInfo) {
             commit("setProductInfo", productInfo);

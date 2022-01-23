@@ -1,17 +1,16 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
-
-import Home from "@/views/Home";
-import SearchResult from "@/views/SearchResult";
-import ProductDetails from "@/views/ProductDetails";
 import AdminDashboard from "@/views/AdminDashboard";
 import BidderDashboard from "@/views/BidderDashboard";
-import SellerDashboard from "@/views/SellerDashboard";
-import UserProfile from "@/views/UserProfile";
-import ProductCreator from "@/views/ProductCreator";
-import VerifyAccount from "@/views/fromEmail/VerifyAccount";
 import ResetPass from "@/views/fromEmail/ResetPass";
 import UpdateEmail from "@/views/fromEmail/UpdateEmail";
+import VerifyAccount from "@/views/fromEmail/VerifyAccount";
+import Home from "@/views/Home";
+import ProductCreator from "@/views/ProductCreator";
+import ProductDetails from "@/views/ProductDetails";
+import SearchResult from "@/views/SearchResult";
+import SellerDashboard from "@/views/SellerDashboard";
+import UserProfile from "@/views/UserProfile";
+import Vue from "vue";
+import VueRouter from "vue-router";
 
 Vue.use(VueRouter);
 

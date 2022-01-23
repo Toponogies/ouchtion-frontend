@@ -22,19 +22,19 @@ export default {
     },
 
     computed: {
-        ...mapState("CurrentUserModule", ["isModalOpened"]),
+        ...mapState("CurrentUserModule", ["isModalOpen"]),
         ...mapState("CurrentUserModule", ["resetError"]),
     },
 
     watch: {
-        isModalOpened() {
+        isModalOpen() {
             this.email = "";
         },
     },
 
     methods: {
         ...mapActions("CurrentUserModule", ["doSendReset"]),
-        ...mapMutations("CurrentUserModule", ["setModalState"]),
+        ...mapMutations("CurrentUserModule", ["setModalOpen"]),
         register() {
             this.doSendReset(this.email);
         },

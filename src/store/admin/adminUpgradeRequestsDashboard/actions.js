@@ -10,20 +10,21 @@ export default {
         let requests = await getUpgradeRequests();
 
         if (requests) {
-            requests = requests.map(async (request) => {
+            let finalRequests = [];
+            requests.forEach(async (request) => {
                 let user = await getUser(request.user_id);
                 let { point } = await getUserWithPoint(request.user_id);
 
-                return {
+                finalRequests.push({
                     userId: request.user_id,
                     full_name: user.full_name,
                     email: user.email,
                     rating: point,
                     time: request.time,
                     reason: request.reason,
-                };
+                });
             });
-            commit("setItems", requests);
+            commit("setItems", finalRequests);
         } else {
             showSnack(`Failed to get upgrade requests`);
         }

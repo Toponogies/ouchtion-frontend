@@ -39,7 +39,7 @@ export default {
     },
 
     computed: {
-        ...mapState("CurrentUserModule", ["isModalOpened"]),
+        ...mapState("CurrentUserModule", ["isModalOpen"]),
         isValid() {
             const regexPatternEmail = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
             const regexPatternFullName = /[a-zA-Z] [a-zA-Z]/;
@@ -64,7 +64,7 @@ export default {
     },
 
     watch: {
-        isModalOpened() {
+        isModalOpen() {
             this.email = "";
             this.password = "";
             this.address = "";
@@ -75,7 +75,7 @@ export default {
 
     methods: {
         ...mapActions("CurrentUserModule", ["doRegister"]),
-        ...mapMutations("CurrentUserModule", ["setModalState"]),
+        ...mapMutations("CurrentUserModule", ["setModalOpen"]),
         captchaOk() {
             this.checkCaptcha = true;
         },

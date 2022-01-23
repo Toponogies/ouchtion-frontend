@@ -1,6 +1,6 @@
-import axios from "axios";
+import { getAuthHeader } from "@/api/utils/getAuthHeader";
 import { API_ENDPOINTS } from "@/utils/constants";
-import { getAuthHeader } from "@/utils/getAuthHeader";
+import axios from "axios";
 
 export async function getUserWithPoint(user_id) {
     // if (user_id === null)
@@ -34,8 +34,8 @@ export async function updateUserAdmin(id, payload) {
     const headers = await getAuthHeader();
     return await axios
         .put(`${API_ENDPOINTS.USERS}/${id}`, payload, { headers })
-        .then((res) => res.data)
-        .catch(() => null);
+        .then(() => true)
+        .catch(() => false);
 }
 
 export async function updatePasswordAdmin(id, password) {
@@ -45,8 +45,8 @@ export async function updatePasswordAdmin(id, password) {
     };
     return await axios
         .put(`${API_ENDPOINTS.USERS}/${id}/changePassword`, payload, { headers })
-        .then((res) => res.data)
-        .catch(() => null);
+        .then(() => true)
+        .catch(() => false);
 }
 
 export async function updateEmailAdmin(id, payload) {
@@ -82,7 +82,7 @@ export async function createUser(payload) {
 export async function removeUser(id) {
     const headers = await getAuthHeader();
     return await axios
-        .delete(`${API_ENDPOINTS.USERS}/${id}`, null, { headers })
+        .delete(`${API_ENDPOINTS.USERS}/${id}`, { headers })
         .then(() => true)
         .catch(() => false);
 }

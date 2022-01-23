@@ -1,6 +1,6 @@
+import { getAuthHeader } from "@/api/utils/getAuthHeader";
 import { API_ENDPOINTS } from "@/utils/constants";
 import axios from "axios";
-import { getAuthHeader } from "@/utils/getAuthHeader";
 
 export async function getRates(payload) {
     const headers = await getAuthHeader();

@@ -17,9 +17,10 @@ export default {
         let products = await getResults(params);
 
         if (products) {
-            products = products.map(async (product) => {
+            let products_final = [];
+            products.forEach(async (product) => {
                 let user = await getUserWithPoint(product.buyer_id);
-                return {
+                products_final.push({
                     id: product.product_id,
                     title: product.name,
                     image: `${IMAGE_API_ENDPOINT}/${product.avatar}`,
@@ -30,9 +31,9 @@ export default {
                     startTime: product.start_at,
                     endTime: product.end_at,
                     isOnWatchlist: false,
-                };
+                });
             });
-            commit("updateProductsEndingSoon", products);
+            commit("updateProductsEndingSoon", products_final);
         } else {
             showSnack(`Failed to get featured products in "Ending Soon"`);
         }
@@ -47,9 +48,10 @@ export default {
         let products = await getResults(params);
 
         if (products) {
-            products = products.map(async (product) => {
+            let products_final = [];
+            products.forEach(async (product) => {
                 let user = await getUserWithPoint(product.buyer_id);
-                return {
+                products_final.push({
                     id: product.product_id,
                     title: product.name,
                     image: `${IMAGE_API_ENDPOINT}/${product.avatar}`,
@@ -60,9 +62,9 @@ export default {
                     startTime: product.start_at,
                     endTime: product.end_at,
                     isOnWatchlist: false,
-                };
+                });
             });
-            commit("updateProductsMostBidders", products);
+            commit("updateProductsMostBidders", products_final);
         } else {
             showSnack(`Failed to get featured products in "Most Bidders"`);
         }
@@ -77,9 +79,10 @@ export default {
         let products = await getResults(params);
 
         if (products) {
-            products = products.map(async (product) => {
+            let products_final = [];
+            products.forEach(async (product) => {
                 let user = await getUserWithPoint(product.buyer_id);
-                return {
+                products_final.push({
                     id: product.product_id,
                     title: product.name,
                     image: `${IMAGE_API_ENDPOINT}/${product.avatar}`,
@@ -90,9 +93,9 @@ export default {
                     startTime: product.start_at,
                     endTime: product.end_at,
                     isOnWatchlist: false,
-                };
+                });
             });
-            commit("updateProductsHighestPrice", products);
+            commit("updateProductsHighestPrice", products_final);
         } else {
             showSnack(`Failed to get featured products in "Highest Price"`);
         }

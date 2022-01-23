@@ -40,7 +40,7 @@ export default {
     // eslint-disable-next-line no-unused-vars
     clearAll(state) {
         state = {
-            isModalOpened: false,
+            isModalOpen: false,
             isLoading: false,
             accessToken: null,
             refreshToken: null,

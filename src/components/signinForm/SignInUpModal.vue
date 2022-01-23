@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="isModalOpened" max-width="640" persistent>
+    <v-dialog v-model="isModalOpen" max-width="640" persistent>
         <v-card>
             <v-row no-gutters>
                 <v-tabs fixed-tabs>
@@ -41,12 +41,12 @@ export default {
     name: "SignInUpModal",
     components: { SignInForm, SignUpForm, ResetForm },
     computed: {
-        ...mapState("CurrentUserModule", ["isModalOpened"]),
+        ...mapState("CurrentUserModule", ["isModalOpen"]),
     },
     methods: {
-        ...mapMutations("CurrentUserModule", ["setModalState"]),
+        ...mapMutations("CurrentUserModule", ["setModalOpen"]),
         handleDialogClose() {
-            this.setModalState(false);
+            this.setModalOpen(false);
         },
     },
 };

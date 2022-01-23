@@ -34,6 +34,7 @@ export default {
         }
 
         let total = await getResultCount(keyword, category);
+        total = total.length;
 
         let params = {
             query: keyword,
@@ -45,9 +46,10 @@ export default {
         let products = await getResults(params);
 
         if (products) {
-            products = products.map(async (product) => {
+            let result = [];
+            products.forEach(async (product) => {
                 let user = await getUserWithPoint(product.buyer_id);
-                return {
+                result.push({
                     id: product.product_id,
                     title: product.name,
                     image: `${IMAGE_API_ENDPOINT}/${product.avatar}`,
@@ -58,10 +60,10 @@ export default {
                     startTime: product.start_at,
                     endTime: product.end_at,
                     isOnWatchlist: false,
-                };
+                });
             });
 
-            commit("setResult", { total, products });
+            commit("setResult", { total, result });
         } else {
             showSnack(`Failed to get search results`);
         }

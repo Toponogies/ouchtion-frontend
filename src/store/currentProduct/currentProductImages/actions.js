@@ -13,7 +13,7 @@ export default {
                 ...each,
                 path: `${IMAGE_API_ENDPOINT}/${each.path}`,
             }));
-            commit("setProductImages", images);
+            commit("setItems", images);
         } else {
             console.log(`Failed to get images for product id = ${rootState.CurrentProductInfoModule.id}`);
         }

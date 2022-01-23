@@ -9,7 +9,6 @@ import {
 } from "@/api/user";
 import { ROLES } from "@/utils/constants";
 import { showSnack } from "@/utils/showSnack";
-import { fromTimestamp } from "@/utils/timeUtils";
 
 export default {
     async getItems({ commit }) {
@@ -38,11 +37,7 @@ export default {
     async create({ commit }, payload) {
         commit("setLoading", true);
 
-        let payload_createUser = {
-            ...payload,
-            dob: fromTimestamp(payload.dob),
-        };
-        let result_createUser = await createUser(payload_createUser);
+        let result_createUser = await createUser(payload);
 
         // user created -- now setting password
         if (result_createUser) {
@@ -80,9 +75,10 @@ export default {
         let finalPayload = {
             full_name: payload.full_name,
             address: payload.address,
-            dob: fromTimestamp(payload.dob),
+            dob: payload.dob,
         };
         let result = await updateUserAdmin(id, finalPayload);
+        console.log(result);
 
         if (result) {
             commit("update", payload);
@@ -149,7 +145,7 @@ export default {
         });
 
         if (result) {
-            commit("setRole", id, ROLES.BIDDER);
+            commit("setRole", { id, role: ROLES.BIDDER });
             showSnack(`Set user id = ${id} as bidder`);
         } else {
             showSnack(`Failed to set user id = ${id} as bidder`);

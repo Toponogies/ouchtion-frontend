@@ -13,9 +13,9 @@
         <!-- Details (product *do* exists) -->
         <div v-else>
             <!-- Image gallery -->
-            <v-card class="pa-4 mb-4" :loading="isLoading">
+            <v-container class="pa-0 mb-4" :loading="isLoading">
                 <product-image-gallery></product-image-gallery>
-            </v-card>
+            </v-container>
 
             <!-- Product details -->
             <v-card class="pa-0 mb-4">
@@ -156,7 +156,7 @@ export default {
     },
 
     methods: {
-        ...mapActions("CurrentProductInfoModule", ["setProductId", "fetchAllDetails"]),
+        ...mapActions("CurrentProductInfoModule", ["setProductId", "getAllInfo"]),
         ...mapMutations("CurrentProductInfoModule", ["clearAll"]),
         ...mapActions("BidderWatchlistModule", ["add", "remove"]),
 
@@ -181,8 +181,9 @@ export default {
     },
 
     beforeMount() {
+        this.clearAll();
         this.setProductId(this.$route.params.id);
-        this.fetchAllDetails();
+        this.getAllInfo();
     },
 
     mounted() {
@@ -200,7 +201,7 @@ export default {
             this.setProductId(to.params.id);
         }
         this.clearAll();
-        this.fetchAllDetails();
+        this.getAllInfo();
         next();
     },
 };

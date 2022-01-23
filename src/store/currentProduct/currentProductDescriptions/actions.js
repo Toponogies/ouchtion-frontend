@@ -1,4 +1,5 @@
 import { getProductDescription } from "@/api/product";
+import { find } from "lodash-es";
 
 export default {
     async getItems({ commit, rootState }) {

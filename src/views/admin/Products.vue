@@ -64,10 +64,10 @@ export default {
         };
     },
     computed: {
-        ...mapState("AdminProductDashboardModule", ["isLoading", "headers", "items"]),
+        ...mapState("AdminProductsDashboardModule", ["isLoading", "headers", "items"]),
     },
     methods: {
-        ...mapActions("AdminProductDashboardModule", ["getItems", "remove"]),
+        ...mapActions("AdminProductsDashboardModule", ["getItems", "remove"]),
         goToItem(item) {
             const nextPath = `/p/${item.id}`;
             if (this.$router.currentRoute.fullPath !== nextPath) {
@@ -78,7 +78,7 @@ export default {
             this.remove(item.id);
         },
     },
-    mounted() {
+    beforeMount() {
         this.getItems();
     },
 };

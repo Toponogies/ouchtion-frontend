@@ -3,6 +3,7 @@ import { showSnack } from "@/utils/showSnack";
 import { BID_AVAILABILITY } from "@/utils/constants";
 import { getBiddingPermisson } from "@/api/bid";
 import { checkBidRequest } from "@/api/bid";
+import { today } from "@/utils/timeUtils";
 
 export default {
     getAllInfo({ dispatch }) {
@@ -56,11 +57,17 @@ export default {
         }
     },
 
-    async addManualBid({ commit }, { product_id, bid_price }) {
+    async addManualBid({ commit, rootState }, { product_id, bid_price }) {
         let result = await placeBids(product_id, bid_price);
         if (result) {
+            let bid = {
+                time: today(),
+                full_name: rootState.CurrentUserModule.username,
+                bid_price,
+            };
+            commit("CurrentProductBiddingsModule/addItem", bid, { root: true });
+
             showSnack("You have place your bidding");
-            // TODO call mutation on ProductDetailsModule: add this bidder name
         } else {
             showSnack(`Failed to place bidding on product id = ${product_id}`);
         }
@@ -80,11 +87,18 @@ export default {
         }
     },
 
-    async buyProduct({ commit }, { product_id }) {
+    async buyProduct({ commit, rootState }, { product_id }) {
         let result = await buyProductNow(product_id);
         if (result) {
+            let purchase = {
+                time: today(),
+                full_name: rootState.CurrentUserModule.username,
+                bid_price: rootState.CurrentProductInfoModule.buyNow.price,
+            };
+            commit("CurrentProductBiddingsModule/addItem", purchase, { root: true });
+            commit("CurrentProductInfoModule/setProductAsSold", null, { root: true });
+
             showSnack("You have bought this product");
-            // TODO call mutataion on ProductDetailsModule: add this bidder name, then set isSold to true
         } else {
             showSnack("Failed to buy this product");
         }

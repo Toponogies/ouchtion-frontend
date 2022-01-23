@@ -2,7 +2,7 @@
     <v-card :loading="isLoading">
         <v-slide-group show-arrows>
             <v-slide-item v-for="image in images" :key="image.product_image_id">
-                <v-card class="mx-2">
+                <v-card class="ma-4">
                     <v-img :src="image.path" width="200" @click="openLargeImageDialog(image.path)">
                         <template v-slot:placeholder>
                             <v-row class="fill-height ma=0" align="center" justify="center">

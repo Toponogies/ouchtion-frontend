@@ -230,7 +230,7 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import { ROLES } from "@/utils/constants";
-import { fromTimestamp, toTimestamp } from "@/utils/timeUtils";
+import { fromTimestamp } from "@/utils/timeUtils";
 
 export default {
     name: "Users",
@@ -279,7 +279,7 @@ export default {
         },
 
         handleCreateUserOK() {
-            this.currentDoB = toTimestamp(this.currentDoB, "00:00:00.000Z");
+            this.currentDoB = `${this.currentDoB} 00:00:00`;
             this.create({
                 full_name: this.currentFullName,
                 email: this.currentEmail,
@@ -303,7 +303,7 @@ export default {
         },
 
         handleEditUserOK() {
-            this.currentDoB = toTimestamp(this.currentDoB, "00:00:00.000Z");
+            this.currentDoB = `${this.currentDoB} 00:00:00`;
 
             if (this.currentUser.email !== this.currentEmail) {
                 this.updateEmail({

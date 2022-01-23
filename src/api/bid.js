@@ -1,6 +1,6 @@
-import axios from "axios";
+import { getAuthHeader } from "@/api/utils/getAuthHeader";
 import { API_ENDPOINTS } from "@/utils/constants";
-import { getAuthHeader } from "@/utils/getAuthHeader";
+import axios from "axios";
 
 export const placeBids = async (product_id, bid_price) => {
     const headers = await getAuthHeader();
@@ -50,7 +50,6 @@ export const turnOffAutoBid = async (product_id) => {
 
 export async function getBiddingPermisson(product_id) {
     const headers = await getAuthHeader();
-    console.log(product_id);
     return await axios
         .get(`${API_ENDPOINTS.BIDDINGS}/bidders/biddingPermission/products/${product_id}`, { headers })
         .then(() => true)
@@ -61,7 +60,6 @@ export async function getBiddingPermisson(product_id) {
 // returns [] or [{ request_id, is_processed, type <ACCEPT|DENY> }]
 export const checkBidRequest = async (product_id) => {
     const headers = await getAuthHeader();
-    console.log(product_id);
     return await axios
         .get(`${API_ENDPOINTS.BIDDINGS}/bidders/biddingRequests/products/${product_id}`, { headers })
         .then((res) => res.data)
@@ -84,7 +82,6 @@ export const sendBidRequest = async (product_id) => {
 // returns [{ request_id, user_id, product_id }]
 export const getAllBidRequests = async (product_id) => {
     const headers = await getAuthHeader();
-    console.log(product_id);
     return await axios
         .get(`${API_ENDPOINTS.BIDDINGS}/sellers/biddingRequests/products/${product_id}`, { headers })
         .then((res) => res.data)

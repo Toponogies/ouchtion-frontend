@@ -66,10 +66,10 @@ export default {
         };
     },
     computed: {
-        ...mapState("AdminUsersDashboardModule", ["isLoading", "headers", "items"]),
+        ...mapState("AdminUpgradeRequestsDashboardModule", ["isLoading", "headers", "items"]),
     },
     methods: {
-        ...mapActions("AdminUsersDashboardModule", ["getItems", "accept", "reject"]),
+        ...mapActions("AdminUpgradeRequestsDashboardModule", ["getItems", "accept", "reject"]),
         acceptUserRequest(item) {
             this.accept(item.userId);
         },

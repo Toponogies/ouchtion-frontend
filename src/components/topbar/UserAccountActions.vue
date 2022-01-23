@@ -67,10 +67,10 @@ export default {
         ...mapState("CurrentUserModule", ["username", "rating", "role"]),
     },
     methods: {
-        ...mapMutations("CurrentUserModule", ["setModalState"]),
+        ...mapMutations("CurrentUserModule", ["setModalOpen"]),
         ...mapActions("CurrentUserModule", ["fetchAccessToken", "doLogout"]),
         handleDialogOpen() {
-            this.setModalState(true);
+            this.setModalOpen(true);
         },
         async fetchCurrentUser() {
             await this.fetchAccessToken();

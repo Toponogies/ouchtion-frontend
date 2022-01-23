@@ -11,7 +11,7 @@ import { jwtGetPayload } from "@/api/utils/jwtGetPayload";
 import { showSnack } from "@/utils/showSnack";
 
 export default {
-    async getUser({ commit, state }) {
+    async doGetUser({ commit, state }) {
         if (state.accessToken === null) return;
 
         // parse JWT
@@ -32,7 +32,7 @@ export default {
             user.point = temp.point;
         }
 
-        commit("updateUser", user);
+        commit("setUser", user);
     },
 
     async editInfo({ dispatch, state }, payload) {
@@ -100,7 +100,7 @@ export default {
         }
     },
 
-    async login({ commit, dispatch }, loginData) {
+    async doLogin({ commit, dispatch }, loginData) {
         commit("loginStart");
         try {
             let { access_token, refresh_token } = await login(loginData);
@@ -108,20 +108,20 @@ export default {
             localStorage.setItem("refreshToken_ouchtion", refresh_token);
 
             commit("loginStop", null);
-            commit("updateAccessToken", access_token);
-            commit("updateRefreshToken", refresh_token);
-            commit("setModalState", false);
+            commit("setAccessToken", access_token);
+            commit("setRefreshToken", refresh_token);
+            commit("setModalOpen", false);
 
             dispatch("CurrentUserModule/doGetUser", null, { root: true });
         } catch (error) {
             showSnack(`Login unsuccess`);
             commit("loginStop", error.response.data);
-            commit("updateAccessToken", null);
-            commit("updateRefreshToken", null);
+            commit("setAccessToken", null);
+            commit("setRefreshToken", null);
         }
     },
 
-    logout({ commit }) {
+    doLogout({ commit }) {
         // Remove tokens from localStorage
         localStorage.setItem("accessToken_ouchtion", null);
         localStorage.setItem("refreshToken_ouchtion", null);
@@ -147,8 +147,8 @@ export default {
 
     fetchAccessToken({ commit, state, dispatch }) {
         if (state.accessToken === null) {
-            commit("updateAccessToken", localStorage.getItem("accessToken_ouchtion"));
-            commit("updateRefreshToken", localStorage.getItem("refreshToken_ouchtion"));
+            commit("setAccessToken", localStorage.getItem("accessToken_ouchtion"));
+            commit("setRefreshToken", localStorage.getItem("refreshToken_ouchtion"));
             dispatch("CurrentUserModule/doGetUser", null, { root: true });
         }
     },

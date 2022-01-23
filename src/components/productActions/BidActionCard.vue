@@ -4,7 +4,7 @@
         <v-row no-gutters class="px-4 pt-4 pb-2">
             <div>BID</div>
             <v-spacer></v-spacer>
-            <v-icon dark v-if="btnDisable">mdi-arrow-right</v-icon>
+            <v-icon dark v-if="!btnDisable">mdi-arrow-right</v-icon>
         </v-row>
 
         <!-- Price -->
@@ -83,9 +83,9 @@ export default {
             switch (this.bidAvailability) {
                 case BID_AVAILABILITY.CAN_BID:
                 case BID_AVAILABILITY.REQUEST_REQUIRED:
-                    return true;
-                default:
                     return false;
+                default:
+                    return true;
             }
         },
 
@@ -99,6 +99,9 @@ export default {
         },
 
         statusLine: function () {
+            if (this.role !== ROLES.BIDDER) {
+                return "You are not a bidder.";
+            }
             switch (this.bidAvailability) {
                 case BID_AVAILABILITY.IS_SOLD:
                     return "Product is sold.";
@@ -116,7 +119,7 @@ export default {
 
     methods: {
         ...mapMutations("CurrentUserModule", {
-            setLoginModalState: "setModalState",
+            setLoginModalState: "setModalOpen",
         }),
         ...mapMutations("CurrentProductDetailsBidderModule", ["setBidModalState", "setBidRequestModalState"]),
 

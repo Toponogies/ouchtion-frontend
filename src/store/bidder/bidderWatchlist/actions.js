@@ -1,3 +1,4 @@
+import { getProduct } from "@/api/product";
 import { addToWatchlist, getWatchList, removeFromWatchlist } from "@/api/watchlist";
 import { IMAGE_API_ENDPOINT } from "@/utils/constants";
 import { showSnack } from "@/utils/showSnack";
@@ -30,10 +31,25 @@ export default {
         let result = await addToWatchlist(id);
 
         if (result) {
-            // TODO get product primary image, name, endTime and highestPrice
-            // then add to watchlist
+            let item = {
+                id,
+                primaryImage: "",
+                name: "",
+                endTime: "",
+                highestBidPrice: "",
+            };
+            let product = await getProduct(id);
+            if (product) {
+                item = {
+                    ...item,
+                    primaryImage: `${IMAGE_API_ENDPOINT}/${product.avatar}`,
+                    name: product.name,
+                    endTime: product.end_at,
+                    highestBidPrice: product.current_price,
+                };
+            }
 
-            commit("addItem", id);
+            commit("addItem", item);
             showSnack(`Added item id = ${id} to watchlist`);
         } else {
             showSnack(`Failed to add item id = ${id} to watchlist`);

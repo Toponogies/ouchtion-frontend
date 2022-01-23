@@ -30,7 +30,7 @@ export default {
         state.items.splice(targetIndex, 1);
     },
 
-    setRole(state, id, role) {
+    setRole(state, { id, role }) {
         const targetIndex = findIndex(state.items, { id });
         const targetItem = {
             ...state.items[targetIndex],

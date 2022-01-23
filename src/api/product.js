@@ -1,6 +1,6 @@
+import { getAuthHeader } from "@/api/utils/getAuthHeader";
 import { API_ENDPOINTS, HOME_FEATURED_PRODUCTS_LIMIT } from "@/utils/constants";
 import axios from "axios";
-import { getAuthHeader } from "@/utils/getAuthHeader";
 
 export async function getProduct(product_id) {
     return await axios

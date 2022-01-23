@@ -38,6 +38,10 @@ export default {
         state.relatedProducts = products;
     },
 
+    setProductAsSold(state) {
+        state.isSold = true;
+    },
+
     // eslint-disable-next-line no-unused-vars
     clearAll(state) {
         state = {

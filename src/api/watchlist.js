@@ -1,6 +1,6 @@
+import { getAuthHeader } from "@/api/utils/getAuthHeader";
 import { API_ENDPOINTS } from "@/utils/constants";
 import axios from "axios";
-import { getAuthHeader } from "@/utils/getAuthHeader";
 
 export async function getWatchList() {
     const headers = await getAuthHeader();
@@ -15,7 +15,6 @@ export async function addToWatchlist(product_id) {
     const payload = {
         product_id: product_id + "",
     };
-    console.log(payload);
     return await axios
         .post(`${API_ENDPOINTS.PRODUCTS}/bidders/watchlist`, payload, { headers })
         .then(() => true)
@@ -27,7 +26,6 @@ export async function removeFromWatchlist(product_id) {
     const payload = {
         product_id: product_id + "",
     };
-    console.log(payload);
     return await axios
         .delete(`${API_ENDPOINTS.PRODUCTS}/bidders/watchlist`, { headers, data: payload })
         .then(() => true)

@@ -82,7 +82,7 @@ export default {
 
     methods: {
         ...mapMutations("CurrentUserModule", {
-            setLoginModalState: "setModalState",
+            setLoginModalState: "setModalOpen",
         }),
         ...mapMutations("CurrentProductDetailsBidderModule", ["setBuyNowModalState"]),
         handleConfirmDialogOpen() {
