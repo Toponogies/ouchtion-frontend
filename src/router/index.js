@@ -9,9 +9,9 @@ import BidderDashboard from "@/views/BidderDashboard";
 import SellerDashboard from "@/views/SellerDashboard";
 import UserProfile from "@/views/UserProfile";
 import ProductCreator from "@/views/ProductCreator";
-import VerifyAccount from "@/views/VerifyAccount";
-import ResetPass from "@/views/ResetPass";
-import UpdateEmail from "@/views/UpdateEmail";
+import VerifyAccount from "@/views/fromEmail/VerifyAccount";
+import ResetPass from "@/views/fromEmail/ResetPass";
+import UpdateEmail from "@/views/fromEmail/UpdateEmail";
 
 Vue.use(VueRouter);
 
