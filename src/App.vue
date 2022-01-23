@@ -24,9 +24,17 @@ import NprogressContainer from "vue-nprogress/src/NprogressContainer";
 import TopBar from "@/components/topbar/TopBar.vue";
 import AppSnackbar from "@/components/etc/snackbar";
 
+import { socket } from "@/socket/connect";
+import { CATEGORY_LIST_UPDATE } from "./utils/constants";
+
 export default {
     name: "App",
     components: { TopBar, NprogressContainer, AppSnackbar },
+    created() {
+        socket.on(CATEGORY_LIST_UPDATE, () => {
+            // Get category again and update the list
+        });
+    },
 };
 </script>
 

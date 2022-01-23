@@ -18,6 +18,8 @@
 <script>
 import FeaturedProductGroup from "@/components/productListings/FeaturedProductGroup";
 import { mapState, mapActions } from "vuex";
+import { socket } from "@/socket/connect";
+import { BIDDING_BUY, PRODUCT_ADD, PRODUCT_DELETE, PRODUCT_WON } from "@/utils/constants";
 
 export default {
     name: "Home",
@@ -30,6 +32,23 @@ export default {
     },
     mounted() {
         this.fetchAll();
+    },
+    created() {
+        socket.on(PRODUCT_DELETE, () => {
+            // Get all products again and update the list
+        });
+
+        socket.on(PRODUCT_ADD, () => {
+            // Get all products again and update the list
+        });
+
+        socket.on(BIDDING_BUY, () => {
+            // Get all products again and update the list
+        });
+
+        socket.on(PRODUCT_WON, () => {
+            // Get all products and update the list
+        });
     },
 };
 </script>
