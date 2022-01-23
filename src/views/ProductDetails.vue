@@ -106,6 +106,7 @@ import { mapState, mapActions, mapMutations } from "vuex";
 import {
     BIDDING_ADD,
     BIDDING_ADD_AUTO,
+    BIDDING_BUY,
     BIDDING_PERMISSION_UPDATE,
     BIDDING_REJECT,
     BIDDING_REQUEST_ADD,
@@ -227,7 +228,7 @@ export default {
 
         socket.on(PRODUCT_WON, (data) => {
             console.log(data.product_id);
-            // Notify user and redirect to home
+            // Notify and update the view to disable buttons
         });
 
         socket.on(BIDDING_REJECT, (data) => {
@@ -244,15 +245,20 @@ export default {
 
         socket.on(BIDDING_ADD, (data) => {
             console.log(data.product_id);
-            // Notify and update the view to disable buttons
+            // Get all bid and update the list
         });
 
         socket.on(BIDDING_ADD_AUTO, (data) => {
             console.log(data.product_id);
-            // Notify and update the view to disable buttons
+            // Get all bid and update the list
         });
 
         socket.on(BIDDING_REQUEST_ADD, (data) => {
+            console.log(data.product_id);
+            // get all bid request and update list
+        });
+
+        socket.on(BIDDING_BUY, (data) => {
             console.log(data.product_id);
             // Notify and update the view to disable buttons
         });
