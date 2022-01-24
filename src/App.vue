@@ -58,14 +58,7 @@ export default {
             console.log(data.product_id);
             console.log(data.users);
             // Notify these users about the bid
-            let check = false;
-            data.users?.forEach(user => {
-                if (user.id == this.id)
-                {
-                    check = true;
-                }
-            });
-
+            let check = find(data.users, { user_id: this.id }) !== undefined;
             if (check === true)
             {
                 showSnack(`Product id: ${data.product_id} have new bidding`);
@@ -76,14 +69,7 @@ export default {
             console.log(data.product_id);
             console.log(data.users);
             // Notify these users about the bid
-            let check = false;
-            data.users?.forEach(user => {
-                if (user.id == this.id)
-                {
-                    check = true;
-                }
-            });
-
+            let check = find(data.users, { user_id: this.id }) !== undefined;
             if (check === true)
             {
                 showSnack(`Product id: ${data.product_id} have new bidding`);
