@@ -24,9 +24,33 @@ import NprogressContainer from "vue-nprogress/src/NprogressContainer";
 import TopBar from "@/components/topbar/TopBar.vue";
 import AppSnackbar from "@/components/etc/snackbar";
 
+import { socket } from "@/socket/connect";
+import { BIDDING_ADD, BIDDING_ADD_AUTO, CATEGORY_LIST_UPDATE, USER_UPDATE_ROLE } from "./utils/constants";
+
 export default {
     name: "App",
     components: { TopBar, NprogressContainer, AppSnackbar },
+    created() {
+        socket.on(CATEGORY_LIST_UPDATE, () => {
+            // Get category again and update the list
+        });
+
+        socket.on(USER_UPDATE_ROLE, () => {
+            // Notify user and lgout
+        });
+
+        socket.on(BIDDING_ADD, (data) => {
+            console.log(data.product_id);
+            console.log(data.users);
+            // Notify these users about the bid
+        });
+
+        socket.on(BIDDING_ADD_AUTO, (data) => {
+            console.log(data.product_id);
+            console.log(data.users);
+            // Notify these users about the bid
+        });
+    },
 };
 </script>
 

@@ -52,13 +52,35 @@ import Products from "@/views/admin/Products";
 import Users from "@/views/admin/Users";
 import UpgradeRequests from "@/views/admin/UpgradeRequests";
 import { redirectToHomeIf } from "@/utils/redirectToHomeIf";
-import { ROLES } from "@/utils/constants";
+import { ROLES, AUTH_REGISTER, USER_UPGRADE_REQUEST, AUTH_VERIFY, PRODUCT_ADD, PRODUCT_WON } from "@/utils/constants";
+import { socket } from "@/socket/connect";
 
 export default {
     name: "AdminDashboard",
     components: { Categories, Products, Users, UpgradeRequests },
     beforeCreate() {
         redirectToHomeIf(this, [ROLES.ADMIN]);
+    },
+    created() {
+        socket.on(AUTH_REGISTER, () => {
+            // Get all users again and update the list
+        });
+
+        socket.on(AUTH_VERIFY, () => {
+            // Get all users again and update the list
+        });
+
+        socket.on(USER_UPGRADE_REQUEST, () => {
+            // Get all request again and update the list
+        });
+
+        socket.on(PRODUCT_ADD, () => {
+            // Get all products again and update the list
+        });
+
+        socket.on(PRODUCT_WON, () => {
+            // Get all products again and update the list
+        });
     },
 };
 </script>

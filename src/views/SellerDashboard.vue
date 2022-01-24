@@ -33,13 +33,28 @@ import { redirectToHomeIf } from "@/utils/redirectToHomeIf";
 
 import OngoingProducts from "@/views/seller/OngoingProducts";
 import SoldProducts from "@/views/seller/SoldProducts";
-import { ROLES } from "@/utils/constants";
+import { PRODUCT_ADD, PRODUCT_DELETE, PRODUCT_WON, ROLES } from "@/utils/constants";
+import { socket } from "@/socket/connect";
 
 export default {
     name: "BidderDashboard",
     components: { OngoingProducts, SoldProducts },
     beforeCreate() {
         redirectToHomeIf(this, [ROLES.SELLER]);
+    },
+    created() {
+        socket.on(PRODUCT_WON, (data) => {
+            console.log(data.product_id);
+            // Notify user and redirect to home
+        });
+
+        socket.on(PRODUCT_ADD, () => {
+            // Get all products
+        });
+
+        socket.on(PRODUCT_DELETE, () => {
+            // Get all products
+        });
     },
 };
 </script>
