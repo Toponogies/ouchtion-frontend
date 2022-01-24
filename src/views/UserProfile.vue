@@ -78,7 +78,7 @@
                     <v-row no-gutters class="mb-4" align="center" v-if="!isInEditModeBirthday">
                         <v-col cols="10">
                             <v-icon left>mdi-cake-variant</v-icon>
-                            <span>{{ dob }}</span>
+                            <span>{{ dob_formatted }}</span>
                         </v-col>
                         <v-spacer></v-spacer>
                         <v-btn icon @click="isInEditModeBirthday = true">
@@ -89,13 +89,26 @@
                     <!-- Birthday (edit) -->
                     <v-row no-gutters class="mb-4" v-else align="center">
                         <v-col cols="10">
-                            <v-text-field
-                                filled
-                                hide-details="auto"
-                                placeholder="Birthdate"
-                                v-model="dob_edit"
-                                prepend-icon="mdi-cake-variant"
-                            ></v-text-field>
+                            <v-menu
+                                v-model="datePickerOpened"
+                                :close-on-content-click="false"
+                                transition="slide-y-transition"
+                                offset-y
+                                min-width="auto"
+                            >
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-text-field
+                                        filled
+                                        v-on="on"
+                                        v-bind="attrs"
+                                        hide-details="auto"
+                                        placeholder="Birthdate"
+                                        v-model="dob_edit"
+                                        prepend-icon="mdi-cake-variant"
+                                    ></v-text-field>
+                                </template>
+                                <v-date-picker v-model="dob_edit" @input="datePickerOpened = false"></v-date-picker>
+                            </v-menu>
                         </v-col>
                         <v-spacer></v-spacer>
                         <v-btn icon color="error" @click="editBirthdayCancel">
@@ -231,6 +244,7 @@ import { redirectToHomeIf } from "@/utils/redirectToHomeIf";
 import { showSnack } from "@/utils/showSnack";
 import { mapState, mapActions } from "vuex";
 import { ROLES } from "@/utils/constants";
+import { fromTimestamp } from "@/utils/timeUtils";
 
 export default {
     name: "UserProfile",
@@ -239,6 +253,7 @@ export default {
             utils: { ROLES },
 
             // Fields
+            dob_formatted: null,
 
             // Fields -- temp. for editing
             username_edit: null,
@@ -251,6 +266,7 @@ export default {
             isInEditModeEmail: false,
             isInEditModeBirthday: false,
             isInEditModeAddress: false,
+            datePickerOpened: false,
 
             // Password
             oldPass: "",
@@ -280,13 +296,12 @@ export default {
         },
     },
     methods: {
-        ...mapActions("CurrentUserModule", ["editUser","editPassword","addRequestSeller"]),
+        ...mapActions("CurrentUserModule", ["editUser", "editPassword", "addRequestSeller"]),
 
         //need password
         checkOldPass() {
-            if(this.oldPass.length > 0)
-                return true;
-            showSnack("Need old password")
+            if (this.oldPass.length > 0) return true;
+            showSnack("Need old password");
             return false;
         },
 
@@ -325,12 +340,13 @@ export default {
             this.isInEditModeBirthday = false;
             // send update
             this.editUser({
-                dob: this.dob_edit,
+                dob: `${this.dob_edit} 00:00:00`,
                 password: this.oldPass,
             });
+            this.dob_formatted = this.dob_edit;
         },
         editBirthdayCancel() {
-            this.dob_edit = this.dob;
+            this.dob_edit = this.dob_formatted;
             this.isInEditModeBirthday = false;
         },
 
@@ -365,7 +381,7 @@ export default {
 
         // upgrade
         requestUpgradeToSeller() {
-            let reason = "I want to be a seller"
+            let reason = "I want to be a seller";
             this.addRequestSeller(reason);
             // send update
             this.upgradeRequestSent = true;
@@ -377,7 +393,8 @@ export default {
     mounted() {
         this.username_edit = this.username;
         this.email_edit = this.email;
-        this.dob_edit = this.dob;
+        this.dob_formatted = fromTimestamp(this.dob).date;
+        this.dob_edit = fromTimestamp(this.dob).date;
         this.address_edit = this.address;
     },
 };
