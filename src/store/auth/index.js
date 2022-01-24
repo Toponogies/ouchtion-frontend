@@ -13,6 +13,8 @@ export const AuthModule = {
 
         // modal
         isModalOpened: false,
+        verifySuccess: null,
+        resetPassSuccess: null,
     },
 
     actions,

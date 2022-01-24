@@ -16,9 +16,7 @@ export default {
 
             dispatch("CurrentUserModule/doGetUser", null, { root: true });
         } catch (error) {
-            setTimeout(() => {
-                showSnack(`Login unsuccess`);
-            }, 250);
+            showSnack(`Login unsuccess`);
             commit("loginStop", error.response.data);
             commit("updateAccessToken", null);
             commit("updateRefreshToken", null);
@@ -74,51 +72,36 @@ export default {
     async doRegister(_context, registerData) {
         try {
             await register(registerData);
-            setTimeout(() => {
-                showSnack(`Register success please check email to verify`);
-            }, 250);
+            showSnack(`Register success please check email to verify`);
         } catch (error) {
-            setTimeout(() => {
-                showSnack(`Can't register`);
-            }, 250);
+            showSnack(`Can't register`);
         }
     },
 
-    async doVerify(_context, token) {
+    async doVerify({ commit }, token) {
         try {
             await verify(token);
-            setTimeout(() => {
-                showSnack(`Verify success`);
-            }, 250);
+            commit("setVerifyState", true);
         } catch (error) {
             console.log(error);
-            setTimeout(() => {
-                showSnack(`Can't verify`);
-            }, 250);
+            commit("setVerifyState", false);
         }
     },
+
     async doSendReset(_context, email) {
         try {
             await sendResetEmail(email);
-            setTimeout(() => {
-                showSnack(`Send reset to email success`);
-            }, 250);
+            showSnack(`Send reset to email success`);
         } catch (error) {
-            setTimeout(() => {
-                showSnack(`Can't send email`);
-            }, 250);
+            showSnack(`Can't send email`);
         }
     },
-    async doReset(_context, resetBody) {
+    async doReset({ commit }, resetBody) {
         try {
             await resetPassword(resetBody);
-            setTimeout(() => {
-                showSnack(`Password reset`);
-            }, 250);
+            commit("setResetPassState", true);
         } catch (error) {
-            setTimeout(() => {
-                showSnack(`Can't reset`);
-            }, 250);
+            commit("setResetPassState", false);
         }
     },
 };

@@ -20,6 +20,14 @@ export default {
         state.isModalOpened = isOpen;
     },
 
+    setVerifyState(state, success) {
+        state.verifySuccess = success;
+    },
+
+    setResetPassState(state, success) {
+        state.resetPassSuccess = success;
+    },
+
     clearAll(state) {
         state = {
             accessToken: null,
