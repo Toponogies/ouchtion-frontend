@@ -101,7 +101,8 @@ export default {
         socket.on(USER_RATE, (data) => {
             // Get all ongoing bid and update the list
             if (data.bidder_id == this.id){
-                this.leaveReviewCompleted();
+                this.fetchOngoing();
+                this.fetchCompleted();
             }
         });
 

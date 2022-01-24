@@ -33,7 +33,7 @@ import { redirectToHomeIf } from "@/utils/redirectToHomeIf";
 
 import OngoingProducts from "@/views/seller/OngoingProducts";
 import SoldProducts from "@/views/seller/SoldProducts";
-import { PRODUCT_ADD, PRODUCT_DELETE, PRODUCT_WON, ROLES } from "@/utils/constants";
+import { PRODUCT_ADD, PRODUCT_DELETE, PRODUCT_WON, ROLES, USER_RATE } from "@/utils/constants";
 import { socket } from "@/socket/connect";
 
 import { mapActions, mapState } from 'vuex';
@@ -70,6 +70,14 @@ export default {
         socket.on(PRODUCT_DELETE, (data) => {
             // Get all products
             if (data.user_id == this.id){
+                this.fetchOngoing();
+                this.fetchCompleted();
+            }
+        });
+
+        socket.on(USER_RATE, (data) => {
+            // Get all ongoing bid and update the list
+            if (data.seller_id == this.id){
                 this.fetchOngoing();
                 this.fetchCompleted();
             }

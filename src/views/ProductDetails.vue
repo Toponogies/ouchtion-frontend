@@ -276,7 +276,6 @@ export default {
 
         socket.on(BIDDING_ADD_AUTO, (data) => {
             console.log(data.product_id);
-            console.log("id",this.id);
             // Get all bid and update the list
             if (data.product_id == this.id)
             {
