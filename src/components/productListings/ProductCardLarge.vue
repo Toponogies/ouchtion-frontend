@@ -71,34 +71,26 @@ import { mapState, mapActions } from "vuex";
 import { ROLES } from "@/utils/constants";
 import { formatPrice } from "@/utils/priceUtils";
 import { isNewProduct, toLongTimestamp } from "@/utils/timeUtils";
+import { isOnUserWatchlist } from "@/utils/isOnUserWatchlist";
 
 export default {
     name: "ProductCardLarge",
-    props: {
-        id: String,
-        image: String,
-        title: String,
-        startTime: String,
-        endTime: String,
-        bidderCount: Number,
-        bidHighestPrice: Number,
-        bidHighestUser: String,
-        buyNowPrice: Number,
-        isOnWatchlist: Boolean,
-    },
+    props: [
+        "id",
+        "image",
+        "title",
+        "startTime",
+        "endTime",
+        "bidderCount",
+        "bidHighestPrice",
+        "bidHighestUser",
+        "buyNowPrice",
+    ],
     data() {
         return {
             utils: { ROLES },
-            local_isOnWatchlist: this.isOnWatchlist,
+            local_isOnWatchlist: false,
         };
-    },
-    watch: {
-        local_isOnWatchlist(newVal) {
-            // add to watchlist
-            if (newVal) this.add(this.id);
-            // remove from watchlist
-            else this.remove(this.id);
-        },
     },
 
     computed: {
@@ -122,15 +114,27 @@ export default {
 
     methods: {
         ...mapActions("BidderWatchlistModule", ["add", "remove"]),
+
         toggleWatchState() {
             this.local_isOnWatchlist = !this.local_isOnWatchlist;
+            if (this.local_isOnWatchlist) {
+                this.add(this.id);
+            } else {
+                this.remove(this.id);
+            }
         },
+
         handleProductClick() {
             const nextPath = `/p/${this.id}`;
             if (this.$router.currentRoute.fullPath !== nextPath) {
                 this.$router.push(nextPath);
             }
         },
+    },
+
+    async mounted() {
+        console.log(await isOnUserWatchlist(this.id));
+        this.local_isOnWatchlist = await isOnUserWatchlist(this.id);
     },
 };
 </script>

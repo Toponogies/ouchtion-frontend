@@ -26,7 +26,7 @@
                     </v-col>
                     <username-card class="mx-4" :username="seller.username" :rating="seller.rating"></username-card>
                     <v-btn icon @click="toggleWatchState" v-if="role === utils.ROLES.BIDDER">
-                        <v-icon v-if="isOnWatchlist === false">mdi-bookmark-outline</v-icon>
+                        <v-icon v-if="local_isOnWatchlist === false">mdi-bookmark-outline</v-icon>
                         <v-icon v-else>mdi-bookmark</v-icon>
                     </v-btn>
                 </v-row>
@@ -118,6 +118,7 @@ import FeaturedProductGroup from "@/components/productListings/FeaturedProductGr
 
 import { toLongTimestamp } from "@/utils/timeUtils";
 import { scrollToTop } from "@/utils/scrollToTop";
+import { isOnUserWatchlist } from "@/utils/isOnUserWatchlist";
 
 export default {
     name: "ProductDetails",
@@ -136,6 +137,7 @@ export default {
         return {
             utils: { toLongTimestamp, ROLES },
             id: this.$route.params.id,
+            local_isOnWatchlist: false,
         };
     },
 
@@ -151,7 +153,6 @@ export default {
             "buyNow",
             "relatedProducts",
         ]),
-        ...mapState("CurrentProductDetailsBidderModule", ["isOnWatchlist"]),
         ...mapState("CurrentUserModule", ["role"]),
         ...mapState("CurrentUserModule", {
             currentUserId: "id",
@@ -173,13 +174,10 @@ export default {
         },
 
         toggleWatchState() {
-            // add
-            if (!this.isOnWatchlist) {
+            this.local_isOnWatchlist = !this.local_isOnWatchlist;
+            if (this.local_isOnWatchlist) {
                 this.add(this.id);
-            }
-
-            // remove
-            else {
+            } else {
                 this.remove(this.id);
             }
         },
@@ -190,10 +188,11 @@ export default {
         this.setProductId(this.$route.params.id);
     },
 
-    mounted() {
+    async mounted() {
         this.getAllInfo();
         if (this.role === ROLES.BIDDER) {
             this.getInfoForBidders();
+            this.local_isOnWatchlist = await isOnUserWatchlist(this.id);
         }
         if (this.currentUserId === this.seller.id) {
             this.getInfoForSellers();

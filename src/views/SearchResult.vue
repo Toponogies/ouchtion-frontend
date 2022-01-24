@@ -34,7 +34,6 @@
                     :buyNowPrice="product.buyNowPrice"
                     :startTime="product.startTime"
                     :endTime="product.endTime"
-                    :isOnWatchlist="product.isOnWatchlist"
                 ></product-card-large>
             </v-row>
 

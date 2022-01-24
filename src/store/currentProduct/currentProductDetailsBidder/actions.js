@@ -7,18 +7,7 @@ import { today } from "@/utils/timeUtils";
 
 export default {
     async getAllInfo({ dispatch }) {
-        await dispatch("getWatchlistStatus");
         await dispatch("getBidAvailability");
-    },
-
-    async getWatchlistStatus({ commit, dispatch, rootState }) {
-        // Dispatch a getWatchlist call (just in case)
-        dispatch("BidderWatchlistModule/getItems", null, { root: true });
-        // Filter from watchlistItems
-        const isOnWatchlist =
-            find(rootState.BidderWatchlistModule.items, { product_id: rootState.CurrentProductInfoModule.id }) !==
-            undefined;
-        commit("setIsOnWatchlist", isOnWatchlist);
     },
 
     async getBidAvailability({ commit, rootState }) {

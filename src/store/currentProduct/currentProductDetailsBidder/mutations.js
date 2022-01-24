@@ -1,8 +1,4 @@
 export default {
-    setIsOnWatchlist(state, isOnWatchlist) {
-        state.isOnWatchlist = isOnWatchlist;
-    },
-
     setBidModalState(state, open) {
         state.bid.isModalOpen = open;
     },

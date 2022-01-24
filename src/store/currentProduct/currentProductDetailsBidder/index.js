@@ -13,7 +13,6 @@ const defaultState = () => ({
 
     // current user status for this product
     bidAvailability: null,
-    isOnWatchlist: false,
 
     // bidder's "request to seller" modal
     request: {

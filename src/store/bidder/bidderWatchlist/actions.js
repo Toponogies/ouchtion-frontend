@@ -36,6 +36,7 @@ export default {
         commit("setLoading", true);
 
         let result = await addToWatchlist(id);
+        console.log(result);
 
         if (result) {
             let item = {
