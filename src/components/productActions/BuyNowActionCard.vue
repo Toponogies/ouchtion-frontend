@@ -46,16 +46,19 @@ import { ROLES } from "@/utils/constants";
 import UsernameCard from "@/components/productDetails/UsernameCard";
 import BuyNowActionModal from "@/components/productActions/BuyNowActionModal";
 import { formatPrice } from "@/utils/priceUtils";
+
 export default {
     name: "BuyNowActionCard",
     components: { UsernameCard, BuyNowActionModal },
     props: ["price", "myUsername", "myRating"],
+
     data() {
         return {
             utils: { formatPrice },
             confirmDialogOpened: false,
         };
     },
+
     computed: {
         ...mapState("CurrentUserModule", ["role"]),
         ...mapState("CurrentProductModule", ["buyNow"]),
@@ -74,6 +77,7 @@ export default {
             return false;
         },
     },
+
     methods: {
         ...mapMutations("AuthModule", {
             setLoginModalState: "setModalState",
@@ -85,10 +89,12 @@ export default {
                 case null:
                     this.setLoginModalState(true);
                     break;
+
                 // For bidders: show the modal
                 case ROLES.BIDDER:
                     this.setBuyNowModalState(true);
                     break;
+
                 // For everyone else: do nothing
                 default:
                     break;
