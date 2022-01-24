@@ -71,8 +71,7 @@ export default {
             const headers = {
                 Authorization: "Bearer " + rootState.AuthModule.accessToken,
             };
-            const result = await editCategory(id, payload, headers);
-            if (result.name !== name) throw new Error();
+            await editCategory(id, payload, headers);
 
             // commit to store
             commit("edit", { id, name });
@@ -89,7 +88,7 @@ export default {
             const headers = {
                 Authorization: "Bearer " + rootState.AuthModule.accessToken,
             };
-            await removeCategory(id,headers);
+            await removeCategory(id, headers);
 
             // commit to store
             commit("remove", id);
@@ -100,7 +99,7 @@ export default {
         }
     },
 
-    async getCategory({ commit },id) {
+    async getCategory({ commit }, id) {
         try {
             const category = await getCategory(id);
             commit("category", category);

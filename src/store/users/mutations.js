@@ -51,13 +51,4 @@ export default {
         const targetIndex = findIndex(state.upgradeRequests, { userId: id });
         state.upgradeRequests.splice(targetIndex, 1);
     },
-
-    clearAll(state) {
-        state = {
-            ...state,
-            isLoading: false,
-            users: [],
-            upgradeRequests: [],
-        };
-    },
 };
