@@ -24,11 +24,8 @@ export default {
         } catch (error) {
             console.log(error.response);
         }
-
-        setTimeout(() => {
-            commit("setItems", data);
-            commit("setLoadingState", false);
-        }, 500);
+        commit("setItems", data);
+        commit("setLoadingState", false);
     },
 
     async addItem({ commit, rootState }, id) {

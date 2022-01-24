@@ -71,9 +71,8 @@ export default {
         },
 
         btnDisable: function () {
-            if (this.role === ROLES.SELLER || this.role === ROLES.ADMIN)
-                return true;
-        
+            if (this.role === ROLES.SELLER || this.role === ROLES.ADMIN) return true;
+
             if (this.isSold) {
                 return true;
             } else if (this.isBlockedFromBidding && !this.request.isSent && !this.request.isBlockedFromRequesting) {

@@ -21,11 +21,8 @@ export default {
                 isSold: product.is_sold === 1 ? true : false,
             });
         });
-
-        setTimeout(() => {
-            commit("setItems", data);
-            commit("setLoadingState", false);
-        }, 500);
+        commit("setItems", data);
+        commit("setLoadingState", false);
     },
 
     async removeItem({ commit }, id) {
@@ -39,10 +36,8 @@ export default {
             return;
         }
 
-        setTimeout(() => {
-            commit("removeItem", id);
-            commit("setLoadingState", false);
-            showSnack(`Removed item ${id}`);
-        }, 250);
+        commit("removeItem", id);
+        commit("setLoadingState", false);
+        showSnack(`Removed item ${id}`);
     },
 };
