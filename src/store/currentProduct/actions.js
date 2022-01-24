@@ -1,6 +1,7 @@
 import { getUserWithPoint } from "@/api/user";
 import { getProduct, getProductDescription, getProductImage, getProductBidding, getProductRelate } from "@/api/product";
 import { getCategory } from "@/api/category";
+import { addToWatchlist, getWatchList, removeFromWatchlist } from "@/api/watchlist";
 import {
     getBiddingPermisson,
     checkBidRequest,
@@ -142,9 +143,9 @@ export default {
 
         // Is the current product in user's watchlist?
         // Dispatch a getWatchlist call (just in case)
-        dispatch("WatchlistModule/fetchAll", { root: true });
+        let watchlist = await getWatchList()
         // Filter from watchlistItems
-        const isOnWatchlist = find(rootState.WatchlistModule.watchlistItems, { id: state.id }) !== undefined;
+        const isOnWatchlist = find(watchlist, { product_id: state.id }) !== undefined;
         commit("setIsOnWatchlist", isOnWatchlist);
 
         if (rootState.CurrentUserModule.role === ROLES.BIDDER)
@@ -248,6 +249,30 @@ export default {
         } else {
             showSnack(`Failed to reject request id = ${requestId}`);
         }
+    },
+
+    async addWatchlist({ commit }, id) {
+        commit("setLoadingState", true);
+        try {
+            await addToWatchlist(id);
+            commit("setIsOnWatchlist", true);
+            showSnack(`Added item id = ${id} to watchlist`);
+        } catch (error) {
+            showSnack(`Can't add item id = ${id} to watchlist`);
+        }
+        commit("setLoadingState", false);
+    },
+
+    async removeWatchlist({ commit }, id) {
+        commit("setLoadingState", true);
+        try {
+            await removeFromWatchlist(id);
+            commit("setIsOnWatchlist", false);
+            showSnack(`Removed item ${id}`);
+        } catch (error) {
+            showSnack(`Can't remove item id = ${id}`);
+        }
+        commit("setLoadingState", false);
     },
 
     async appendProductDescription({ commit }, { product_id, description }) {
