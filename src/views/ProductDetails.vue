@@ -166,6 +166,7 @@ export default {
             "relatedProducts",
         ]),
         ...mapState("CurrentUserModule", ["role"]),
+        ...mapState("CurrentUserModule", {user_id:"id"}),
     },
 
     methods: {
@@ -303,14 +304,14 @@ export default {
 
         socket.on(PRODUCT_ADD_WATCHLIST, (data) => {
             // Get all watchlist again and update the list
-            if (data.user_id == this.id){
+            if (data.user_id == this.user_id){
                 this.fetchAllDetails();
             }
         });
 
         socket.on(PRODUCT_DELETE_WATCHLIST, (data) => {
             // Get all watchlist again and update the list
-            if (data.user_id == this.id){
+            if (data.user_id == this.user_id){
                 this.fetchAllDetails();
             }
         });
