@@ -54,6 +54,7 @@ import UpgradeRequests from "@/views/admin/UpgradeRequests";
 import { redirectToHomeIf } from "@/utils/redirectToHomeIf";
 import { ROLES, AUTH_REGISTER, USER_UPGRADE_REQUEST, AUTH_VERIFY, PRODUCT_ADD, PRODUCT_WON } from "@/utils/constants";
 import { socket } from "@/socket/connect";
+import { mapActions, mapState } from 'vuex';
 
 export default {
     name: "AdminDashboard",
@@ -61,9 +62,17 @@ export default {
     beforeCreate() {
         redirectToHomeIf(this, [ROLES.ADMIN]);
     },
+    computed: {
+        ...mapState("CurrentUserModule", ["id","role"]),
+    },
+    methods: {
+        ...mapActions("UsersModule", ["fetchAll","fetchUpgradeRequests"]),
+        ...mapActions("ProductsAdminModule", {fetchProduct:"fetchAll"}),
+    },
     created() {
         socket.on(AUTH_REGISTER, () => {
             // Get all users again and update the list
+            this.fetchAll();
         });
 
         socket.on(AUTH_VERIFY, () => {
@@ -72,14 +81,12 @@ export default {
 
         socket.on(USER_UPGRADE_REQUEST, () => {
             // Get all request again and update the list
+            this.fetchUpgradeRequests();
         });
 
         socket.on(PRODUCT_ADD, () => {
             // Get all products again and update the list
-        });
-
-        socket.on(PRODUCT_WON, () => {
-            // Get all products again and update the list
+            this.fetchProduct();
         });
     },
 };

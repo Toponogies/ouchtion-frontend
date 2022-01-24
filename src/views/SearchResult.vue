@@ -130,18 +130,22 @@ export default {
     created() {
         socket.on(PRODUCT_ADD, () => {
             // Update the search result
+            this.populateSearch();
         });
 
         socket.on(PRODUCT_DELETE, () => {
             // Update the search result
+            this.populateSearch();
         });
 
         socket.on(BIDDING_BUY, () => {
             // Update the search result
+            this.populateSearch();
         });
 
         socket.on(PRODUCT_WON, () => {
             // Update the search result
+            this.populateSearch();
         });
     },
 };

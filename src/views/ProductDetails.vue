@@ -26,7 +26,7 @@
                     </v-col>
                     <username-card class="mx-4" :username="seller.username" :rating="seller.rating"></username-card>
                     <v-btn icon @click="toggleWatchState" v-if="role === utils.ROLES.BIDDER">
-                        <v-icon v-if="isOnWatchlist === false">mdi-bookmark-outline</v-icon>
+                        <v-icon v-if="!isOnWatchlist">mdi-bookmark-outline</v-icon>
                         <v-icon v-else>mdi-bookmark</v-icon>
                     </v-btn>
                 </v-row>
@@ -110,8 +110,10 @@ import {
     BIDDING_PERMISSION_UPDATE,
     BIDDING_REJECT,
     BIDDING_REQUEST_ADD,
+    PRODUCT_ADD_WATCHLIST,
     PRODUCT_APPEND_DESCRIPTION,
     PRODUCT_DELETE,
+    PRODUCT_DELETE_WATCHLIST,
     PRODUCT_WON,
     ROLES,
 } from "@/utils/constants";
@@ -164,10 +166,11 @@ export default {
             "relatedProducts",
         ]),
         ...mapState("CurrentUserModule", ["role"]),
+        ...mapState("CurrentUserModule", {user_id:"id"}),
     },
 
     methods: {
-        ...mapActions("CurrentProductModule", ["setProductId", "fetchAllDetails"]),
+        ...mapActions("CurrentProductModule", ["setProductId", "fetchAllDetails", "addWatchlist", "removeWatchlist"]),
         ...mapMutations("CurrentProductModule", ["clearAll"]),
         ...mapActions("WatchlistModule", ["addItem", "removeItem"]),
 
@@ -181,12 +184,12 @@ export default {
         toggleWatchState() {
             // add
             if (!this.isOnWatchlist) {
-                this.addItem(this.id);
+                this.addWatchlist(this.id);
             }
 
             // remove
             else {
-                this.removeItem(this.id);
+                this.removeWatchlist(this.id);
             }
         },
     },
@@ -196,13 +199,13 @@ export default {
         this.fetchAllDetails();
     },
 
-    mounted() {
-        scrollToTop(this);
-    },
+    // mounted() {
+    //     scrollToTop(this);
+    // },
 
-    updated() {
-        scrollToTop(this);
-    },
+    // updated() {
+    //     scrollToTop(this);
+    // },
 
     beforeRouteUpdate(to, _, next) {
         // We have to manually set query on route update -- Vue Router is not "reactive" enough in this case (prolly)
@@ -219,48 +222,98 @@ export default {
         socket.on(PRODUCT_DELETE, (data) => {
             console.log(data.product_id);
             // Notify user and redirect to home
+            if (data.product_id == this.id)
+            {
+                this.clearAll();
+            }
         });
 
         socket.on(PRODUCT_APPEND_DESCRIPTION, (data) => {
             console.log(data.product_id);
             // Update description
+            if (data.product_id == this.id)
+            {
+                this.fetchAllDetails();
+            }
         });
 
         socket.on(PRODUCT_WON, (data) => {
             console.log(data.product_id);
             // Notify and update the view to disable buttons
+            if (data.product_id == this.id)
+            {
+                this.fetchAllDetails();
+            }
         });
 
         socket.on(BIDDING_REJECT, (data) => {
             console.log(data.product_id);
             console.log(data.user_id);
             // Notify and update the view to disable buttons
+            if (data.product_id == this.id)
+            {
+                this.fetchAllDetails();
+            }
         });
 
         socket.on(BIDDING_PERMISSION_UPDATE, (data) => {
             console.log(data.product_id);
             console.log(data.user_id);
             // Notify and update the view to disable buttons
+            if (data.product_id == this.id)
+            {
+                this.fetchAllDetails();
+            }
         });
 
         socket.on(BIDDING_ADD, (data) => {
             console.log(data.product_id);
             // Get all bid and update the list
+            if (data.product_id == this.id)
+            {
+                this.fetchAllDetails();
+            }
         });
 
         socket.on(BIDDING_ADD_AUTO, (data) => {
             console.log(data.product_id);
             // Get all bid and update the list
+            if (data.product_id == this.id)
+            {
+                this.fetchAllDetails();
+            }
         });
 
         socket.on(BIDDING_REQUEST_ADD, (data) => {
             console.log(data.product_id);
             // get all bid request and update list
+            if (data.product_id == this.id)
+            {
+                this.fetchAllDetails();
+            }
         });
 
         socket.on(BIDDING_BUY, (data) => {
             console.log(data.product_id);
             // Notify and update the view to disable buttons
+            if (data.product_id == this.id)
+            {
+                this.fetchAllDetails();
+            }
+        });
+
+        socket.on(PRODUCT_ADD_WATCHLIST, (data) => {
+            // Get all watchlist again and update the list
+            if (data.user_id == this.user_id){
+                this.fetchAllDetails();
+            }
+        });
+
+        socket.on(PRODUCT_DELETE_WATCHLIST, (data) => {
+            // Get all watchlist again and update the list
+            if (data.user_id == this.user_id){
+                this.fetchAllDetails();
+            }
         });
     },
 };
