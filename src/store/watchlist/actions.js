@@ -38,6 +38,7 @@ export default {
             commit("addItem", id);
             showSnack(`Added item id = ${id} to watchlist`);
         } catch (error) {
+            console.log(error.response);
             showSnack(`Can't add item id = ${id} to watchlist`);
         }
         commit("setLoadingState", false);

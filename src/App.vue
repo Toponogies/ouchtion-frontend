@@ -26,29 +26,68 @@ import AppSnackbar from "@/components/etc/snackbar";
 
 import { socket } from "@/socket/connect";
 import { BIDDING_ADD, BIDDING_ADD_AUTO, CATEGORY_LIST_UPDATE, USER_UPDATE_ROLE } from "./utils/constants";
+import { mapActions, mapState } from 'vuex';
+import { showSnack } from "./utils/showSnack";
 
 export default {
     name: "App",
     components: { TopBar, NprogressContainer, AppSnackbar },
+    computed: {
+        ...mapState("CurrentUserModule", ["id","role"]),
+    },
+    methods: {
+        ...mapActions("CategoryModule", ["fetchAll"]),
+        ...mapActions("AuthModule", ["doLogout"]),
+    },
     created() {
         socket.on(CATEGORY_LIST_UPDATE, () => {
             // Get category again and update the list
+            this.fetchAll();
         });
 
-        socket.on(USER_UPDATE_ROLE, () => {
+        socket.on(USER_UPDATE_ROLE, (data) => {
             // Notify user and lgout
+            if (data.user_id === this.id)
+            {
+                showSnack("User update role please login again");
+                this.doLogout();
+            }
         });
 
         socket.on(BIDDING_ADD, (data) => {
             console.log(data.product_id);
             console.log(data.users);
             // Notify these users about the bid
+            let check = false;
+            data.users?.forEach(user => {
+                if (user.id === this.id)
+                {
+                    check = true;
+                }
+            });
+
+            if (check === true)
+            {
+                showSnack(`Product id: ${data.product_id} have new bidding`);
+            }
         });
 
         socket.on(BIDDING_ADD_AUTO, (data) => {
             console.log(data.product_id);
             console.log(data.users);
             // Notify these users about the bid
+            let check = false;
+            data.users?.forEach(user => {
+                if (user.id === this.id)
+                {
+                    check = true;
+                }
+            });
+
+            if (check === true)
+            {
+                showSnack(`Product id: ${data.product_id} have new bidding`);
+            }
         });
     },
 };

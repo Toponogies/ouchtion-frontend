@@ -36,24 +36,43 @@ import SoldProducts from "@/views/seller/SoldProducts";
 import { PRODUCT_ADD, PRODUCT_DELETE, PRODUCT_WON, ROLES } from "@/utils/constants";
 import { socket } from "@/socket/connect";
 
+import { mapActions, mapState } from 'vuex';
+
 export default {
     name: "BidderDashboard",
     components: { OngoingProducts, SoldProducts },
     beforeCreate() {
         redirectToHomeIf(this, [ROLES.SELLER]);
     },
+    computed: {
+        ...mapState("CurrentUserModule", ["id","role"]),
+    },
+    methods: {
+        ...mapActions("ProductModule", ["fetchOngoing","fetchCompleted"]),
+    },
     created() {
         socket.on(PRODUCT_WON, (data) => {
-            console.log(data.product_id);
             // Notify user and redirect to home
+            if (data.user_id == this.id){
+                this.fetchOngoing();
+                this.fetchCompleted();
+            }
         });
 
-        socket.on(PRODUCT_ADD, () => {
+        socket.on(PRODUCT_ADD, (data) => {
             // Get all products
+            if (data.user_id == this.id){
+                this.fetchOngoing();
+                this.fetchCompleted();
+            }
         });
 
-        socket.on(PRODUCT_DELETE, () => {
+        socket.on(PRODUCT_DELETE, (data) => {
             // Get all products
+            if (data.user_id == this.id){
+                this.fetchOngoing();
+                this.fetchCompleted();
+            }
         });
     },
 };

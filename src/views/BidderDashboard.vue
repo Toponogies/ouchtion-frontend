@@ -49,8 +49,10 @@ import {
     BIDDING_ADD,
     BIDDING_ADD_AUTO,
     PRODUCT_WON,
+    USER_RATE,
 } from "@/utils/constants";
 import { socket } from "@/socket/connect";
+import { mapActions, mapState } from 'vuex';
 
 export default {
     name: "BidderDashboard",
@@ -58,25 +60,57 @@ export default {
     beforeCreate() {
         redirectToHomeIf(this, [ROLES.BIDDER]);
     },
+    computed: {
+        ...mapState("CurrentUserModule", ["id","role"]),
+    },
+    methods: {
+        ...mapActions("BiddingModule", ["fetchOngoing","fetchCompleted","leaveReviewCompleted"]),
+        ...mapActions("WatchlistModule", ["fetchAll"]),
+    },
     created() {
-        socket.on(PRODUCT_ADD_WATCHLIST, () => {
+        socket.on(PRODUCT_ADD_WATCHLIST, (data) => {
             // Get all watchlist again and update the list
+            if (data.user_id == this.id){
+                this.fetchAll();
+            }
         });
 
-        socket.on(PRODUCT_DELETE_WATCHLIST, () => {
+        socket.on(PRODUCT_DELETE_WATCHLIST, (data) => {
             // Get all watchlist again and update the list
+            if (data.user_id == this.id){
+                this.fetchAll();
+            }
         });
 
-        socket.on(BIDDING_ADD, () => {
+        socket.on(BIDDING_ADD, (data) => {
             // Get all ongoing bid again and update the list
+            if (data.user_id == this.id){
+                this.fetchOngoing();
+                this.fetchCompleted();
+            }
         });
 
-        socket.on(BIDDING_ADD_AUTO, () => {
+        socket.on(BIDDING_ADD_AUTO, (data) => {
             // Get all ongoing bid and update the list
+            if (data.user_id == this.id){
+                this.fetchOngoing();
+                this.fetchCompleted();
+            }
         });
 
-        socket.on(PRODUCT_WON, () => {
+        socket.on(USER_RATE, (data) => {
+            // Get all ongoing bid and update the list
+            if (data.bidder_id == this.id){
+                this.leaveReviewCompleted();
+            }
+        });
+
+        socket.on(PRODUCT_WON, (data) => {
             // Get all completed bids and update the list
+            if (data.user_id == this.id){
+                this.fetchOngoing();
+                this.fetchCompleted();
+            }
         });
     },
 };
