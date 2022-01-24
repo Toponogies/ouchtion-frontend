@@ -166,11 +166,17 @@ export default {
             "relatedProducts",
         ]),
         ...mapState("CurrentUserModule", ["role"]),
-        ...mapState("CurrentUserModule", {user_id:"id"}),
+        ...mapState("CurrentUserModule", { user_id: "id" }),
     },
 
     methods: {
-        ...mapActions("CurrentProductModule", ["setProductId", "fetchAllDetails", "addWatchlist", "removeWatchlist"]),
+        ...mapActions("CurrentProductModule", [
+            "setProductId",
+            "fetchAllDetails",
+            "addWatchlist",
+            "removeWatchlist",
+            "getBidderRequests",
+        ]),
         ...mapMutations("CurrentProductModule", ["clearAll"]),
         ...mapActions("WatchlistModule", ["addItem", "removeItem"]),
 
@@ -222,8 +228,7 @@ export default {
         socket.on(PRODUCT_DELETE, (data) => {
             console.log(data.product_id);
             // Notify user and redirect to home
-            if (data.product_id == this.id)
-            {
+            if (data.product_id == this.id) {
                 this.clearAll();
             }
         });
@@ -231,8 +236,7 @@ export default {
         socket.on(PRODUCT_APPEND_DESCRIPTION, (data) => {
             console.log(data.product_id);
             // Update description
-            if (data.product_id == this.id)
-            {
+            if (data.product_id == this.id) {
                 this.fetchAllDetails();
             }
         });
@@ -240,8 +244,7 @@ export default {
         socket.on(PRODUCT_WON, (data) => {
             console.log(data.product_id);
             // Notify and update the view to disable buttons
-            if (data.product_id == this.id)
-            {
+            if (data.product_id == this.id) {
                 this.fetchAllDetails();
             }
         });
@@ -250,8 +253,7 @@ export default {
             console.log(data.product_id);
             console.log(data.user_id);
             // Notify and update the view to disable buttons
-            if (data.product_id == this.id)
-            {
+            if (data.product_id == this.id) {
                 this.fetchAllDetails();
             }
         });
@@ -260,8 +262,7 @@ export default {
             console.log(data.product_id);
             console.log(data.user_id);
             // Notify and update the view to disable buttons
-            if (data.product_id == this.id)
-            {
+            if (data.product_id == this.id) {
                 this.fetchAllDetails();
             }
         });
@@ -269,8 +270,7 @@ export default {
         socket.on(BIDDING_ADD, (data) => {
             console.log(data.product_id);
             // Get all bid and update the list
-            if (data.product_id == this.id)
-            {
+            if (data.product_id == this.id) {
                 this.fetchAllDetails();
             }
         });
@@ -278,40 +278,38 @@ export default {
         socket.on(BIDDING_ADD_AUTO, (data) => {
             console.log(data.product_id);
             // Get all bid and update the list
-            if (data.product_id == this.id)
-            {
+            if (data.product_id == this.id) {
                 this.fetchAllDetails();
             }
         });
 
         socket.on(BIDDING_REQUEST_ADD, (data) => {
-            console.log(data.product_id);
             // get all bid request and update list
-            if (data.product_id == this.id)
-            {
-                this.fetchAllDetails();
+            console.log(`BIDDING_REQUEST_ADD`);
+            console.log(data);
+            if (data.product_id == this.id) {
+                this.getBidderRequests();
             }
         });
 
         socket.on(BIDDING_BUY, (data) => {
-            console.log(data.product_id);
+            console.log(`Product id = ${data.product_id} was bought`);
             // Notify and update the view to disable buttons
-            if (data.product_id == this.id)
-            {
+            if (data.product_id == this.id) {
                 this.fetchAllDetails();
             }
         });
 
         socket.on(PRODUCT_ADD_WATCHLIST, (data) => {
             // Get all watchlist again and update the list
-            if (data.user_id == this.user_id){
+            if (data.user_id == this.user_id) {
                 this.fetchAllDetails();
             }
         });
 
         socket.on(PRODUCT_DELETE_WATCHLIST, (data) => {
             // Get all watchlist again and update the list
-            if (data.user_id == this.user_id){
+            if (data.user_id == this.user_id) {
                 this.fetchAllDetails();
             }
         });
