@@ -26,14 +26,14 @@ import AppSnackbar from "@/components/etc/snackbar";
 
 import { socket } from "@/socket/connect";
 import { BIDDING_ADD, BIDDING_ADD_AUTO, CATEGORY_LIST_UPDATE, USER_UPDATE_ROLE } from "./utils/constants";
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapState } from "vuex";
 import { showSnack } from "./utils/showSnack";
 
 export default {
     name: "App",
     components: { TopBar, NprogressContainer, AppSnackbar },
     computed: {
-        ...mapState("CurrentUserModule", ["id","role"]),
+        ...mapState("CurrentUserModule", ["id", "role"]),
     },
     methods: {
         ...mapActions("CategoryModule", ["fetchAll"]),
@@ -47,8 +47,7 @@ export default {
 
         socket.on(USER_UPDATE_ROLE, (data) => {
             // Notify user and lgout
-            if (data.user_id == this.id)
-            {
+            if (data.user_id == this.id) {
                 showSnack("User update role please login again");
                 this.doLogout();
             }
@@ -59,8 +58,7 @@ export default {
             console.log(data.users);
             // Notify these users about the bid
             let check = find(data.users, { user_id: this.id }) !== undefined;
-            if (check === true)
-            {
+            if (check === true) {
                 showSnack(`Product id: ${data.product_id} have new bidding`);
             }
         });
@@ -70,8 +68,7 @@ export default {
             console.log(data.users);
             // Notify these users about the bid
             let check = find(data.users, { user_id: this.id }) !== undefined;
-            if (check === true)
-            {
+            if (check === true) {
                 showSnack(`Product id: ${data.product_id} have new bidding`);
             }
         });
