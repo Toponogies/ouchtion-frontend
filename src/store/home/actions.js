@@ -9,8 +9,8 @@ export default {
             let products = await getData(params1);
             let user = null;
             let productsEndingSoon = [];
-            products.forEach(async (product) => {
-                user = await getUserWithPoint(product.buyer_id);
+            products.forEach((product) => {
+                user = getUserWithPoint(product.buyer_id);
                 productsEndingSoon.push({
                     id: product.product_id,
                     title: product.name,
@@ -31,8 +31,8 @@ export default {
             products = await getData(params2);
 
             let productsMostBidders = [];
-            products.forEach(async (product) => {
-                user = await getUserWithPoint(product.buyer_id);
+            products.forEach((product) => {
+                user = getUserWithPoint(product.buyer_id);
                 productsMostBidders.push({
                     id: product.product_id,
                     title: product.name,
@@ -52,8 +52,8 @@ export default {
             products = await getData(params3);
 
             let productsHighestPrice = [];
-            products.forEach(async (product) => {
-                user = await getUserWithPoint(product.buyer_id);
+            products.forEach((product) => {
+                user = getUserWithPoint(product.buyer_id);
                 productsHighestPrice.push({
                     id: product.product_id,
                     title: product.name,

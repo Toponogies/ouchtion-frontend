@@ -1,5 +1,5 @@
 <template>
-    <v-card @click="handleConfirmDialogOpen" :color="cardColor" elevation="4" :disabled="!isBuyNowOptionAvailable">
+    <v-card @click="handleConfirmDialogOpen" :color="cardColor" elevation="4" :disabled="!isBuyNowOptionAvailable && btnDisable">
         <!-- Header + Decor -->
         <v-row no-gutters class="px-4 pt-4 pb-2">
             <div>BUY NOW</div>
@@ -70,6 +70,11 @@ export default {
         },
         formattedPrice: function () {
             return this.isBuyNowOptionAvailable ? this.utils.formatPrice(this.buyNow.price) : "Not applicable";
+        },
+        btnDisable: function () {
+            if (this.role === ROLES.SELLER || this.role === ROLES.ADMIN)
+                return true;
+            return false;
         },
     },
 

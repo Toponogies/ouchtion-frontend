@@ -1,5 +1,5 @@
 <template>
-    <v-container class="ma-0 pa-0" v-if="role === utils.ROLES.SELLER">
+    <v-container class="ma-0 pa-0" v-if="role === utils.ROLES.SELLER && id === seller.id">
         <div class="text-h6 font-weight-bold">{{ bidderRequestCount }} pending requests</div>
         <!-- Placeholder (no requests) -->
         <v-card class="mt-3 pa-4" flat outlined v-if="bidderRequestCount === 0">
@@ -41,8 +41,8 @@ export default {
     },
 
     computed: {
-        ...mapState("CurrentProductModule", ["bidRequests"]),
-        ...mapState("CurrentUserModule", ["role"]),
+        ...mapState("CurrentProductModule", ["bidRequests","seller"]),
+        ...mapState("CurrentUserModule", ["role","id"]),
         bidderRequestCount: function () {
             return this.bidRequests.items.length;
         },

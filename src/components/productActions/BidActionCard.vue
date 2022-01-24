@@ -71,6 +71,9 @@ export default {
         },
 
         btnDisable: function () {
+            if (this.role === ROLES.SELLER || this.role === ROLES.ADMIN)
+                return true;
+        
             if (this.isSold) {
                 return true;
             } else if (this.isBlockedFromBidding && !this.request.isSent && !this.request.isBlockedFromRequesting) {
@@ -79,9 +82,8 @@ export default {
                 return true;
             } else if (this.isBlockedFromBidding && this.request.isSent && this.request.isBlockedFromRequesting) {
                 return true;
-            } else {
-                return false;
             }
+            return false;
         },
 
         normalStatusLine: function () {
@@ -97,6 +99,7 @@ export default {
             } else if (this.isBlockedFromBidding && this.request.isSent && this.request.isBlockedFromRequesting) {
                 return "You cannot bid on this product.";
             }
+            return "";
         },
     },
 

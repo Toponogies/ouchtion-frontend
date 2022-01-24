@@ -68,7 +68,7 @@
                                 dark
                             >
                                 <template v-slot:prepend>
-                                    <div>k&#x20AB;</div>
+                                    <div>&#x20AB;</div>
                                 </template></v-text-field
                             >
                         </v-row>
@@ -84,7 +84,7 @@
                                 dark
                             >
                                 <template v-slot:prepend>
-                                    <div>k&#x20AB;</div>
+                                    <div>&#x20AB;</div>
                                 </template>
                             </v-text-field>
                         </v-row>
