@@ -1,10 +1,10 @@
 <template>
-    <v-card @click="handleConfirmDialogOpen" :color="cardColor" elevation="4" :disabled="btnDisable || isBuyNowOptionAvailable == 0">
+    <v-card @click="handleConfirmDialogOpen" :color="cardColor" elevation="4" :disabled="!isBuyNowOptionAvailable && btnDisable">
         <!-- Header + Decor -->
         <v-row no-gutters class="px-4 pt-4 pb-2">
             <div>BUY NOW</div>
             <v-spacer></v-spacer>
-            <v-icon dark v-if="btnDisable || isBuyNowOptionAvailable == 0">mdi-arrow-right</v-icon>
+            <v-icon dark v-if="isBuyNowOptionAvailable">mdi-arrow-right</v-icon>
         </v-row>
 
         <!-- Price -->
@@ -46,22 +46,19 @@ import { ROLES } from "@/utils/constants";
 import UsernameCard from "@/components/productDetails/UsernameCard";
 import BuyNowActionModal from "@/components/productActions/BuyNowActionModal";
 import { formatPrice } from "@/utils/priceUtils";
-
 export default {
     name: "BuyNowActionCard",
     components: { UsernameCard, BuyNowActionModal },
     props: ["price", "myUsername", "myRating"],
-
     data() {
         return {
             utils: { formatPrice },
             confirmDialogOpened: false,
         };
     },
-
     computed: {
-        ...mapState("CurrentProductModule", ["endTime", "bid", "isBlockedFromBidding", "isSold", "request","buyNow"]),
         ...mapState("CurrentUserModule", ["role"]),
+        ...mapState("CurrentProductModule", ["buyNow"]),
         isBuyNowOptionAvailable: function () {
             return this.buyNow.price !== null;
         },
@@ -72,21 +69,11 @@ export default {
             return this.isBuyNowOptionAvailable ? this.utils.formatPrice(this.buyNow.price) : "Not applicable";
         },
         btnDisable: function () {
-            if (this.role === ROLES.SELLER || this.role === ROLES.ADMIN) return true;
-
-            if (this.isSold) {
+            if (this.role === ROLES.SELLER || this.role === ROLES.ADMIN)
                 return true;
-            } else if (this.isBlockedFromBidding && !this.request.isSent && !this.request.isBlockedFromRequesting) {
-                return false;
-            } else if (this.isBlockedFromBidding && this.request.isSent && !this.request.isBlockedFromRequesting) {
-                return true;
-            } else if (this.isBlockedFromBidding && this.request.isSent && this.request.isBlockedFromRequesting) {
-                return true;
-            }
             return false;
         },
     },
-
     methods: {
         ...mapMutations("AuthModule", {
             setLoginModalState: "setModalState",
@@ -98,21 +85,10 @@ export default {
                 case null:
                     this.setLoginModalState(true);
                     break;
-
                 // For bidders: show the modal
                 case ROLES.BIDDER:
-                    if (!this.isBlockedFromBidding) {
-                        this.newPrice = this.suggestedBidPrice;
-                        this.setBidModalState(true);
-                    } else if (
-                        this.isBlockedFromBidding &&
-                        !this.request.isSent &&
-                        !this.request.isBlockedFromRequesting
-                    ) {
-                        this.setBidRequestModalState(true);
-                    }
+                    this.setBuyNowModalState(true);
                     break;
-
                 // For everyone else: do nothing
                 default:
                     break;
