@@ -47,7 +47,7 @@ export default {
 
         socket.on(USER_UPDATE_ROLE, (data) => {
             // Notify user and lgout
-            if (data.user_id === this.id)
+            if (data.user_id == this.id)
             {
                 showSnack("User update role please login again");
                 this.doLogout();
@@ -60,7 +60,7 @@ export default {
             // Notify these users about the bid
             let check = false;
             data.users?.forEach(user => {
-                if (user.id === this.id)
+                if (user.id == this.id)
                 {
                     check = true;
                 }
@@ -78,7 +78,7 @@ export default {
             // Notify these users about the bid
             let check = false;
             data.users?.forEach(user => {
-                if (user.id === this.id)
+                if (user.id == this.id)
                 {
                     check = true;
                 }
