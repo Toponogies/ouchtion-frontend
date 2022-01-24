@@ -98,24 +98,19 @@ export default {
     async doUpdateEmail(_context, token) {
         try {
             await updateEmailWithToken(token);
-            setTimeout(() => {
-                showSnack(`Update success`);
-            }, 250);
+            showSnack(`Update success`);
         } catch (error) {
             console.log(error.response);
-            setTimeout(() => {
-                showSnack(`Can't update`);
-            }, 250);
+            showSnack(`Can't update`);
         }
     },
 
-    async addRequestSeller(_context,reason){
+    async addRequestSeller(_context, reason) {
         let check = await requestSeller(reason);
-        if (check === true){
+        if (check === true) {
             showSnack("Send request success");
-        }
-        else{
+        } else {
             showSnack("This request is exist");
         }
-    }
+    },
 };

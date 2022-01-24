@@ -1,13 +1,21 @@
 import actions from "./actions";
 import mutations from "./mutations";
 
+const defaultState = () => ({
+    newProductId: null,
+});
+
 export const AddProductModule = {
     namespaced: true,
 
-    state: {
-        newProductId: null,
-    },
+    state: defaultState(),
 
     actions,
-    mutations,
+
+    mutations: {
+        ...mutations,
+        clearAll(state) {
+            Object.assign(state, defaultState());
+        },
+    },
 };

@@ -11,12 +11,4 @@ export default {
         const targetIndex = findIndex(state.products, { id });
         state.products.splice(targetIndex, 1);
     },
-
-    clearAll(state) {
-        state = {
-            ...state,
-            isLoading: false,
-            products: [],
-        };
-    },
 };

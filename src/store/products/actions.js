@@ -24,11 +24,8 @@ export default {
                 highestBidPrice: product.current_price,
             });
         });
-
-        setTimeout(() => {
-            commit("setOngoingProductsItems", data);
-            commit("setOngoingProductsLoadingState", false);
-        }, 500);
+        commit("setOngoingProductsItems", data);
+        commit("setOngoingProductsLoadingState", false);
     },
 
     async fetchCompleted({ commit, rootState }) {
@@ -80,11 +77,8 @@ export default {
                 reviewToSeller: reviewToSeller,
             });
         });
-
-        setTimeout(() => {
-            commit("setCompletedProductsItems", data);
-            commit("setCompletedProductsLoadingState", false);
-        }, 500);
+        commit("setCompletedProductsItems", data);
+        commit("setCompletedProductsLoadingState", false);
     },
 
     async leaveReviewCompleted({ commit, rootState }, { id, rating, comment }) {
@@ -98,7 +92,7 @@ export default {
             rate: rating,
             comment: comment ? comment : "",
         };
-        const success = await getRates(payload,headers);
+        const success = await getRates(payload, headers);
 
         if (success) {
             commit("setCompletedBidReview", { id, rating, comment });

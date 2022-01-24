@@ -23,10 +23,8 @@ export default {
                 highestBidPrice: product.current_price,
             });
         });
-        setTimeout(() => {
-            commit("setOngoingBidsItems", data);
-            commit("setOngoingBidsLoadingState", false);
-        }, 500);
+        commit("setOngoingBidsItems", data);
+        commit("setOngoingBidsLoadingState", false);
     },
 
     async fetchCompleted({ commit, rootState }) {
@@ -35,7 +33,7 @@ export default {
         let products = [];
 
         try {
-            products = await bidderCompleteProduct(rootState.AuthModule.accessToken)
+            products = await bidderCompleteProduct(rootState.AuthModule.accessToken);
         } catch (error) {
             console.log(error);
         }
@@ -82,11 +80,8 @@ export default {
                 reviewToSeller: reviewToSeller,
             });
         });
-
-        setTimeout(() => {
-            commit("setCompletedBidsItems", data);
-            commit("setCompletedBidsLoadingState", false);
-        }, 500);
+        commit("setCompletedBidsItems", data);
+        commit("setCompletedBidsLoadingState", false);
     },
 
     async leaveReviewCompleted({ commit, rootState }, { id, rating, comment }) {
@@ -100,7 +95,7 @@ export default {
             rate: rating,
             comment: comment ? comment : "",
         };
-        const success = await getRates(payload,headers);
+        const success = await getRates(payload, headers);
 
         if (success) {
             commit("setCompletedBidReview", { id, rating, comment });

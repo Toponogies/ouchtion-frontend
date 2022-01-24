@@ -1,7 +1,17 @@
 import { showSnack } from "@/utils/showSnack";
 import { fromTimestamp } from "@/utils/timeUtils";
 
-import { createUser, getAllUser, getUser, getUserWithPoint, removeUser, updateEmailAdmin, updatePasswordAdmin, updateRole, updateUserAdmin } from "@/api/user";
+import {
+    createUser,
+    getAllUser,
+    getUser,
+    getUserWithPoint,
+    removeUser,
+    updateEmailAdmin,
+    updatePasswordAdmin,
+    updateRole,
+    updateUserAdmin,
+} from "@/api/user";
 import { deleteUpgradeRequests, getUpgradeRequests } from "@/api/upgradeRequest";
 
 export default {
@@ -28,12 +38,11 @@ export default {
             console.log(error);
         }
 
-
         commit("setUsers", data);
         commit("setIsLoading", false);
     },
 
-    async create({ commit, rootState,dispatch }, payload) {
+    async create({ commit, rootState, dispatch }, payload) {
         commit("setIsLoading", true);
 
         // change date
@@ -42,11 +51,10 @@ export default {
         let user = null;
         // call API
         try {
-            user = await createUser(rootState.AuthModule.accessToken,payload);
+            user = await createUser(rootState.AuthModule.accessToken, payload);
         } catch (error) {
             console.log(error);
         }
-
 
         if (user === undefined || user === null) {
             showSnack("Can't create user");
@@ -98,7 +106,7 @@ export default {
         let user = null;
         // call API
         try {
-            user = await updateUserAdmin(rootState.AuthModule.accessToken,id,payloadTemp)
+            user = await updateUserAdmin(rootState.AuthModule.accessToken, id, payloadTemp);
         } catch (error) {
             console.log(error.response.data);
         }
@@ -116,14 +124,13 @@ export default {
     async updatePassword({ commit, rootState }, { id, password }) {
         commit("setIsLoading", true);
         const payload = {
-            new_password:password,
+            new_password: password,
         };
-       try {
-           await updatePasswordAdmin(rootState.AuthModule.accessToken,id,payload)
-       } catch (error) {
-           showSnack(`Cannot set password for user ${id}`);
-       }
-            
+        try {
+            await updatePasswordAdmin(rootState.AuthModule.accessToken, id, payload);
+        } catch (error) {
+            showSnack(`Cannot set password for user ${id}`);
+        }
 
         commit("setIsLoading", false);
     },
@@ -131,17 +138,14 @@ export default {
     async delete({ commit }, id) {
         commit("setIsLoading", true);
         let check = await removeUser(id);
-        if (check ===  true)
-        {
+        if (check === true) {
             commit("deleteUser", id);
             showSnack(`Deleted user id = ${id}`);
-        }
-        else{
+        } else {
             showSnack(`Can't deleted user id = ${id}`);
         }
 
         commit("setIsLoading", false);
-
     },
 
     async updateEmail({ commit, rootState }, { id, email }) {
@@ -150,7 +154,7 @@ export default {
             email,
         };
         try {
-            await updateEmailAdmin(rootState.AuthModule.accessToken,id , payload);
+            await updateEmailAdmin(rootState.AuthModule.accessToken, id, payload);
         } catch (error) {
             console.log(error);
         }
@@ -163,13 +167,13 @@ export default {
         let payload = {
             user_id: id + "",
             role: "bidder",
-        }
+        };
 
         let user = null;
 
         // call API
         try {
-            user = await updateRole(rootState.AuthModule.accessToken,payload);
+            user = await updateRole(rootState.AuthModule.accessToken, payload);
         } catch (error) {
             console.log(error);
         }
@@ -191,13 +195,13 @@ export default {
         let payload = {
             user_id: id + "",
             role: "seller",
-        }
+        };
 
         let user = null;
 
         // call API
         try {
-            user = await updateRole(rootState.AuthModule.accessToken,payload);
+            user = await updateRole(rootState.AuthModule.accessToken, payload);
         } catch (error) {
             console.log(error);
         }
@@ -221,10 +225,10 @@ export default {
             let requests = await getUpgradeRequests(rootState.AuthModule.accessToken);
 
             requests?.forEach(async (request) => {
-                let user = await getUser(rootState.AuthModule.accessToken,request.user_id);
-    
-                let { point } = await getUserWithPoint(request.user_id)
-    
+                let user = await getUser(rootState.AuthModule.accessToken, request.user_id);
+
+                let { point } = await getUserWithPoint(request.user_id);
+
                 data.push({
                     userId: request.user_id,
                     full_name: user.full_name,
@@ -238,41 +242,31 @@ export default {
             console.log(error);
         }
 
-
-        setTimeout(() => {
-            commit("setUpgradeRequests", data);
-            commit("setIsLoading", false);
-        }, 500);
+        commit("setUpgradeRequests", data);
+        commit("setIsLoading", false);
     },
 
     acceptRequest({ commit, dispatch }, id) {
         commit("setIsLoading", false);
-        setTimeout(() => {
-            dispatch("setAsSeller", id);
-            dispatch("deleteRequest", id);
-            commit("removeUpgradeRequest", id);
-            commit("setIsLoading", false);
-        }, 250);
+        dispatch("setAsSeller", id);
+        dispatch("deleteRequest", id);
+        commit("removeUpgradeRequest", id);
+        commit("setIsLoading", false);
     },
 
     async rejectRequest({ commit, dispatch }, id) {
         commit("setIsLoading", false);
-        setTimeout(() => {
-            dispatch("deleteRequest", id);
-            commit("setIsLoading", false);
-            showSnack(`Rejected request from user ${id}`);
-        }, 250);
+        dispatch("deleteRequest", id);
+        commit("setIsLoading", false);
+        showSnack(`Rejected request from user ${id}`);
     },
 
     async deleteRequest({ commit, rootState }, id) {
         try {
-            await deleteUpgradeRequests(rootState.AuthModule.accessToken,id);
-            setTimeout(() => {
-                commit("removeUpgradeRequest", id);
-            }, 250);
+            await deleteUpgradeRequests(rootState.AuthModule.accessToken, id);
+            commit("removeUpgradeRequest", id);
         } catch (error) {
             console.log(error);
         }
-
     },
 };

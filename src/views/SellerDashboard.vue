@@ -36,7 +36,7 @@ import SoldProducts from "@/views/seller/SoldProducts";
 import { PRODUCT_ADD, PRODUCT_DELETE, PRODUCT_WON, ROLES, USER_RATE } from "@/utils/constants";
 import { socket } from "@/socket/connect";
 
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapState } from "vuex";
 
 export default {
     name: "BidderDashboard",
@@ -45,15 +45,15 @@ export default {
         redirectToHomeIf(this, [ROLES.SELLER]);
     },
     computed: {
-        ...mapState("CurrentUserModule", ["id","role"]),
+        ...mapState("CurrentUserModule", ["id", "role"]),
     },
     methods: {
-        ...mapActions("ProductModule", ["fetchOngoing","fetchCompleted"]),
+        ...mapActions("ProductModule", ["fetchOngoing", "fetchCompleted"]),
     },
     created() {
         socket.on(PRODUCT_WON, (data) => {
             // Notify user and redirect to home
-            if (data.user_id == this.id){
+            if (data.user_id == this.id) {
                 this.fetchOngoing();
                 this.fetchCompleted();
             }
@@ -61,7 +61,7 @@ export default {
 
         socket.on(PRODUCT_ADD, (data) => {
             // Get all products
-            if (data.user_id == this.id){
+            if (data.user_id == this.id) {
                 this.fetchOngoing();
                 this.fetchCompleted();
             }
@@ -69,7 +69,7 @@ export default {
 
         socket.on(PRODUCT_DELETE, (data) => {
             // Get all products
-            if (data.user_id == this.id){
+            if (data.user_id == this.id) {
                 this.fetchOngoing();
                 this.fetchCompleted();
             }
@@ -77,7 +77,8 @@ export default {
 
         socket.on(USER_RATE, (data) => {
             // Get all ongoing bid and update the list
-            if (data.seller_id == this.id){
+            console.log(data);
+            if (data.seller_id == this.id) {
                 this.fetchOngoing();
                 this.fetchCompleted();
             }

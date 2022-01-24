@@ -111,7 +111,7 @@ export async function createUser(accessToken, payload) {
 export async function removeUser(id) {
     const headers = await getAuthHeader();
     return await axios
-        .delete(`${API_ENDPOINTS.USERS}/${id}`, null, { headers })
+        .delete(`${API_ENDPOINTS.USERS}/${id}`, { headers })
         .then(() => true)
         .catch(() => false);
 }

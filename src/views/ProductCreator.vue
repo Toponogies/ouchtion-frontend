@@ -126,7 +126,7 @@
                                 :disabled="!enableBuyNow"
                             >
                                 <template v-slot:prepend>
-                                    <div>k&#x20AB;</div>
+                                    <div>&#x20AB;</div>
                                 </template>
                             </v-text-field>
                         </v-row>
@@ -241,9 +241,7 @@
                                 v-model="selectedCategories"
                                 :items="availableCategories"
                                 :search-input.sync="categorySearchString"
-                                multiple
                                 chips
-                                deletable-chips
                                 @change="categorySearchString = ''"
                             ></v-autocomplete>
                         </v-row>
@@ -336,7 +334,7 @@ export default {
             endTime: null,
             allowAutoExtension: false,
             availableCategories: [],
-            selectedCategories: [],
+            selectedCategories: null,
             categorySearchString: "",
             description: "<p></p>",
             tiptapExtensions: [
@@ -406,7 +404,7 @@ export default {
 
                 this.endDate !== null,
                 this.endTime !== null,
-                this.selectedCategories.length > 0,
+                this.selectedCategories !== null,
                 this.isDescriptionEmpty === false,
                 this.images.length >= 3,
             ];
@@ -424,7 +422,7 @@ export default {
             await this.addProduct({
                 name: this.name,
                 images: this.images,
-                category_id: this.selectedCategories[0],
+                category_id: this.selectedCategories,
                 init_price: this.bidStartingPrice,
                 endDate: this.endDate,
                 endTime: this.endTime,
