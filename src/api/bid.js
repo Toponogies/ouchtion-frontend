@@ -16,7 +16,7 @@ export const buyProductNow = async (product_id) => {
     const headers = await getAuthHeader();
     const payload = { product_id };
     return await axios
-        .post(`${API_ENDPOINTS.BIDDINGS}/buyProducts`, payload, { headers })
+        .post(`${API_ENDPOINTS.BIDDINGS}/buyProduct`, payload, { headers })
         .then(() => true)
         .catch(() => false);
 };
