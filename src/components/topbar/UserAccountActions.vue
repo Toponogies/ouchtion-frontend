@@ -25,7 +25,7 @@
                     </v-list-item>
                     <v-list-item v-if="role === consts.ROLES.BIDDER" to="/dashboard/b">
                         <v-list-item-icon><v-icon>mdi-currency-usd</v-icon></v-list-item-icon>
-                        <v-list-item-title>My Bids</v-list-item-title>
+                        <v-list-item-title>My Bids & Watchlist</v-list-item-title>
                     </v-list-item>
                     <v-list-item v-if="role === consts.ROLES.ADMIN" to="/dashboard/a">
                         <v-list-item-icon><v-icon>mdi-view-dashboard</v-icon></v-list-item-icon>

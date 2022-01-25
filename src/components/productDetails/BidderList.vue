@@ -9,8 +9,8 @@
                 </template>
 
                 <!-- Actions (only shown to sellers) -->
-                <template v-slot:[`item.actions`]="{ item }" v-if="userCurrentRole === utils.ROLES.SELLER">
-                    <v-btn text small @click="blockBidder(item)" color="error">
+                <template v-slot:[`item.actions`]="{ item }" v-if="role === utils.ROLES.SELLER && id === seller.id">
+                    <v-btn text small @click.stop="blockBidder(item)" color="error">
                         <v-icon left>mdi-cancel</v-icon>
                         <span>Block</span>
                     </v-btn>
@@ -38,16 +38,16 @@ export default {
             ],
             local_tableHeadersAction: [{ text: "Actions", value: "actions", sortable: false, align: "right" }],
             bidderList: [],
-            userCurrentRole: null,
         };
     },
     computed: {
-        ...mapState("CurrentProductModule", ["bid"]),
+        ...mapState("CurrentProductModule", ["seller", "bid"]),
+        ...mapState("CurrentUserModule", ["id", "role"]),
         bidderListCount: function () {
             return this.bid.biddings.length;
         },
         tableHeaders: function () {
-            if (this.userCurrentRole === ROLES.SELLER) {
+            if (this.role === ROLES.SELLER && this.id === this.seller.id) {
                 return [...this.local_tableHeaders, ...this.local_tableHeadersAction];
             } else {
                 return [...this.local_tableHeaders];
@@ -56,8 +56,9 @@ export default {
     },
     methods: {
         ...mapActions("CurrentProductModule", ["removeAndBlockBidder"]),
+
         blockBidder(item) {
-            this.removeAndBlockBidder(item.bid_id);
+            this.removeAndBlockBidder(item.bidding_id);
         },
     },
 };

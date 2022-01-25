@@ -130,7 +130,7 @@ export default {
         dispatch("setBidAvailability");
     },
 
-    async getBiddings({ state, rootState }) {
+    async getBiddings({ commit, state, rootState }) {
         // Biddings
         try {
             let productBiddings = await getProductBidding(state.id);
@@ -172,9 +172,18 @@ export default {
 
         // Can the bidder bid directly on this product?
         let canBid = await getBiddingPermisson(state.id);
-        if (canBid) {
-            commit("setBidAvailability", BID_AVAILABILITY.CAN_BID);
-            return;
+        switch (canBid) {
+            case BID_AVAILABILITY.CAN_BID:
+                commit("setBidAvailability", BID_AVAILABILITY.CAN_BID);
+                return;
+            case BID_AVAILABILITY.REQUEST_REQUIRED:
+                commit("setBidAvailability", BID_AVAILABILITY.REQUEST_REQUIRED);
+                return;
+            case BID_AVAILABILITY.REQUEST_FAILED:
+                commit("setBidAvailability", BID_AVAILABILITY.REQUEST_FAILED);
+                return;
+            default:
+                break;
         }
 
         // The bidder cannot bid directly. Did they send a request to the seller?
@@ -265,7 +274,8 @@ export default {
     },
 
     async removeAndBlockBidder({ dispatch }, bid_id) {
-        let result = await this.blockBidder(bid_id);
+        console.log(`Calling block on bid id = ${bid_id}`);
+        let result = await blockBidder(bid_id);
 
         if (result) {
             // re-fetch bidding list
