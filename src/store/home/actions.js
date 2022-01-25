@@ -1,11 +1,11 @@
 import { getData } from "@/api/search";
 import { getUserWithPoint } from "@/api/user";
-import { IMAGE_API_ENDPOINT, HOME_FEATURED_PRODUCTS_LIMIT } from "@/utils/constants";
+import { IMAGE_API_ENDPOINT, HOME_FEATURED_PRODUCTS_LIMIT, SEARCH_ORDER } from "@/utils/constants";
 
 export default {
     async fetchAll({ commit }) {
         try {
-            let params1 = { sort: "time_asc", number: HOME_FEATURED_PRODUCTS_LIMIT };
+            let params1 = { sort: SEARCH_ORDER.TIME_ASC, number: HOME_FEATURED_PRODUCTS_LIMIT };
             let products = await getData(params1);
             let user = null;
             let productsEndingSoon = [];
@@ -27,7 +27,7 @@ export default {
 
             commit("updateProductsEndingSoon", productsEndingSoon);
 
-            let params2 = { sort: "bidding_desc", number: HOME_FEATURED_PRODUCTS_LIMIT };
+            let params2 = { sort: SEARCH_ORDER.BIDDING_DESC, number: HOME_FEATURED_PRODUCTS_LIMIT };
             products = await getData(params2);
 
             let productsMostBidders = [];
@@ -48,7 +48,7 @@ export default {
             });
             commit("updateProductsMostBidders", productsMostBidders);
 
-            let params3 = { sort: "price_desc", number: HOME_FEATURED_PRODUCTS_LIMIT };
+            let params3 = { sort: SEARCH_ORDER.PRICE_DESC, number: HOME_FEATURED_PRODUCTS_LIMIT };
             products = await getData(params3);
 
             let productsHighestPrice = [];

@@ -13,6 +13,7 @@ export const SearchModule = {
         queryContent: null,
         queryLimit: SEARCH_RESULTS_PER_PAGE,
         queryPage: null,
+        querySort: null,
 
         // result
         resultTotalCount: 0,

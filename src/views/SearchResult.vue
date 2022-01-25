@@ -22,6 +22,15 @@
                 </v-col>
             </v-row>
 
+            <!-- Sorting options -->
+            <v-row no-gutters class="pa-2">
+                <v-chip-group mandatory active-class="primary--text" v-model="selectedSortType">
+                    <v-chip v-for="type in sortTypes" :key="type">
+                        {{ type }}
+                    </v-chip>
+                </v-chip-group>
+            </v-row>
+
             <!-- Listing -->
             <v-row no-gutters class="pa-2" v-for="product in resultCurrentContent" :key="product.id">
                 <product-card-large
@@ -56,7 +65,7 @@ import ProductCardLarge from "@/components/productListings/ProductCardLarge";
 import { mapState, mapGetters, mapActions } from "vuex";
 import { scrollToTop } from "@/utils/scrollToTop";
 import { getCategoryName } from "@/utils/categoryUtils";
-import { BIDDING_BUY, PRODUCT_ADD, PRODUCT_DELETE, PRODUCT_WON, SEARCH_TYPES } from "@/utils/constants";
+import { BIDDING_BUY, PRODUCT_ADD, PRODUCT_DELETE, PRODUCT_WON, SEARCH_ORDER, SEARCH_TYPES } from "@/utils/constants";
 import { socket } from "@/socket/connect";
 
 export default {
@@ -67,6 +76,16 @@ export default {
         return {
             utils: { SEARCH_TYPES, getCategoryName },
             local_queryPage: null,
+            selectedSortType: null,
+            selectedSortKey: SEARCH_ORDER.TIME_ASC,
+            sortTypes: [
+                "Ending soon",
+                "Ending late",
+                "Most biddings",
+                "Least biddings",
+                "Price low to high",
+                "Price high to low",
+            ],
         };
     },
 
@@ -74,6 +93,30 @@ export default {
         local_queryPage() {
             this.switchPage();
             scrollToTop(this);
+        },
+        selectedSortType() {
+            // find enum corresponding to selected sort type
+            switch (this.selectedSortType) {
+                case "Ending soon":
+                    this.selectedSortKey = SEARCH_ORDER.TIME_ASC;
+                    break;
+                case "Ending late":
+                    this.selectedSortKey = SEARCH_ORDER.TIME_DESC;
+                    break;
+                case "Most biddings":
+                    this.selectedSortKey = SEARCH_ORDER.BIDDING_ASC;
+                    break;
+                case "Least biddings":
+                    this.selectedSortKey = SEARCH_ORDER.BIDDING_DESC;
+                    break;
+                case "Price low to high":
+                    this.selectedSortKey = SEARCH_ORDER.PRICE_ASC;
+                    break;
+                case "Price high to low":
+                    this.selectedSortKey = SEARCH_ORDER.PRICE_DESC;
+                    break;
+            }
+            this.switchPage();
         },
     },
 
@@ -102,6 +145,7 @@ export default {
             this.setQuery({
                 keyword: this.$route.query.q,
                 categoryId: this.$route.query.cat,
+                sort: this.selectedSortKey,
                 page: this.local_queryPage,
             });
             this.populateSearch();
@@ -112,6 +156,7 @@ export default {
         this.setQuery({
             keyword: this.$route.query.q,
             categoryId: this.$route.query.cat,
+            sort: this.selectedSortKey,
             page: this.$route.query.p,
         });
         this.populateSearch();
@@ -121,6 +166,7 @@ export default {
         this.setQuery({
             keyword: to.query.q,
             categoryId: to.query.cat,
+            sort: this.selectedSortKey,
             page: to.query.p,
         });
         this.populateSearch();
