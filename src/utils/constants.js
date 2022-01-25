@@ -44,6 +44,15 @@ export const DELTA_THRESHOLD_END_SHOW_TIME = 86400; // 1 day
 /* Comment string for "Bidder did not pay" button */
 export const BIDDER_NOT_PAY_COMMENT = "Người thắng không thanh toán";
 
+/* Bid availability (for bidders) */
+export const BID_AVAILABILITY = {
+    IS_SOLD: "is_sold",
+    CAN_BID: "can_bid",
+    REQUEST_REQUIRED: "request_required",
+    REQUEST_PENDING: "request_pending",
+    REQUEST_FAILED: "request_failed",
+};
+
 /* socket events */
 export const AUTH_REGISTER = "AUTH_REGISTER";
 export const AUTH_VERIFY = "AUTH_VERIFY";

@@ -45,6 +45,7 @@ const defaultState = () => ({
     // current user status for this product
     isBlockedFromBidding: false,
     isOnWatchlist: false,
+    bidAvailability: null,
 
     // bidding requests (bidder's button)
     request: {

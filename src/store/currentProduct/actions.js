@@ -14,7 +14,7 @@ import {
 import { find } from "lodash-es";
 import { today, toLongTimestamp } from "@/utils/timeUtils";
 import { hiddenName } from "@/utils/hiddenName";
-import { IMAGE_API_ENDPOINT, ROLES } from "@/utils/constants";
+import { BID_AVAILABILITY, IMAGE_API_ENDPOINT, ROLES } from "@/utils/constants";
 import { showSnack } from "@/utils/showSnack";
 import { appendDescription } from "@/api/productDescription";
 import { buyProductNow, placeBids, turnOffAutoBid, turnOnAutoBid } from "@/api/bid";
@@ -143,48 +143,56 @@ export default {
 
         // Is the current product in user's watchlist?
         // Dispatch a getWatchlist call (just in case)
-        let watchlist = await getWatchList()
+        let watchlist = await getWatchList();
         // Filter from watchlistItems
         const isOnWatchlist = find(watchlist, { product_id: state.id }) !== undefined;
         commit("setIsOnWatchlist", isOnWatchlist);
 
-        if (rootState.CurrentUserModule.role === ROLES.BIDDER)
-        {
-            // Can the bidder bid on this product?
-            let canBid = await getBiddingPermisson(productInfo.product_id);
-            // No, because...
-            if (!canBid) {
-                // The bidder cannot bid directly, and...
-                let isBlockedFromBidding = true;
-                let requestSent = false;
-                let isBlockedFromRequesting = false;
+        // Bidders: can they bid on this product?
+        dispatch("setBidAvailability");
+    },
 
-                let existingBidRequest = await checkBidRequest(productInfo.product_id);
+    async setBidAvailability({ commit, state, rootState }) {
+        // Everyone else who's not a bidder: you don't need to check for this.
+        if (rootState.CurrentUserModule.role !== ROLES.BIDDER) {
+            return;
+        }
 
-                // They haven't sent a request to the seller. They can send one.
-                if (existingBidRequest.length === 0) {
-                    // Do something
-                }
+        // Is the product sold?
+        if (state.isSold) {
+            commit("setBidAvailability", BID_AVAILABILITY.IS_SOLD);
+            return;
+        }
 
-                // They have already sent a request, but...
-                else {
-                    requestSent = true;
-                    existingBidRequest = existingBidRequest[0];
+        // Can the bidder bid directly on this product?
+        let canBid = await getBiddingPermisson(state.id);
+        if (canBid) {
+            commit("setBidAvailability", BID_AVAILABILITY.CAN_BID);
+            return;
+        }
 
-                    // It's waiting for seller's decision.
-                    if (!existingBidRequest.is_processed) {
-                    }
+        // The bidder cannot bid directly. Did they send a request to the seller?
+        let existingBidRequest = await checkBidRequest(state.id);
 
-                    // It's rejected
-                    else if (existingBidRequest.type === "DENY") {
-                        isBlockedFromRequesting = true;
-                    }
-                }
+        // They haven't sent a request to the seller. They can send one.
+        if (existingBidRequest.length === 0) {
+            commit("setBidAvailability", BID_AVAILABILITY.REQUEST_REQUIRED);
+            return;
+        }
 
-                console.log("This should reach here");
+        // They have already sent a request, but...
+        existingBidRequest = existingBidRequest[0];
 
-                commit("setBidAvailability", { isBlockedFromBidding, requestSent, isBlockedFromRequesting });
-            }
+        // It's waiting for seller's decision.
+        if (!existingBidRequest.is_processed) {
+            commit("setBidAvailability", BID_AVAILABILITY.REQUEST_PENDING);
+            return;
+        }
+
+        // It's rejected
+        if (existingBidRequest.type === "DENY") {
+            commit("setBidAvailability", BID_AVAILABILITY.REQUEST_FAILED);
+            return;
         }
     },
 
@@ -203,8 +211,7 @@ export default {
     },
 
     async getBidderRequests({ commit, state, rootState }) {
-        if (rootState.CurrentUserModule.id === state.seller.id)
-        {
+        if (rootState.CurrentUserModule.id === state.seller.id) {
             const requests = await getAllBidRequests(state.id);
             if (requests) {
                 let data = [];
@@ -218,7 +225,7 @@ export default {
                     });
                 });
                 commit("setBidderRequests", data);
-            } 
+            }
             // else {
             //     showSnack(`Failed to get bidding requests for this product.`);
             // }

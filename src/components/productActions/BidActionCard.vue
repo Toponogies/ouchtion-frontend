@@ -4,7 +4,7 @@
         <v-row no-gutters class="px-4 pt-4 pb-2">
             <div>BID</div>
             <v-spacer></v-spacer>
-            <v-icon dark v-if="btnDisable">mdi-arrow-right</v-icon>
+            <v-icon dark v-if="!btnDisable">mdi-arrow-right</v-icon>
         </v-row>
 
         <!-- Price -->
@@ -45,7 +45,7 @@
 
 <script>
 import { mapState, mapActions, mapMutations } from "vuex";
-import { ROLES } from "@/utils/constants";
+import { BID_AVAILABILITY, ROLES } from "@/utils/constants";
 import UsernameCard from "@/components/productDetails/UsernameCard";
 import BidActionModal from "@/components/productActions/BidActionModal";
 import BidRequestModal from "@/components/productActions/BidRequestModal";
@@ -64,41 +64,60 @@ export default {
     },
 
     computed: {
-        ...mapState("CurrentProductModule", ["endTime", "bid", "isBlockedFromBidding", "isSold", "request"]),
+        ...mapState("CurrentProductModule", ["endTime", "bid", "bidAvailability"]),
         ...mapState("CurrentUserModule", ["role"]),
+
         cardColor: function () {
-            return this.isBlockedFromBidding ? "grey darken-3 white--text" : "orange darken-3 white--text";
+            if (this.role === ROLES.SELLER || this.role === ROLES.ADMIN) {
+                return "orange darken-3 white--text";
+            }
+
+            switch (this.bidAvailability) {
+                case BID_AVAILABILITY.CAN_BID:
+                    return "orange darken-3 white--text";
+                case BID_AVAILABILITY.REQUEST_REQUIRED:
+                    return "orange darken-4 white--text";
+                default:
+                    return "grey darken-3 white--text";
+            }
         },
 
         btnDisable: function () {
             if (this.role === ROLES.SELLER || this.role === ROLES.ADMIN) return true;
 
-            if (this.isSold) {
-                return true;
-            } else if (this.isBlockedFromBidding && !this.request.isSent && !this.request.isBlockedFromRequesting) {
-                return false;
-            } else if (this.isBlockedFromBidding && this.request.isSent && !this.request.isBlockedFromRequesting) {
-                return true;
-            } else if (this.isBlockedFromBidding && this.request.isSent && this.request.isBlockedFromRequesting) {
-                return true;
+            switch (this.bidAvailability) {
+                case BID_AVAILABILITY.CAN_BID:
+                case BID_AVAILABILITY.REQUEST_REQUIRED:
+                    return false;
+                default:
+                    return true;
             }
-            return false;
         },
 
         normalStatusLine: function () {
-            return !this.isSold && !this.isBlockedFromBidding;
-        },
-        statusLine: function () {
-            if (this.isSold) {
-                return "Product is sold.";
-            } else if (this.isBlockedFromBidding && !this.request.isSent && !this.request.isBlockedFromRequesting) {
-                return "You must send a request to the seller.";
-            } else if (this.isBlockedFromBidding && this.request.isSent && !this.request.isBlockedFromRequesting) {
-                return "Please wait for seller's response to your request.";
-            } else if (this.isBlockedFromBidding && this.request.isSent && this.request.isBlockedFromRequesting) {
-                return "You cannot bid on this product.";
+            if (this.role === ROLES.SELLER || this.role === ROLES.ADMIN) return true;
+
+            switch (this.bidAvailability) {
+                case BID_AVAILABILITY.CAN_BID:
+                    return true;
+                default:
+                    return false;
             }
-            return "";
+        },
+
+        statusLine: function () {
+            switch (this.bidAvailability) {
+                case BID_AVAILABILITY.IS_SOLD:
+                    return "Product is sold.";
+                case BID_AVAILABILITY.REQUEST_REQUIRED:
+                    return "You must send a request to the seller.";
+                case BID_AVAILABILITY.REQUEST_PENDING:
+                    return "Please wait for seller's response to your request.";
+                case BID_AVAILABILITY.REQUEST_FAILED:
+                    return "You cannot bid on this product.";
+                default:
+                    return "Unknown state";
+            }
         },
     },
 
@@ -117,15 +136,15 @@ export default {
 
                 // For bidders: show the modal
                 case ROLES.BIDDER:
-                    if (!this.isBlockedFromBidding) {
-                        this.newPrice = this.suggestedBidPrice;
-                        this.setBidModalState(true);
-                    } else if (
-                        this.isBlockedFromBidding &&
-                        !this.request.isSent &&
-                        !this.request.isBlockedFromRequesting
-                    ) {
-                        this.setBidRequestModalState(true);
+                    switch (this.bidAvailability) {
+                        case BID_AVAILABILITY.CAN_BID:
+                            this.setBidModalState(true);
+                            break;
+                        case BID_VAILABILITY.REQUEST_REQUIRED:
+                            this.setBidRequestModalState(true);
+                            break;
+                        default:
+                            break;
                     }
                     break;
 
