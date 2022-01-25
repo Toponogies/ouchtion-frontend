@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_ENDPOINTS } from "@/utils/constants";
+import { API_ENDPOINTS, BID_AVAILABILITY } from "@/utils/constants";
 import { getAuthHeader } from "./utils/getAuthHeader";
 
 export const placeBids = async (product_id, bid_price) => {
@@ -53,8 +53,14 @@ export async function getBiddingPermisson(product_id) {
     console.log(product_id);
     return await axios
         .get(`${API_ENDPOINTS.BIDDINGS}/bidders/biddingPermission/products/${product_id}`, { headers })
-        .then(() => true)
-        .catch(() => false);
+        .then(() => BID_AVAILABILITY.CAN_BID)
+        .catch((error) => {
+            if (Array.isArray(error.response.data)) {
+                return BID_AVAILABILITY.REQUEST_FAILED;
+            } else {
+                return BID_AVAILABILITY.REQUEST_REQUIRED;
+            }
+        });
 }
 
 // BIDDER/CHECK IF REQEUSTS IS SENT
@@ -144,7 +150,7 @@ export const rejectBidRequest = async (request_id, user_id, product_id) => {
 export const blockBidder = async (bid_id) => {
     const headers = await getAuthHeader();
     return await axios
-        .post(`${API_ENDPOINTS.BIDDINGS}/sellers/biddingRequests/${bid_id}`, { headers })
+        .post(`${API_ENDPOINTS.BIDDINGS}/rejectBidding/${bid_id}`, null, { headers })
         .then(() => true)
         .catch(() => false);
 };

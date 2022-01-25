@@ -140,7 +140,7 @@ export default {
                         case BID_AVAILABILITY.CAN_BID:
                             this.setBidModalState(true);
                             break;
-                        case BID_VAILABILITY.REQUEST_REQUIRED:
+                        case BID_AVAILABILITY.REQUEST_REQUIRED:
                             this.setBidRequestModalState(true);
                             break;
                         default:

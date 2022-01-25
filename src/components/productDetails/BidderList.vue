@@ -9,14 +9,10 @@
                 </template>
 
                 <!-- Actions (only shown to sellers) -->
-                <template v-slot:[`item.actions`]="{ item }" v-if="userCurrentRole === utils.ROLES.SELLER">
-                    <v-btn text small @click="acceptBid(item)" color="success">
-                        <v-icon left>mdi-check</v-icon>
-                        <span>Accept</span>
-                    </v-btn>
-                    <v-btn text small @click="rejectBid(item)" color="error">
-                        <v-icon left>mdi-close</v-icon>
-                        <span>Reject</span>
+                <template v-slot:[`item.actions`]="{ item }" v-if="role === utils.ROLES.SELLER && id === seller.id">
+                    <v-btn text small @click.stop="blockBidder(item)" color="error">
+                        <v-icon left>mdi-cancel</v-icon>
+                        <span>Block</span>
                     </v-btn>
                 </template>
             </v-data-table>
@@ -25,7 +21,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 import { ROLES } from "@/utils/constants";
 import { formatPrice } from "@/utils/priceUtils";
 
@@ -42,20 +38,27 @@ export default {
             ],
             local_tableHeadersAction: [{ text: "Actions", value: "actions", sortable: false, align: "right" }],
             bidderList: [],
-            userCurrentRole: null,
         };
     },
     computed: {
-        ...mapState("CurrentProductModule", ["bid"]),
+        ...mapState("CurrentProductModule", ["seller", "bid"]),
+        ...mapState("CurrentUserModule", ["id", "role"]),
         bidderListCount: function () {
             return this.bid.biddings.length;
         },
         tableHeaders: function () {
-            if (this.userCurrentRole === ROLES.SELLER) {
+            if (this.role === ROLES.SELLER && this.id === this.seller.id) {
                 return [...this.local_tableHeaders, ...this.local_tableHeadersAction];
             } else {
                 return [...this.local_tableHeaders];
             }
+        },
+    },
+    methods: {
+        ...mapActions("CurrentProductModule", ["removeAndBlockBidder"]),
+
+        blockBidder(item) {
+            this.removeAndBlockBidder(item.bidding_id);
         },
     },
 };

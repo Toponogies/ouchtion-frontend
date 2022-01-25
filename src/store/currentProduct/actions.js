@@ -9,6 +9,7 @@ import {
     getAllBidRequests,
     acceptBidRequest,
     rejectBidRequest,
+    blockBidder,
 } from "@/api/bid";
 
 import { find } from "lodash-es";
@@ -24,7 +25,7 @@ export default {
         commit("setProductId", parseInt(id));
     },
 
-    async fetchAllDetails({ commit, dispatch, state, rootState }) {
+    async fetchAllDetails({ commit, dispatch, state }) {
         // Basic info
         let productInfo = {};
         try {
@@ -89,30 +90,7 @@ export default {
         }
 
         // Biddings
-        try {
-            let productBiddings = await getProductBidding(state.id);
-            // Expand timestamp, then censor names
-            productBiddings = productBiddings.map((each) => ({
-                ...each,
-                time: toLongTimestamp(each.time),
-                full_name: hiddenName(each.full_name),
-            }));
-
-            let isAutoBidEnabled = false;
-
-            productBiddings.forEach((bidding) => {
-                if (
-                    bidding.user_id === rootState.CurrentUserModule.id &&
-                    bidding.max_price !== null &&
-                    bidding.is_auto_process === 1
-                )
-                    isAutoBidEnabled = true;
-            });
-            commit("setProductBiddings", productBiddings);
-            commit("setIsAutoBidState", isAutoBidEnabled);
-        } catch (error) {
-            console.log(`Fetching product biddings failed: ${error}`);
-        }
+        dispatch("getBiddings");
 
         // Related products
         try {
@@ -152,6 +130,34 @@ export default {
         dispatch("setBidAvailability");
     },
 
+    async getBiddings({ commit, state, rootState }) {
+        // Biddings
+        try {
+            let productBiddings = await getProductBidding(state.id);
+            // Expand timestamp, then censor names
+            productBiddings = productBiddings.map((each) => ({
+                ...each,
+                time: toLongTimestamp(each.time),
+                full_name: hiddenName(each.full_name),
+            }));
+
+            let isAutoBidEnabled = false;
+
+            productBiddings.forEach((bidding) => {
+                if (
+                    bidding.user_id === rootState.CurrentUserModule.id &&
+                    bidding.max_price !== null &&
+                    bidding.is_auto_process === 1
+                )
+                    isAutoBidEnabled = true;
+            });
+            commit("setProductBiddings", productBiddings);
+            commit("setIsAutoBidState", isAutoBidEnabled);
+        } catch (error) {
+            console.log(`Fetching product biddings failed: ${error}`);
+        }
+    },
+
     async setBidAvailability({ commit, state, rootState }) {
         // Everyone else who's not a bidder: you don't need to check for this.
         if (rootState.CurrentUserModule.role !== ROLES.BIDDER) {
@@ -166,9 +172,18 @@ export default {
 
         // Can the bidder bid directly on this product?
         let canBid = await getBiddingPermisson(state.id);
-        if (canBid) {
-            commit("setBidAvailability", BID_AVAILABILITY.CAN_BID);
-            return;
+        switch (canBid) {
+            case BID_AVAILABILITY.CAN_BID:
+                commit("setBidAvailability", BID_AVAILABILITY.CAN_BID);
+                return;
+            case BID_AVAILABILITY.REQUEST_REQUIRED:
+                commit("setBidAvailability", BID_AVAILABILITY.REQUEST_REQUIRED);
+                return;
+            case BID_AVAILABILITY.REQUEST_FAILED:
+                commit("setBidAvailability", BID_AVAILABILITY.REQUEST_FAILED);
+                return;
+            default:
+                break;
         }
 
         // The bidder cannot bid directly. Did they send a request to the seller?
@@ -255,6 +270,19 @@ export default {
             showSnack(`Rejected request id = ${requestId}`);
         } else {
             showSnack(`Failed to reject request id = ${requestId}`);
+        }
+    },
+
+    async removeAndBlockBidder({ dispatch }, bid_id) {
+        console.log(`Calling block on bid id = ${bid_id}`);
+        let result = await blockBidder(bid_id);
+
+        if (result) {
+            // re-fetch bidding list
+            dispatch("getBiddings");
+            showSnack(`Blocked bidding id = ${bid_id}.`);
+        } else {
+            showSnack(`Failed to block bidding id = ${bid_id}`);
         }
     },
 
