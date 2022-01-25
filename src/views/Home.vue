@@ -44,11 +44,6 @@ export default {
             this.fetchAll();
         });
 
-        socket.on(BIDDING_BUY, () => {
-            // Get all products again and update the list
-            this.fetchAll();
-        });
-
         socket.on(PRODUCT_WON, () => {
             // Get all products and update the list
             this.fetchAll();

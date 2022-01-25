@@ -262,7 +262,7 @@ export default {
             console.log(data.product_id);
             console.log(data.user_id);
             // Notify and update the view to disable buttons
-            if (data.product_id == this.id) {
+            if (data.user_id == this.user_id) {
                 this.fetchAllDetails();
             }
         });
@@ -289,14 +289,6 @@ export default {
             console.log(data);
             if (data.product_id == this.id) {
                 this.getBidderRequests();
-            }
-        });
-
-        socket.on(BIDDING_BUY, (data) => {
-            console.log(`Product id = ${data.product_id} was bought`);
-            // Notify and update the view to disable buttons
-            if (data.product_id == this.id) {
-                this.fetchAllDetails();
             }
         });
 

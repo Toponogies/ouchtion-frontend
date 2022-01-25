@@ -64,7 +64,7 @@ export default {
         ...mapState("CurrentUserModule", ["id", "role"]),
     },
     methods: {
-        ...mapActions("BiddingModule", ["fetchOngoing", "fetchCompleted", "leaveReviewCompleted"]),
+        ...mapActions("BiddingModule", ["fetchOngoing", "fetchCompleted"]),
         ...mapActions("WatchlistModule", ["fetchAll"]),
     },
     created() {
@@ -86,7 +86,6 @@ export default {
             // Get all ongoing bid again and update the list
             if (data.user_id == this.id) {
                 this.fetchOngoing();
-                this.fetchCompleted();
             }
         });
 
@@ -94,7 +93,6 @@ export default {
             // Get all ongoing bid and update the list
             if (data.user_id == this.id) {
                 this.fetchOngoing();
-                this.fetchCompleted();
             }
         });
 
@@ -102,7 +100,6 @@ export default {
             // Get all ongoing bid and update the list
             console.log(data);
             if (data.bidder_id == this.id) {
-                this.fetchOngoing();
                 this.fetchCompleted();
             }
         });

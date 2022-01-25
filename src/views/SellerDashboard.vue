@@ -63,7 +63,6 @@ export default {
             // Get all products
             if (data.user_id == this.id) {
                 this.fetchOngoing();
-                this.fetchCompleted();
             }
         });
 
@@ -77,9 +76,7 @@ export default {
 
         socket.on(USER_RATE, (data) => {
             // Get all ongoing bid and update the list
-            console.log(data);
             if (data.seller_id == this.id) {
-                this.fetchOngoing();
                 this.fetchCompleted();
             }
         });
