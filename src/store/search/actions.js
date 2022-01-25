@@ -1,9 +1,9 @@
 import { getData, getTotal } from "@/api/search";
 import { getUserWithPoint } from "@/api/user";
-import { SEARCH_TYPES, SEARCH_RESULTS_PER_PAGE, IMAGE_API_ENDPOINT } from "@/utils/constants";
+import { SEARCH_TYPES, SEARCH_RESULTS_PER_PAGE, IMAGE_API_ENDPOINT, SEARCH_ORDER } from "@/utils/constants";
 
 export default {
-    setQuery({ commit }, { keyword, categoryId, page }) {
+    setQuery({ commit }, { keyword, categoryId, sort, page }) {
         let type, content;
         if (keyword) {
             type = SEARCH_TYPES.KEYWORD;
@@ -13,10 +13,13 @@ export default {
             content = categoryId;
         }
 
+        let _sort = SEARCH_ORDER.TIME_ASC;
+        if (sort) _sort = sort;
+
         let _page = 1;
         if (page) _page = page;
 
-        commit("setQuery", { type, content, page: _page });
+        commit("setQuery", { type, content, page: _page, sort: _sort });
     },
 
     async fetchResult({ commit, state }) {
@@ -24,6 +27,7 @@ export default {
             result = [];
         let keyword = undefined;
         let category = undefined;
+        let sort = state.querySort;
         let products = [];
         switch (state.queryType) {
             case SEARCH_TYPES.KEYWORD:
@@ -37,7 +41,7 @@ export default {
         }
 
         try {
-            products = await getTotal(keyword,category);
+            products = await getTotal(keyword, category, sort);
 
             total = products.length;
 
@@ -46,12 +50,13 @@ export default {
                 category: category,
                 number: SEARCH_RESULTS_PER_PAGE,
                 page: state.queryPage - 1,
-            }
+                sort,
+            };
 
             products = await getData(params);
 
             let user = null;
-            products.forEach(async(product) => {
+            products.forEach(async (product) => {
                 user = await getUserWithPoint(product.buyer_id);
                 result.push({
                     id: product.product_id,

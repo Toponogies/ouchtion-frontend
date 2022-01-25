@@ -30,6 +30,14 @@ export const SEARCH_TYPES = {
     KEYWORD: "keyword",
     CATEGORY: "category",
 };
+export const SEARCH_ORDER = {
+    TIME_ASC: "time_asc",
+    TIME_DESC: "time_desc",
+    BIDDING_ASC: "bidding_asc",
+    BIDDING_DESC: "bidding_desc",
+    PRICE_ASC: "price_asc",
+    PRICE_DESC: "price_desc",
+};
 export const SEARCH_BOX_FEATURED_CATEGORIES_LIMIT = 6;
 export const SEARCH_RESULTS_PER_PAGE = 10;
 export const SEARCH_PAGINATION_VISIBLE_PAGES = 7;

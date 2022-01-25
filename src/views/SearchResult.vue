@@ -13,40 +13,54 @@
             </div>
 
             <!-- Placeholder (no results) -->
-            <v-row no-gutters class="pa-2" v-if="resultTotalCount === 0">
-                <v-col>
-                    <v-row no-gutters justify="center" align="center" class="d-flex flex-column">
-                        <v-icon large color="grey" class="mb-1">mdi-magnify</v-icon>
-                        <div class="grey--text mt-1">No results</div>
-                    </v-row>
-                </v-col>
-            </v-row>
+            <div v-if="resultTotalCount === 0">
+                <v-row no-gutters class="pa-2">
+                    <v-col>
+                        <v-row no-gutters justify="center" align="center" class="d-flex flex-column">
+                            <v-icon large color="grey" class="mb-1">mdi-magnify</v-icon>
+                            <div class="grey--text mt-1">No results</div>
+                        </v-row>
+                    </v-col>
+                </v-row>
+            </div>
 
-            <!-- Listing -->
-            <v-row no-gutters class="pa-2" v-for="product in resultCurrentContent" :key="product.id">
-                <product-card-large
-                    :id="product.id"
-                    :title="product.title"
-                    :image="product.image"
-                    :bidderCount="product.bidderCount"
-                    :bidHighestPrice="product.bidHighestPrice"
-                    :bidHighestUser="product.bidHighestUser"
-                    :buyNowPrice="product.buyNowPrice"
-                    :startTime="product.startTime"
-                    :endTime="product.endTime"
-                    :isOnWatchlist="product.isOnWatchlist"
-                ></product-card-large>
-            </v-row>
+            <!-- Results -->
+            <div v-else>
+                <!-- Sorting options -->
+                <v-row no-gutters class="pa-2">
+                    <v-chip-group mandatory active-class="primary--text" v-model="selectedSortType">
+                        <v-chip v-for="type in sortTypes" :key="type">
+                            {{ type }}
+                        </v-chip>
+                    </v-chip-group>
+                </v-row>
 
-            <!-- List pager -->
-            <v-pagination
-                circle
-                class="pt-4"
-                :length="resultPageCount"
-                v-model="local_queryPage"
-                :total-visible="resultPagerVisibleCount"
-                v-if="resultTotalCount > 0"
-            ></v-pagination>
+                <!-- Listing -->
+                <v-row no-gutters class="pa-2" v-for="product in resultCurrentContent" :key="product.id">
+                    <product-card-large
+                        :id="product.id"
+                        :title="product.title"
+                        :image="product.image"
+                        :bidderCount="product.bidderCount"
+                        :bidHighestPrice="product.bidHighestPrice"
+                        :bidHighestUser="product.bidHighestUser"
+                        :buyNowPrice="product.buyNowPrice"
+                        :startTime="product.startTime"
+                        :endTime="product.endTime"
+                        :isOnWatchlist="product.isOnWatchlist"
+                    ></product-card-large>
+                </v-row>
+
+                <!-- List pager -->
+                <v-pagination
+                    circle
+                    class="pt-4"
+                    :length="resultPageCount"
+                    v-model="local_queryPage"
+                    :total-visible="resultPagerVisibleCount"
+                    v-if="resultTotalCount > 0"
+                ></v-pagination>
+            </div>
         </v-card>
     </v-container>
 </template>
@@ -56,7 +70,7 @@ import ProductCardLarge from "@/components/productListings/ProductCardLarge";
 import { mapState, mapGetters, mapActions } from "vuex";
 import { scrollToTop } from "@/utils/scrollToTop";
 import { getCategoryName } from "@/utils/categoryUtils";
-import { BIDDING_BUY, PRODUCT_ADD, PRODUCT_DELETE, PRODUCT_WON, SEARCH_TYPES } from "@/utils/constants";
+import { BIDDING_BUY, PRODUCT_ADD, PRODUCT_DELETE, PRODUCT_WON, SEARCH_ORDER, SEARCH_TYPES } from "@/utils/constants";
 import { socket } from "@/socket/connect";
 
 export default {
@@ -67,11 +81,50 @@ export default {
         return {
             utils: { SEARCH_TYPES, getCategoryName },
             local_queryPage: null,
+            selectedSortType: null,
+            selectedSortKey: SEARCH_ORDER.TIME_ASC,
+            sortTypes: [
+                "Ending soon",
+                "Ending late",
+                "Most biddings",
+                "Least biddings",
+                "Price low to high",
+                "Price high to low",
+            ],
         };
     },
 
     watch: {
         local_queryPage() {
+            this.switchPage();
+            scrollToTop(this);
+        },
+
+        selectedSortType() {
+            // find enum corresponding to selected sort type
+            this.selectedSortKey = this.sortTypes[this.selectedSortType];
+            switch (this.selectedSortKey) {
+                case "Ending soon":
+                    this.selectedSortKey = SEARCH_ORDER.TIME_ASC;
+                    break;
+                case "Ending late":
+                    this.selectedSortKey = SEARCH_ORDER.TIME_DESC;
+                    break;
+                case "Most biddings":
+                    this.selectedSortKey = SEARCH_ORDER.BIDDING_ASC;
+                    break;
+                case "Least biddings":
+                    this.selectedSortKey = SEARCH_ORDER.BIDDING_DESC;
+                    break;
+                case "Price low to high":
+                    this.selectedSortKey = SEARCH_ORDER.PRICE_ASC;
+                    break;
+                case "Price high to low":
+                    this.selectedSortKey = SEARCH_ORDER.PRICE_DESC;
+                    break;
+            }
+
+            console.log(`Search: selected order key = ${this.selectedSortKey}`);
             this.switchPage();
             scrollToTop(this);
         },
@@ -102,6 +155,7 @@ export default {
             this.setQuery({
                 keyword: this.$route.query.q,
                 categoryId: this.$route.query.cat,
+                sort: this.selectedSortKey,
                 page: this.local_queryPage,
             });
             this.populateSearch();
@@ -112,6 +166,7 @@ export default {
         this.setQuery({
             keyword: this.$route.query.q,
             categoryId: this.$route.query.cat,
+            sort: this.selectedSortKey,
             page: this.$route.query.p,
         });
         this.populateSearch();
@@ -121,6 +176,7 @@ export default {
         this.setQuery({
             keyword: to.query.q,
             categoryId: to.query.cat,
+            sort: this.selectedSortKey,
             page: to.query.p,
         });
         this.populateSearch();

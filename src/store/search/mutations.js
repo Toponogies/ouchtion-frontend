@@ -1,7 +1,8 @@
 export default {
-    setQuery(state, { type, content, page }) {
+    setQuery(state, { type, content, sort, page }) {
         state.queryType = type;
         state.queryContent = content;
+        state.querySort = sort;
         state.queryPage = page;
     },
 
