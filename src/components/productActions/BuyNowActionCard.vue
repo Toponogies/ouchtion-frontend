@@ -1,5 +1,10 @@
 <template>
-    <v-card @click="handleConfirmDialogOpen" :color="cardColor" elevation="4" :disabled="!isBuyNowOptionAvailable && btnDisable">
+    <v-card
+        @click="handleConfirmDialogOpen"
+        :color="cardColor"
+        elevation="4"
+        :disabled="!isBuyNowOptionAvailable && btnDisable"
+    >
         <!-- Header + Decor -->
         <v-row no-gutters class="px-4 pt-4 pb-2">
             <div>BUY NOW</div>
@@ -42,7 +47,7 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import { ROLES } from "@/utils/constants";
+import { BID_AVAILABILITY, ROLES } from "@/utils/constants";
 import UsernameCard from "@/components/productDetails/UsernameCard";
 import BuyNowActionModal from "@/components/productActions/BuyNowActionModal";
 import { formatPrice } from "@/utils/priceUtils";
@@ -61,20 +66,42 @@ export default {
 
     computed: {
         ...mapState("CurrentUserModule", ["role"]),
-        ...mapState("CurrentProductModule", ["buyNow"]),
+        ...mapState("CurrentProductModule", ["buyNow", "bidAvailability"]),
+
         isBuyNowOptionAvailable: function () {
             return this.buyNow.price !== null;
         },
+
         cardColor: function () {
-            return this.isBuyNowOptionAvailable ? "red darken-3 white--text" : "grey darken-3 white--text";
+            if (this.role === ROLES.SELLER || this.role === ROLES.ADMIN) {
+                return "red darken-3 white--text";
+            }
+
+            if (!this.isBuyNowOptionAvailable) {
+                return "grey darken-3 white--text";
+            }
+
+            switch (this.bidAvailability) {
+                case BID_AVAILABILITY.IS_SOLD:
+                    return "grey darken-3 white--text";
+                default:
+                    return "red darken-3 white--text";
+            }
         },
+
         formattedPrice: function () {
             return this.isBuyNowOptionAvailable ? this.utils.formatPrice(this.buyNow.price) : "Not applicable";
         },
+
         btnDisable: function () {
-            if (this.role === ROLES.SELLER || this.role === ROLES.ADMIN)
-                return true;
-            return false;
+            if (this.role === ROLES.SELLER || this.role === ROLES.ADMIN) return true;
+
+            switch (this.bidAvailability) {
+                case BID_AVAILABILITY.IS_SOLD:
+                    return true;
+                default:
+                    return false;
+            }
         },
     },
 
@@ -92,7 +119,13 @@ export default {
 
                 // For bidders: show the modal
                 case ROLES.BIDDER:
-                    this.setBuyNowModalState(true);
+                    switch (this.bidAvailability) {
+                        case BID_AVAILABILITY.IS_SOLD:
+                            break;
+                        default:
+                            this.setBuyNowModalState(true);
+                            break;
+                    }
                     break;
 
                 // For everyone else: do nothing

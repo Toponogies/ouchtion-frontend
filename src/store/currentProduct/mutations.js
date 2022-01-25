@@ -71,10 +71,8 @@ export default {
     },
 
     // bid availability
-    setBidAvailability(state, { isBlockedFromBidding, requestSent, isBlockedFromRequesting }) {
-        state.isBlockedFromBidding = isBlockedFromBidding;
-        state.request.requestSent = requestSent;
-        state.request.isBlockedFromRequesting = isBlockedFromRequesting;
+    setBidAvailability(state, availability) {
+        state.bidAvailability = availability;
     },
 
     // bid requests
