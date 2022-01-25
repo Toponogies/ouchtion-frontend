@@ -9,6 +9,7 @@ import {
     getAllBidRequests,
     acceptBidRequest,
     rejectBidRequest,
+    blockBidder,
 } from "@/api/bid";
 
 import { find } from "lodash-es";
@@ -24,7 +25,7 @@ export default {
         commit("setProductId", parseInt(id));
     },
 
-    async fetchAllDetails({ commit, dispatch, state, rootState }) {
+    async fetchAllDetails({ commit, dispatch, state }) {
         // Basic info
         let productInfo = {};
         try {
@@ -89,30 +90,7 @@ export default {
         }
 
         // Biddings
-        try {
-            let productBiddings = await getProductBidding(state.id);
-            // Expand timestamp, then censor names
-            productBiddings = productBiddings.map((each) => ({
-                ...each,
-                time: toLongTimestamp(each.time),
-                full_name: hiddenName(each.full_name),
-            }));
-
-            let isAutoBidEnabled = false;
-
-            productBiddings.forEach((bidding) => {
-                if (
-                    bidding.user_id === rootState.CurrentUserModule.id &&
-                    bidding.max_price !== null &&
-                    bidding.is_auto_process === 1
-                )
-                    isAutoBidEnabled = true;
-            });
-            commit("setProductBiddings", productBiddings);
-            commit("setIsAutoBidState", isAutoBidEnabled);
-        } catch (error) {
-            console.log(`Fetching product biddings failed: ${error}`);
-        }
+        dispatch("getBiddings");
 
         // Related products
         try {
@@ -150,6 +128,34 @@ export default {
 
         // Bidders: can they bid on this product?
         dispatch("setBidAvailability");
+    },
+
+    async getBiddings({ state, rootState }) {
+        // Biddings
+        try {
+            let productBiddings = await getProductBidding(state.id);
+            // Expand timestamp, then censor names
+            productBiddings = productBiddings.map((each) => ({
+                ...each,
+                time: toLongTimestamp(each.time),
+                full_name: hiddenName(each.full_name),
+            }));
+
+            let isAutoBidEnabled = false;
+
+            productBiddings.forEach((bidding) => {
+                if (
+                    bidding.user_id === rootState.CurrentUserModule.id &&
+                    bidding.max_price !== null &&
+                    bidding.is_auto_process === 1
+                )
+                    isAutoBidEnabled = true;
+            });
+            commit("setProductBiddings", productBiddings);
+            commit("setIsAutoBidState", isAutoBidEnabled);
+        } catch (error) {
+            console.log(`Fetching product biddings failed: ${error}`);
+        }
     },
 
     async setBidAvailability({ commit, state, rootState }) {
@@ -255,6 +261,18 @@ export default {
             showSnack(`Rejected request id = ${requestId}`);
         } else {
             showSnack(`Failed to reject request id = ${requestId}`);
+        }
+    },
+
+    async removeAndBlockBidder({ dispatch }, bid_id) {
+        let result = await this.blockBidder(bid_id);
+
+        if (result) {
+            // re-fetch bidding list
+            dispatch("getBiddings");
+            showSnack(`Blocked bidding id = ${bid_id}.`);
+        } else {
+            showSnack(`Failed to block bidding id = ${bid_id}`);
         }
     },
 

@@ -10,13 +10,9 @@
 
                 <!-- Actions (only shown to sellers) -->
                 <template v-slot:[`item.actions`]="{ item }" v-if="userCurrentRole === utils.ROLES.SELLER">
-                    <v-btn text small @click="acceptBid(item)" color="success">
-                        <v-icon left>mdi-check</v-icon>
-                        <span>Accept</span>
-                    </v-btn>
-                    <v-btn text small @click="rejectBid(item)" color="error">
-                        <v-icon left>mdi-close</v-icon>
-                        <span>Reject</span>
+                    <v-btn text small @click="blockBidder(item)" color="error">
+                        <v-icon left>mdi-cancel</v-icon>
+                        <span>Block</span>
                     </v-btn>
                 </template>
             </v-data-table>
@@ -25,7 +21,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 import { ROLES } from "@/utils/constants";
 import { formatPrice } from "@/utils/priceUtils";
 
@@ -56,6 +52,12 @@ export default {
             } else {
                 return [...this.local_tableHeaders];
             }
+        },
+    },
+    methods: {
+        ...mapActions("CurrentProductModule", ["removeAndBlockBidder"]),
+        blockBidder(item) {
+            this.removeAndBlockBidder(item.bid_id);
         },
     },
 };
