@@ -13,49 +13,54 @@
             </div>
 
             <!-- Placeholder (no results) -->
-            <v-row no-gutters class="pa-2" v-if="resultTotalCount === 0">
-                <v-col>
-                    <v-row no-gutters justify="center" align="center" class="d-flex flex-column">
-                        <v-icon large color="grey" class="mb-1">mdi-magnify</v-icon>
-                        <div class="grey--text mt-1">No results</div>
-                    </v-row>
-                </v-col>
-            </v-row>
+            <div v-if="resultTotalCount === 0">
+                <v-row no-gutters class="pa-2">
+                    <v-col>
+                        <v-row no-gutters justify="center" align="center" class="d-flex flex-column">
+                            <v-icon large color="grey" class="mb-1">mdi-magnify</v-icon>
+                            <div class="grey--text mt-1">No results</div>
+                        </v-row>
+                    </v-col>
+                </v-row>
+            </div>
 
-            <!-- Sorting options -->
-            <v-row no-gutters class="pa-2">
-                <v-chip-group mandatory active-class="primary--text" v-model="selectedSortType">
-                    <v-chip v-for="type in sortTypes" :key="type">
-                        {{ type }}
-                    </v-chip>
-                </v-chip-group>
-            </v-row>
+            <!-- Results -->
+            <div v-else>
+                <!-- Sorting options -->
+                <v-row no-gutters class="pa-2">
+                    <v-chip-group mandatory active-class="primary--text" v-model="selectedSortType">
+                        <v-chip v-for="type in sortTypes" :key="type">
+                            {{ type }}
+                        </v-chip>
+                    </v-chip-group>
+                </v-row>
 
-            <!-- Listing -->
-            <v-row no-gutters class="pa-2" v-for="product in resultCurrentContent" :key="product.id">
-                <product-card-large
-                    :id="product.id"
-                    :title="product.title"
-                    :image="product.image"
-                    :bidderCount="product.bidderCount"
-                    :bidHighestPrice="product.bidHighestPrice"
-                    :bidHighestUser="product.bidHighestUser"
-                    :buyNowPrice="product.buyNowPrice"
-                    :startTime="product.startTime"
-                    :endTime="product.endTime"
-                    :isOnWatchlist="product.isOnWatchlist"
-                ></product-card-large>
-            </v-row>
+                <!-- Listing -->
+                <v-row no-gutters class="pa-2" v-for="product in resultCurrentContent" :key="product.id">
+                    <product-card-large
+                        :id="product.id"
+                        :title="product.title"
+                        :image="product.image"
+                        :bidderCount="product.bidderCount"
+                        :bidHighestPrice="product.bidHighestPrice"
+                        :bidHighestUser="product.bidHighestUser"
+                        :buyNowPrice="product.buyNowPrice"
+                        :startTime="product.startTime"
+                        :endTime="product.endTime"
+                        :isOnWatchlist="product.isOnWatchlist"
+                    ></product-card-large>
+                </v-row>
 
-            <!-- List pager -->
-            <v-pagination
-                circle
-                class="pt-4"
-                :length="resultPageCount"
-                v-model="local_queryPage"
-                :total-visible="resultPagerVisibleCount"
-                v-if="resultTotalCount > 0"
-            ></v-pagination>
+                <!-- List pager -->
+                <v-pagination
+                    circle
+                    class="pt-4"
+                    :length="resultPageCount"
+                    v-model="local_queryPage"
+                    :total-visible="resultPagerVisibleCount"
+                    v-if="resultTotalCount > 0"
+                ></v-pagination>
+            </div>
         </v-card>
     </v-container>
 </template>
@@ -94,9 +99,11 @@ export default {
             this.switchPage();
             scrollToTop(this);
         },
+
         selectedSortType() {
             // find enum corresponding to selected sort type
-            switch (this.selectedSortType) {
+            this.selectedSortKey = this.sortTypes[this.selectedSortType];
+            switch (this.selectedSortKey) {
                 case "Ending soon":
                     this.selectedSortKey = SEARCH_ORDER.TIME_ASC;
                     break;
@@ -116,7 +123,10 @@ export default {
                     this.selectedSortKey = SEARCH_ORDER.PRICE_DESC;
                     break;
             }
+
+            console.log(`Search: selected order key = ${this.selectedSortKey}`);
             this.switchPage();
+            scrollToTop(this);
         },
     },
 

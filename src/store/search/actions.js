@@ -27,7 +27,7 @@ export default {
             result = [];
         let keyword = undefined;
         let category = undefined;
-        let sort = state.sort;
+        let sort = state.querySort;
         let products = [];
         switch (state.queryType) {
             case SEARCH_TYPES.KEYWORD:
@@ -50,6 +50,7 @@ export default {
                 category: category,
                 number: SEARCH_RESULTS_PER_PAGE,
                 page: state.queryPage - 1,
+                sort,
             };
 
             products = await getData(params);
